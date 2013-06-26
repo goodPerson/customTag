@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<constant name="struts.multipart.maxSize" value="55000000"/>
+<package name="default" extends="struts-default">
+
+     <action name="TagAction" class="action.TagInfoAction" method="execute">
+		<result name="success">/index.jsp</result>
+	</action>
+	<action name="TaginfoAction" class="action.TagOperateAction" method="execute">
+		<result name="success">/views/taginfo.jsp</result>
+	</action>
+	<action name="addTagAction" method="addTag" class="action.TagOperateAction">
+		<result name="input">/index.jsp</result>
+	</action>
+	
+	<action name="delTagAction" method="delTag" class="action.TagOperateAction">
+		<result name="input">/index.jsp</result>
+	</action>
+	
+	<action name="shareTagAction" method="shareTag" class="action.TagOperateAction">
+		<result name="input">/index.jsp</result>
+	</action>
+	
+	<action name="renameTagAction" method="renameTag" class="action.TagOperateAction">
+		<result name="input">/index.jsp</result>
+	</action>
+	
+	<action name="listAttrTagAction" method="listAttr" class="action.TagInfoAction">
+		<result name="input">/views/attrfilter.jsp</result>
+	</action>
+	
+	<action name="initAttrTagAction" method="initAttr" class="action.TagInfoAction">
+		<result name="success">/views/attrfilter.jsp</result>
+	</action>
+	
+	<action name="initMainTagAction" method="initMainTag" class="action.MainTanAction">
+		<result name="success">/views/maintag.jsp</result>
+	</action>
+	
+	<action name="downaddinfo" method="addDownload" class="action.DownLoadAction">
+		<result >/views/attrfilter.jsp</result>
+	</action>
+	<action name="querydown" method="getDownInfo" class="action.DownLoadAction">
+		<result name="success">/views/downloadinfo.jsp</result>
+	</action>
+	<!-- 属性分类json -->
+	<action name="getAttrAction" class="action.AttrManageAction" method="getAttr">
+		 <result name="success">/views/attrmanage.jsp</result>
+	</action>
+	<!--属性子类1json-->
+	<action name="getAttr1Action" class="action.AttrManageAction" method="getAttr1">
+		 <result >/views/attrmanage.jsp</result>
+	</action>
+	<!--属性子类2json-->
+	<action name="getAttr2Action" class="action.AttrManageAction" method="getAttr2">
+		 <result >/views/attrmanage.jsp</result>
+	</action>
+	<!--属性展示-->
+	<action name="getAttrListAction" class="action.AttrManageAction" method="getAttrList">
+		 <result name="success">/views/attrmanage.jsp</result>
+	</action>
+	<!--编辑属性名-->
+	<action name="renameAttrAction" class="action.AttrManageAction" method="renameAttr">
+		 <result name="success">/views/attrmanage.jsp</result>
+	</action>
+	<!--删除属性-->
+	<action name="delAttrAction" class="action.AttrManageAction" method="delAttr">
+		 <result name="success">/views/attrmanage.jsp</result>
+	</action>
+	<!--新建属性-->
+	<action name="addAttrAction" class="action.AttrManageAction" method="addAttr">
+		 <result name="success">/views/attrmanage.jsp</result>
+	</action>
+	<!--标签状态展示-->
+	<action name="listtTgApproAction" class="action.TagApproveAction" method="listtgappro">
+		 <result name="success">/views/tagapprove.jsp</result>
+	</action>
+		<!-- 二级属性展示  ywz 20130521-->	
+	<action name="getAttrTableAction" method="getAttrTable" class="action.CustTagAttrInfoAction" >
+		 <result>/views/attrfilter.jsp</result>
+	</action>
+	
+	<!-- 二级属性展示  ywz 20130521-->	
+	<action name="getSecName" class="action.ArrtClassAction" method="getListSecName">
+		 <result>/views/attrfilter.jsp</result>
+	</action>
+	<!-- 城市展示  ywz 20130523-->	
+	<action name="getCityName" class="action.RegionAction" method="getCityName">
+		 <result name="success">/views/attrfilter.jsp</result>
+	</action>
+	<!-- 区县展示  ywz 20130523-->	
+	<action name="getCountyName" class="action.RegionAction" method="getCountyName">
+		 <result name="success">/views/attrfilter.jsp</result>
+	</action>
+	<!-- 上传黑白红名单  ywz 20130527-->	
+	<action name="importUser" class="action.TypeUserInfoAction" method="importUser">
+		<result name="importUser">/views/attrfilter.jsp</result> 
+		 <!-- 
+	    <result name="importUser" type="redirectAction">
+				<param name="actionName">initAttrTagAction</param>  
+                <param name="title_name">hhh</param>	
+		</result>	    
+		-->
+	</action>
+	<!-- 修改客户标签构建条件  ywz 20130528-->	
+	<action name="updateGroupTag" class="action.CustTagAttrInfoAction" method="updateGroupTag">
+		 	    <result name="success" type="redirectAction">
+				<param name="actionName">initAttrTagAction</param>  
+                <param name="title_name">hhh</param> 			
+		</result>	
+	</action>	
+	<!-- 客户标签导出  ywz 20130529-->	
+	<action name="exportTag" class="action.CustTagAttrInfoAction" method="exportTag">
+		 	    <result name="success" type="redirectAction">
+				<param name="actionName">initAttrTagAction</param>  
+                <param name="title_name">hhh</param> 			
+		</result>	
+	</action>	
+	<!-- 客户标签筛选  ywz 20130530-->			
+	<action name="filterTagExport" class="action.CustTagAttrInfoAction" method="filterTagExport">
+		<result name="exportUser" type="stream">
+			<param name="inputName">downloadFile</param>
+			<param name="contentType">${contentType}</param>
+			<param name="contentDisposition">attachment;filename="${fileName}"</param>
+			<param name="bufferSize">51200</param>
+		</result>
+	</action>
+	<!-- 客户标签筛选数量  ywz 20130530-->	
+	<action name="filterTagCounts" class="action.CustTagAttrInfoAction" method="filterTagCounts">
+	</action>
+		<!-- 进入添加页面  ywz 20130602-->	
+	<action name="addApply" class="action.TabRequestDeltAction"  method="addApply">
+		 	     <result name="success" >/views/tagrequest.jsp</result>		
+	</action>
+	    <!-- 提交申请表  ywz 20130602-->	
+    <action name="addTabRequestDelt" class="action.TabRequestDeltAction" method="addTabRequestDelt">
+		 	    <result name="success" type="redirectAction">
+				<param name="actionName">listtTgApproAction</param>  
+                <param name="userId">%{#session.userId}</param> 	
+                <param name="jspmes">0</param>		
+			</result>	
+	</action>
+   <!-- 进入添加页面  ywz 20130603-->	
+	<action name="getTabRequestDetl" class="action.TabRequestDeltAction" method="getTabRequestDetl">
+		 	     <result name="success">/views/tagverify.jsp</result>		
+		 	      <result name="fail">/index.jsp</result>		
+	</action>	
+	<!-- 审核申请  ywz 20130603-->	
+	<action name="verifyTag" class="action.TabRequestDeltAction" method="verifyTag">
+		 	    <result name="success" type="redirectAction">
+				<param name="actionName">listtTgApproAction</param>  
+                <param name="userId">%{#session.userId}</param> 	
+                <param name="jspmes">0</param>		
+			    </result>	
+		 	     <result name="fail">/index.jsp</result>		
+	</action>	
+	<!-- 驳回申请  ywz 20130603-->	
+	<action name="rejectTag" class="action.TabRequestDeltAction" method="rejectTag">
+		 	    <result name="success" type="redirectAction">
+				<param name="actionName">listtTgApproAction</param>  
+                <param name="userId">%{#session.userId}</param> 	
+                <param name="jspmes">1</param>		
+			    </result>		
+	</action>
+	<!-- 进入添加页面  ywz 20130605-->	
+	<action name="getAppro" class="action.TabRequestDeltAction" method="getAppro">
+		 	    <!--  <result name="success">/views/tagrequest.jsp</result>	 -->	
+	</action>
+	<!-- 查询日志  ywz 20130618-->	
+	<action name="findOperateLog" class="action.OperateLogAction" method="findOperateLog">
+		 	     <result name="success">/views/logManage.jsp</result>		
+	</action>
+	<!-- 获取用户名  ywz 20130618-->	
+	<action name="getUserName" class="action.OperateLogAction" method="getUserName">
+		 	     <!-- <result name="success">/views/logManage.jsp</result>	 -->	
+	</action>
+	<!-- 获取地域名  ywz 20130618-->	
+	<action name="getRegionName" class="action.OperateLogAction" method="getRegionName">
+		 	     <!-- <result name="success">/views/logManage.jsp</result>	 -->	
+	</action>
+		<!-- 获取栏目名称  ywz 20130618-->	
+	<action name="getColumnName" class="action.OperateLogAction" method="getColumnName">
+		 	     <!-- <result name="success">/views/logManage.jsp</result>	 -->	
+	</action>
+	<!-- 获取操作类型  ywz 20130618-->	
+	<action name="getOperateType" class="action.OperateLogAction" method="getOperateType">
+		 	     <!-- <result name="success">/views/logManage.jsp</result>	 -->	
+	</action>
+	<!-- 获取操作名称  ywz 20130618-->	
+	<action name="getOperateName" class="action.OperateLogAction" method="getOperateName">
+		 	     <!-- <result name="success">/views/logManage.jsp</result>	 -->	
+	</action>
+</package>
+</struts>

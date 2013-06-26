@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/aop 
+            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+            http://www.springframework.org/schema/tx 
+            http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+            http://www.springframework.org/schema/context 
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+ <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+  <property value="com.ibm.db2.jcc.DB2Driver" name="driverClassName"/>
+  <property value="jdbc:db2://127.0.0.1:50000/TESTDATA" name="url"/>
+  <property value="db2admin" name="username"/>
+  <property value="jingzaie123" name="password"/>
+ </bean>
+ <!-- 
+ <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
+        <property name="jndiName">  
+            <value>jdbc/testmudata</value>  
+        </property>  
+    </bean>  
+
+        <bean id="dataSource1" class="org.springframework.jndi.JndiObjectFactoryBean">  
+        <property name="jndiName">  
+            <value>jdbc/hebdw</value>  
+        </property>  
+    </bean>  
+     -->
+    <!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+        <property name="dataSource">  
+            <ref bean="dataSource" />  
+        </property>  
+    </bean>  
+    -->    
+
+ <bean id="customTagDao" class="dao.TagInfoDaoImpl" depends-on="dataSource">
+ <property name="dataSource" ref="dataSource"></property>
+ </bean>
+ 
+ <bean id="TagOperateDao" class="dao.TagOperateImpl" depends-on="dataSource">
+ <property name="dataSource" ref="dataSource"></property>
+ </bean>
+ 
+  <bean id="MainTagDao" class="dao.MainTagDaoImpl" depends-on="dataSource">
+ <property name="dataSource" ref="dataSource"></property>
+ </bean>
+ 
+  <bean id="TagAttrDao" class="dao.TagAttrDaoImpl" depends-on="dataSource">
+ <property name="dataSource" ref="dataSource"></property>
+ </bean>
+ 
+ <bean id="TagApprove" class="dao.TagApproveImpl" depends-on="dataSource">
+ <property name="dataSource" ref="dataSource"></property>
+ </bean>
+  <!-- 杨卫争 20130521 属性类别 -->
+ <bean id="arrtClassDaoImpl" class="dao.ArrtClassDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+ 
+  <!-- 杨卫争 20130523 地域维表 -->
+ <bean id="regionDaoImpl" class="dao.RegionDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+   <!-- 杨卫争 20130524 黑白红名单表 -->
+ <bean id="typeUserInfoDaoImpl" class="dao.TypeUserInfoDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+ <!-- 杨卫争 20130528 标签构建属性 -->
+ <bean id="custTagAttrInfoDaoImpl" class="dao.CustTagAttrInfoDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+  <!-- 码值属性标签构建属性 -->
+  <bean id="attrTableDaoImpl" class="dao.AttrTableDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+   <!-- 杨卫争 20130601 上传名单 -->
+ <bean id="uploadLtLogDaoImpl" class="dao.UploadLtLogDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+  <!-- 杨卫争 20130601 下载文件 -->
+ <bean id="customgroupInfoDaoImpl" class="dao.CustomgroupInfoDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+    <!-- 杨卫争 20130602 创建申请详细信息 -->
+ <bean id="tabRequestDetlDaoImpl" class="dao.TabRequestDetlDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+    <!-- 杨卫争 20130602 申请标签信息表 -->
+ <bean id="tagApproveDaoImpl" class="dao.TagApproveDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>	
+      <!-- 杨卫争 20130605 审批人信息表 -->
+ <bean id="approverInfoDaoImpl" class="dao.ApproverInfoDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+   <!-- 杨卫争 20130607 插入日志信息表 -->
+ <bean id="operateLogDaoImpl" class="dao.OperateLogDaoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+ <!-- 杨卫争 20130609 切面类 -->
+  <bean id="logAspectJ" class="aop.LogAspectJ"/>
+
+    <aop:config proxy-target-class="true" >
+     <aop:aspect  ref="logAspectJ">
+           <aop:pointcut id="myAspect" expression="execution(* dao.*.*(..))" />
+           <aop:before pointcut-ref="myAspect" method="myBeforeAdvice"/>
+     </aop:aspect>
+ </aop:config>
+</beans>
