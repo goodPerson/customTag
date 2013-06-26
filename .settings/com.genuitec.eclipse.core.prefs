@@ -1,0 +1,4 @@
+#Fri Jun 21 10:10:36 CST 2013
+eclipse.preferences.version=1
+validator.Checked=WebRoot/js,WebRoot/views,WebRoot/index.jsp
+validator.Unchecked=
