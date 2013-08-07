@@ -1,0 +1,49 @@
+CREATE TABLE MK_VGOP.TB_CUST_TAG_FORM_ATTR_SUBS_CNT(
+   ATTR_ID                  VARCHAR(64)                    --属性ID
+  ,ATTR_DIM_VALUE           VARCHAR(10)                    --构成属性构成属性值
+  ,REGION_ID                VARCHAR(30)                    --地域id
+  ,SUBS_CNT                 INTEGER                        --人数
+) IN TSC_MART_VGOP
+INDEX IN TSC_MART_VGOP
+PARTITIONING KEY(ATTR_ID)
+NOT LOGGED INITIALLY
+COMPRESS YES;
+
+COMMENT ON TABLE MK_VGOP.TB_CUST_TAG_FORM_ATTR_SUBS_CNT IS '客户标签构成属性事实表';
+COMMENT ON MK_VGOP.TB_CUST_TAG_FORM_ATTR_SUBS_CNT( 
+   ATTR_ID                  IS                   '属性ID'
+  ,ATTR_DIM_VALUE           IS                   '构成属性构成属性值'
+  ,REGION_ID                IS                   '地域id'
+  ,SUBS_CNT                 IS                   '人数'                                             
+);       
+
+GRANT SELECT ON TABLE MK_VGOP.TB_CUST_TAG_FORM_ATTR_SUBS_CNT TO GROUP JYGRP;
+
+       
+
+
+
+CREATE TABLE MK_VGOP.TB_CUST_TAG_DIM_FORM_ATTR(
+   ATTR_ID                  VARCHAR(64)                    --属性ID
+  ,ATTR_DESC                VARCHAR(200)                   --属性描述 
+  ,ATTR_DIM_VALUE           VARCHAR(10)                    --构成属性构成属性值
+  ,ATTR_DIM_DESC            VARCHAR(500)                   --构成描述
+  ,ATTR_EXTEND1             VARCHAR(60)                    --扩展1
+  ,ATTR_EXTEND2             VARCHAR(60)                    --扩展2
+) IN TSC_MART_VGOP
+INDEX IN TSC_MART_VGOP
+PARTITIONING KEY(ATTR_ID)
+COMPRESS YES;
+
+COMMENT ON TABLE MK_VGOP.TB_CUST_TAG_DIM_FORM_ATTR IS '客户标签构成属性码表';
+COMMENT ON MK_VGOP.TB_CUST_TAG_DIM_FORM_ATTR ( 
+   ATTR_ID                  IS                 '属性ID'
+  ,ATTR_DESC                IS                 '属性描述' 
+  ,ATTR_DIM_VALUE           IS                 '构成属性构成属性值'
+  ,ATTR_DIM_DESC            IS                 '构成描述'
+  ,ATTR_EXTEND1             IS                 '扩展1'
+  ,ATTR_EXTEND2             IS                 '扩展2'                                               
+);           
+
+
+GRANT SELECT ON TABLE MK_VGOP.TB_CUST_TAG_FORM_ATTR_SUBS_CNT TO GROUP JYGRP;                                         
