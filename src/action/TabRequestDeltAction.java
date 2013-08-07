@@ -36,38 +36,29 @@ import dao.TagApproveDaoImpl;
  *
  */
 public class TabRequestDeltAction extends ActionSupport {
-	private TabRequestDetlDaoImpl tabRequestDetlDao;
-	private TagApproveDaoImpl   tagApproveDao;
+	static TabRequestDetlDaoImpl tabRequestDetlDao;
+	static TagApproveDaoImpl   tagApproveDao;
 	TabRequestDetl tbrquestDel;
-	private ApproverInfoDaoImpl  approverInfoDao;
+	static ApproverInfoDaoImpl  approverInfoDao;
 	private String state;
 	static ApplicationContext cxt;
-	public   void initTabRequestDetl(){
+	public static  void initTabRequestDetl(){
 		XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		tabRequestDetlDao=(TabRequestDetlDaoImpl) factory.getBean("tabRequestDetlDaoImpl");
-		//if (null==cxt)
-			//cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-		//tabRequestDetlDao=(TabRequestDetlDaoImpl) cxt.getBean("tabRequestDetlDaoImpl");
+
 	}
-	public   void initTagApprove(){
+	public static  void initTagApprove(){
 		XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		tagApproveDao=(TagApproveDaoImpl) factory.getBean("tagApproveDaoImpl");
-		//if (null==cxt)
-		// cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-		//tagApproveDao=(TagApproveDaoImpl) cxt.getBean("tagApproveDaoImpl");
 	}
-	public   void initApproverInfo(){
+	public static  void initApproverInfo(){
 		XmlBeanFactory factory =new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		approverInfoDao=(ApproverInfoDaoImpl) factory.getBean("approverInfoDaoImpl");	
-		//if (null==cxt)
-		// cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-	//	approverInfoDao=(ApproverInfoDaoImpl) cxt.getBean("approverInfoDaoImpl");		
 	}
-	public String addApply(){
-		return SUCCESS;
+	public String execute(){
+		return "success";
 	}
 	public void getAppro() throws IOException{		
-		//if (null==tagApproveDao)
 			this.initApproverInfo();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest    request  =ServletActionContext.getRequest();
@@ -100,7 +91,7 @@ public class TabRequestDeltAction extends ActionSupport {
 	   		print.flush();
 	   		print.close();   
 	    }     
-	    //return "success";
+	   
 	}
 	/**
 	 *  添加申请详细信息       申请人信息和审批人信息
@@ -108,11 +99,11 @@ public class TabRequestDeltAction extends ActionSupport {
 	 * @throws UnsupportedEncodingException
 	 */
 	public String addTabRequestDelt() throws UnsupportedEncodingException{
-		//  if (null==tabRequestDetlDao)
+		  if (null==tabRequestDetlDao)
 			 this.initTabRequestDetl();
-		  //if(null== tagApproveDao)
+		  if(null== tagApproveDao)
 			  this.initTagApprove();
-		//  if(null== approverInfoDao)			  
+		  if(null== approverInfoDao)			  
 			  this.initApproverInfo();
 		  HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
@@ -142,7 +133,7 @@ public class TabRequestDeltAction extends ActionSupport {
 					market+=marketArray[i]+",";
 				}
 			}
-          
+
 			String[] brankArray=request.getParameterValues("brank");
 			String brank="";
 			if (brankArray!=null){
@@ -163,7 +154,7 @@ public class TabRequestDeltAction extends ActionSupport {
 		    String userId=(String) session.getAttribute("userId");
 			//String req_reson="测试";
 			//String ddd="";
-		    GetLog.getLog("标签管理", "添加", "添加"+activename+"申请", "");
+		    GetLog.getLog("客户标签", "创建", req_id, req_reson+"申请标签"+req_id);
 			//req_id,  req_name, req_resons, req_scope, req_time_limit, cus_need_counts,req_target, cus_brand, req_getdata_type, screen_condition, remark, req_reson, req_time
 			if (tabRequestDetlDao.addTagReqDetl(req_id, activename, requestreson, activescope, req_time_limit, requirecounts, market, 
 					brank, datagettype, contion, remark, req_reson, req_id,verifier)){
@@ -234,7 +225,7 @@ public class TabRequestDeltAction extends ActionSupport {
 		  request.setCharacterEncoding("gbk");
 		  String req_id=request.getParameter("req_id");
 		  String userId=(String) request.getSession().getAttribute("userId");
-		  GetLog.getLog("标签管理", "修改", "回退申请", req_id+","+userId);
+		  GetLog.getLog("标签管理", "修改", "回退申请", req_id+","+userId+",");
 		  if( tagApproveDao.updateTagApprove(req_id, "2"))
 		    return "success";
 		  return "fail";

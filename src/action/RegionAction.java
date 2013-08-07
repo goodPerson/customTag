@@ -38,17 +38,16 @@ import dao.RegionDaoImpl;
  *
  */
 public class RegionAction {
-	private  RegionDaoImpl regionDao;
+	private static RegionDaoImpl regionDao;
 	private List<Region> listCityName;
+	private int lvl_id1;
 	
-	//static ApplicationContext factory=null;
+	static ApplicationContext factory=null;
 	/**
 	 * 初始化方法
 	 */
-	public  void initRegion(){
+	public static void initRegion(){
     	XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		//if (null==factory)
-			//factory = new ClassPathXmlApplicationContext("applicationContext.xml");
     	regionDao=(RegionDaoImpl) factory.getBean("regionDaoImpl");
     }
 	/**
@@ -57,10 +56,11 @@ public class RegionAction {
 	 * @throws IOException 
 	 */
 	public void getCityName() throws IOException{
-		//if (null==regionDao)
+		if (null==regionDao)
 		this.initRegion();
 		HttpServletRequest   request   =ServletActionContext.getRequest();
-		String region_id=request.getParameter("regionId");		
+		String region_id=(String) request.getSession().getAttribute("regionId");
+	  int  lvl_id=regionDao.getlvl(region_id);
 		listCityName=regionDao.getCityRegionName(region_id);
 		HttpServletResponse response=ServletActionContext.getResponse();
 		response.setCharacterEncoding("gbk");
@@ -69,15 +69,15 @@ public class RegionAction {
 		JSONArray listJsonCityName=new JSONArray();
 		JSONObject object=new JSONObject();
 
-		for(int i=listCityName.size();i>=0;i--){			 
-			if (i!=listCityName.size()){
+		for(int i=listCityName.size()-1;i>=0;i--){			 
+//			if (i!=listCityName.size()){
 			Region region=listCityName.get(i);
 			object.put("id", region.getRegion_id());
 			object.put("text", region.getRegion_name());
-			}else{
+/*			}else{
 				object.put("id", "ALL");
 				object.put("text", "全部");
-			}
+			}*/
 			listJsonCityName.add(object);
 		}
 		
@@ -94,26 +94,28 @@ public class RegionAction {
      * @throws IOException
      */
 	public void getCountyName() throws IOException{
-		//if (null==regionDao)
+		if (null==regionDao)
 		this.initRegion();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest   request   =ServletActionContext.getRequest();
 		response.setCharacterEncoding("gbk");
 		response.setContentType("text/html;charset=gbk");
 		response.addHeader("Content-Type", "text/html;charset=gbk");
-		String ciytId=request.getParameter("cityId");
-		listCityName=regionDao.getCountyName(ciytId);
+		
+		String ciytId=(String) request.getSession().getAttribute("regionId");
+	    lvl_id1=regionDao.getlvl(ciytId);
+		listCityName=regionDao.getCountyName(ciytId,lvl_id1);
 		JSONArray listCountyName=new JSONArray();
 		JSONObject object=new JSONObject();
-		for (int i=listCityName.size();i>=0;i--){
-			if (i!=listCityName.size()){
+		for (int i=0;i<listCityName.size();i++){
+//			if (i!=listCityName.size()){
 				Region region=listCityName.get(i);			
 				object.put("id", region.getRegion_id());
 				object.put("text", region.getRegion_name());
-			}else{
+/*			}else{
 				object.put("id", "ALL");
 				object.put("text", "全部");
-			}
+			}*/
 			listCountyName.add(object);
 		}
 		PrintWriter print=response.getWriter();
@@ -121,6 +123,50 @@ public class RegionAction {
 		print.flush();
 		print.close();		
 	}
+	
+	public void downRegion() throws IOException{
+		if (null==regionDao)
+			this.initRegion();
+			HttpServletResponse response=ServletActionContext.getResponse();
+			HttpServletRequest   request   =ServletActionContext.getRequest();
+			response.setCharacterEncoding("gbk");
+			response.setContentType("text/html;charset=gbk");
+			response.addHeader("Content-Type", "text/html;charset=gbk");
+			String ciytId=(String) request.getSession().getAttribute("regionId");
+		    int  lvl_id=regionDao.getlvl(ciytId);
+			listCityName=regionDao.getDownName(ciytId,lvl_id);
+			JSONArray listCountyName=new JSONArray();
+			JSONObject object=new JSONObject();
+			if(ciytId.equals("1")){
+				for(int i=listCityName.size()-1;i>=0;i--){			 
+//					if (i!=listCityName.size()){
+					Region region=listCityName.get(i);
+					object.put("id", region.getRegion_id());
+					object.put("text", region.getRegion_name());
+		/*			}else{
+						object.put("id", "ALL");
+						object.put("text", "全部");
+					}*/
+					listCountyName.add(object);
+				}
+			}else{
+			for (int i=0;i<listCityName.size();i++){
+//				if (i!=listCityName.size()){
+					Region region=listCityName.get(i);			
+					object.put("id", region.getRegion_id());
+					object.put("text", region.getRegion_name());
+	/*			}else{
+					object.put("id", "ALL");
+					object.put("text", "全部");
+				}*/
+				listCountyName.add(object);
+			}}
+			PrintWriter print=response.getWriter();
+			print.print(listCountyName.toString());
+			print.flush();
+			print.close();		
+		}
+		
 
 			
 	public RegionDaoImpl getRegionDao() {
@@ -135,5 +181,12 @@ public class RegionAction {
 	public void setListCityName(List<Region> listCityName) {
 		this.listCityName = listCityName;
 	}
+	public int getLvl_id1() {
+		return lvl_id1;
+	}
+	public void setLvl_id1(int lvl_id1) {
+		this.lvl_id1 = lvl_id1;
+	}
+	
 	
 }

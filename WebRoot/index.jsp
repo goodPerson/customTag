@@ -283,9 +283,6 @@ a:active {
           <tr>
             <td>下&nbsp;载&nbsp;管&nbsp;理</td>
           </tr>
-          <tr>
-            <td>日&nbsp;志&nbsp;管&nbsp;理</td>
-          </tr>
            <tr>
            <td></td>
            </tr>
@@ -464,10 +461,10 @@ $("#left_menu_table tr:gt(0):lt(4)").mouseleave(
 		}
 		});
 
-$("#left_menu_table tr:gt(0):lt(6)").click(
+$("#left_menu_table tr:gt(0):lt(5)").click(
 	function(){
 	     left_menu_click_index=($("#left_menu_table tr").index(this)); 
-	    $("#left_menu_table tr:gt(0):lt(6)").css("background","");
+	    $("#left_menu_table tr:gt(0):lt(5)").css("background","");
 		$(this).css("background","#d4d4d4");
 		switch(left_menu_click_index)
 			{
@@ -490,11 +487,7 @@ $("#left_menu_table tr:gt(0):lt(6)").click(
             case 5:  
 			$("#tag_title").text("下载管理");
 			$("#iframe").attr("src","querydown.action?userId="+userId);
-            break;		
-            case 6:  
-			$("#tag_title").text("日志管理");
-			$("#iframe").attr("src","findOperateLog.action?userName=&regionName=&columnName=&operateType=&operateName=&userId="+userId);
-            break;		
+            break;			
             };
 
       document.getElementById("iframe").location.reload(true);

@@ -30,14 +30,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	font-family: "微软雅黑";
 	font-size: 10pt;
 }
-html {
-	height: 100%
-}
+html{
+	overflow-x: hidden;
+	overflow-y: auto;
+	}
 body {
 	height: 100%;
-	width: 100%;
+	width: 1024px;
 	font: 10pt "微软雅黑";
-	margin: 0px;
+	text-align:center;
+	margin:0px auto;
+	background-color:#FFF;
 }
 a {
 	display: block;
@@ -223,30 +226,34 @@ li {
 width:60px;
 padding:5px 5px 0px 5px;
 }
+#chartTable_one{
+	text-align:center;
+	margin:0px auto;
+	}
 </style>
 
 <body>
-  <table  id="chartTable" width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+  <table  id="chartTable_one" width="1024"  height="100%"   border="0" cellspacing="0" cellpadding="0">
 	<tr>
-	  <td width="16px" height="16px"><img src="./img/leftup.png" width="22" height="22"></td>
+	  <td width="24px" height="24px"><img src="./img/leftup.png" width="22" height="22"></td>
 	  <td width="100%" style="background:url(./img/upborder.png)  repeat-x"></td>
-	  <td width="16px" height="16px"><img src="./img/rightup.png" width="22" height="22"></td>
+	  <td width="24px" height="24px"><img src="./img/rightup.png" width="22" height="22"></td>
 	</tr>
 	<tr>
-	  <td height="100%" style="background:url(./img/leftborder.png) repeat-y"></td>
+	  <td  style="background:url(./img/leftborder.png) repeat-y"></td>
 	  <td width="100%"  valign="top" >
 	  <!--主要内容开始-->
 	  <form id="formrequest" method="post" action="addTabRequestDelt.action" onSubmit="checkTrim();">
-	  <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+	  <table width="100%"  border="0" cellspacing="0" cellpadding="0" align="center">
 	    <tr>    
-           <td width="100%" height="100%" align="right" valign="top">
-		   <table  id="chartTable" width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+           <td width="100%"  align="right" valign="top">
+		   <table  id="chartTable" width="100%"  border="0" cellspacing="0" cellpadding="0">
         <tr>       
           
           <!-- 标签申请
     ================================================== -->
           
-          <td width="1166"   valign="top"><table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+          <td width="100%"   valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
               <tr>
                 <td colspan="4"  id="tag_name" class="title_td" align="center">标签申请单</td>               
               </tr>
@@ -321,14 +328,14 @@ padding:5px 5px 0px 5px;
 	  
 	  <!--主要内容结束-->
 	  </td>
-	 <td height="100%" style="background:url(./img/rightborder.png) repeat-y"></td>
+	 <td  width="24px" style="background:url(./img/rightborder.png) "></td>
 	</tr>
 	<tr>
-	  <td width="16px" height="16px"><img src="./img/leftdown.png" width="22" height="22"></td>
-	  <td  width="100%" style="background:url(./img/downborder.png)  repeat-x"></td>
-	  <td width="16px" height="16px"><img src="./img/rightdown.png" width="22" height="22"></td>
+	  <td width="24px" height="24px" style="background:url(./img/leftdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td   height="24px"   style="background:url(./img/downborder.png)   "></td>
+	  <td width="24px" height="24px"  style="background:url(./img/rightdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     </tr>
-  </table>
+  </table> 
 </div>
 </body>
 <script>

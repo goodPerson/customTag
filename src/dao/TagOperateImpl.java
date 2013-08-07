@@ -16,8 +16,10 @@ public class TagOperateImpl extends JdbcDaoSupport{
 		String sql="";
 		if("我的客户群".equals(custom_type) || custom_type=="我的客户群"){
 		 sql="select tag_id,tag_name,tag_type,create_time,end_time,profile,count_subs,tag_statement,tag_creator,tag_region,is_share,tag_status,custlist_path from  mk_vgop.tb_customgroup_info where tag_creator_id='"+userId+"'  order by "+name+" desc ";
+		}else if("0".equals(custom_type)){
+		 sql="select tag_id,tag_name,tag_type,create_time,end_time,profile,count_subs,tag_statement,tag_creator,tag_region,is_share,tag_status,custlist_path from  mk_vgop.tb_customgroup_info where tag_creator_id!='"+userId+"' and is_share='0' order by "+name+" desc ";
 		}else{
-		 sql="select tag_id,tag_name,tag_type,create_time,end_time,profile,count_subs,tag_statement,tag_creator,tag_region,is_share,tag_status,custlist_path from  mk_vgop.tb_customgroup_info where tag_region='"+custom_type+"' order by "+name+" desc ";
+			sql="select tag_id,tag_name,tag_type,create_time,end_time,profile,count_subs,tag_statement,tag_creator,tag_region,is_share,tag_status,custlist_path from  mk_vgop.tb_customgroup_info where tag_creator_id!='"+userId+"' and tag_region='"+custom_type+"' and is_share='0' order by "+name+" desc ";		
 		}
 		List<Map<String,Object>> list= getJdbcTemplate().queryForList(sql);
 		List<CustomGroup> tagList= new ArrayList<CustomGroup>();
@@ -26,8 +28,20 @@ public class TagOperateImpl extends JdbcDaoSupport{
 			tag.setTag_id((String)row.get("tag_id"));
 			tag.setTag_name((String)row.get("tag_name"));
 			tag.setTag_type((String)row.get("tag_type"));
-			tag.setCreate_time((String)row.get("create_time"));
-			tag.setEnd_time((String)row.get("end_time"));
+			String c_time=(String)row.get("create_time");
+			if(!("").equals(c_time)&&c_time!=null ){
+				tag.setCreate_time(c_time.substring(2,4)+"年"+c_time.substring(4,6)+"月"+c_time.substring(6,8)+"日");}
+			else{
+				tag.setCreate_time((String)row.get("create_time"));
+			}
+			String e_time=(String)row.get("end_time");
+			if(!("").equals(e_time)&&e_time!=null ){
+				tag.setEnd_time(e_time.substring(2,4)+"年"+e_time.substring(4,6)+"月"+e_time.substring(6,8)+"日");}
+			else{
+				tag.setEnd_time((String)row.get("end_time"));
+			}			
+			
+
 			tag.setProfile((String)row.get("profile"));
 			tag.setCount_subs((Integer)row.get("count_subs")); 
 			tag.setTag_creator((String)row.get("tag_creator"));
@@ -60,6 +74,11 @@ public class TagOperateImpl extends JdbcDaoSupport{
 			e.printStackTrace();
 		}
 
+	}
+	
+	public int getMonth(){
+		String sql="select DATE_VALUE from  MK_VGOP.TB_CUV_CUST_VIEW_SHOW_DATE where DATE_TYPE='月'";
+		return (int)getJdbcTemplate().queryForInt(sql) ;
 	}
 	
 	public void delTag(String id){

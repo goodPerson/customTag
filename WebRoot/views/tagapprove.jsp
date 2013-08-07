@@ -30,17 +30,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 html{
 	height:100%;
 	overflow-x: hidden;
-	overflow-y: hidden;
+	overflow-y: auto;
 	}
 body{
 	height:100%;
-	width:100%;
+	width:1024px;
 	font:10pt "微软雅黑" ;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-right: 0px;
 	overflow-x: hidden;
 	overflow-y: auto;
+	text-align:center;
+	margin:0px auto;
+	background-color:#FFF;
 	}
  #taginfo_table tr{
     cursor:pointer;
@@ -67,75 +67,102 @@ body{
 }
 .nav_bt_div{ float:left; cursor:pointer;
 }     
+.center_all{
+	margin:0px auto;
+	}
   </style>
   <body>
+   <table  id="chartTable_one" width="1024" height="100%"  border="0"  cellspacing="0" cellpadding="0">
+	<tr>
+	  <td width="24px" height="24px"><img src="./img/leftup.png" width="24px" height="24px"></td>
+	  <td width="100%" style="background:url(./img/upborder.png)  repeat-x"></td>
+	  <td width="24px" height="24px"><img src="./img/rightup.png" width="24px" height="24px"></td>
+	</tr>
+	<tr>
+	  <td  style="background:url(./img/leftborder.png) repeat-y"></td>
+	  <td width="100%" valign="top">
+	  <!--主要内容开始-->
+	        <!--
+			<div class="center_all">
+			  <div id="create_tag" class="nav_bt_div">
+			  <div id="create_pic" class="img_div" ><img src="./img/maintag/create.png" align="absmiddle" /></div>
+			  <div id="" class="title_div">标签申请</div>
+			  </div>
+			 -->
+			  <div id="my_tag" class="nav_bt_div">
+			  <div id="create_pic" class="img_div" ><img src="${url3}" align="absmiddle" /></div>
+			  <div id="" class="title_div">我的标签</div>
+			  </div>	
+			  <div id="unifinish_tag" class="nav_bt_div">
+			  <div id="no_finish" class="img_div" ><img src="${url2}" align="absmiddle" /></div>
+			  <div id="" class="title_div">待处理标签</div>
+			  </div>		  
+			  <div id="complete_tag" class="nav_bt_div">
+			  <div id="finish" class="img_div" ><img src="${url1} " align="absmiddle" /></div>
+			  <div id="" class="title_div">已处理标签</div>
+			  </div>
 
-  <div id="create_tag" class="nav_bt_div">
-  <div id="create_pic" class="img_div" ><img src="./img/maintag/create.png" align="absmiddle" /></div>
-  <div id="" class="title_div">创建</div>
-  </div>
-  <div id="complete_tag" class="nav_bt_div">
-  <div id="finish" class="img_div" ><img src="<s:property value='url1'/> " align="absmiddle" /></div>
-  <div id="" class="title_div">已处理标签</div>
-  </div>
-  <div id="unifinish_tag" class="nav_bt_div">
-  <div id="no_finish" class="img_div" ><img src="<s:property value='url2'/>" align="absmiddle" /></div>
-  <div id="" class="title_div">待处理标签</div>
-  </div>
-   <div class="line" style="width:100%;" >&nbsp;</div>
-  
-    <table id="taginfo_table" width="100%" border="0" cellspacing="0" cellpadding="5">
-  <tr>
- <!--<td width="2%"><input name="" type="checkbox" value="" onClick="check_all(this)" id="check"> </td> -->
-    <td style="color:#030;" >申请单名称</td>
-    <td style="color:#030;" >申请人</td>
-    <td style="color:#030;" >申请单号</td>
-    <td style="color:#030;" >申请时间</td>
-    <td style="color:#030;" >审批人</td>
-    <td style="color:#030;" >标签状态</td>
-    <s:if test="%{role=='审批人'}">
-    <td style="color:#030;" >操作</td>
-    </s:if>
-  </tr>
-  <s:iterator  value="listtag"   var="TagAprove">  	     	
- 	     <tr id="table_text" >
-  	<!-- 	<td><input name="subBox" type="checkbox" /></td>   -->
-    		<td style="color:#666"> <s:property value="tag_name" /></td>
-    		<td style="color:#666" ><s:property value="tag_applyer" /></td>
-    		<td style="color:#666" ><s:property value="tag_id" /></td>
-    		<td style="color:#666" ><s:property value="create_time" /></td>
-    		<td style="color:#666;"><s:property value="tag_examiner" /></td>
-    		<td style="color:#666;"><s:property value="tag_state" /></td>
-    		 <s:if test="%{role=='审批人'}">
-    		<td style="color:#030;" ><a name="Approver" href="getTabRequestDetl.action?req_id=<s:property value='tag_id'/>">审批</a></td>    		                                               
-    		</s:if>
-  		</tr>  	    	    	 
-</s:iterator> 
-<tr>
-<td colspan="7"  style="text-align:center"> 
-<s:if test="%{pageNo==1}">
- 第一页&nbsp;  
- 上一页&nbsp;
- </s:if>
- <s:else>
- <a href="listtTgApproAction.action?jspmes=<s:property value="jspmes"/>&userId=<s:property value="userId"/>&pageNo=1">第一页</a>&nbsp;
-  <a href="listtTgApproAction.action?jspmes=<s:property value="jspmes"/>&userId=<s:property value="userId"/>&pageNo=<s:property value="pageNo-1"/>">上一页 </a>&nbsp;
- </s:else>
-
-  
-<s:if test="%{pageNo==pageCounts}"> 
-  下一页 &nbsp;
-  尾页 &nbsp;
- </s:if>  
- <s:else>
-  <a href="listtTgApproAction.action?jspmes=<s:property value="jspmes"/>&userId=<s:property value="userId"/>&pageNo=<s:property value="pageNo+1"/>">下一页  </a>&nbsp;
-  <a href="listtTgApproAction.action?jspmes=<s:property value="jspmes"/>&userId=<s:property value="userId"/>&pageNo=<s:property value="pageCounts"/>"> 尾页 </a>&nbsp;
- </s:else>
+			   <div class="line" style="width:100%;" >&nbsp;</div>
+			</div>  
+			<table id="taginfo_table" width="100%" border="0" cellspacing="0" cellpadding="5">
+			  <tr>
+			 <!--<td width="2%"><input name="" type="checkbox" value="" onClick="check_all(this)" id="check"> </td> -->
+				<td style="color:#030;" >申请单名称</td>
+				<td style="color:#030;" >申请人</td>
+				<td style="color:#030;" >申请单号</td>
+				<td style="color:#030;" >申请时间</td>
+				<td style="color:#030;" >审批人</td>
+				<td style="color:#030;" >标签状态</td>
+				<s:if test="%{role=='审批人'}">
+				<td style="color:#030;" >操作</td>
+				</s:if>
+			  </tr>
+			  <s:if test="myListtag!=null">
+					  <s:iterator  value="myListtag"   var="TagAprove">  	     	
+							 <tr id="table_text" >
+						<!-- 	<td><input name="subBox" type="checkbox" /></td>   -->
+								<td style="color:#666"> <s:property value="tag_name" /></td>
+								<td style="color:#666" ><s:property value="tag_applyer" /></td>
+								<td style="color:#666" ><s:property value="tag_id" /></td>
+								<td style="color:#666" ><s:property value="create_time" /></td>
+								<td style="color:#666;"><s:property value="tag_examiner" /></td>
+								<td style="color:#666;"><s:property value="tag_state" /></td>
+								 <s:if test="%{role=='审批人'}">
+								<td style="color:#030;" ><a name="Approver" href="getTabRequestDetl.action?req_id=<s:property value='tag_id'/>">审批</a></td>    		                                               
+								</s:if>
+							</tr>  	    	    	 
+					</s:iterator> 
+			  </s:if>
+			  
+			  <s:if test="listtag!=null">
+					  <s:iterator  value="listtag"   var="TagAprove">  	     	
+							 <tr id="table_text" >
+						<!-- 	<td><input name="subBox" type="checkbox" /></td>   -->
+								<td style="color:#666"> <s:property value="tag_name" /></td>
+								<td style="color:#666" ><s:property value="tag_applyer" /></td>
+								<td style="color:#666" ><s:property value="tag_id" /></td>
+								<td style="color:#666" ><s:property value="create_time" /></td>
+								<td style="color:#666;"><s:property value="tag_examiner" /></td>
+								<td style="color:#666;"><s:property value="tag_state" /></td>
+								 <s:if test="%{role=='审批人'}">
+								<td style="color:#030;" ><a name="Approver" href="getTabRequestDetl.action?req_id=<s:property value='tag_id'/>">审批</a></td>    		                                               
+								</s:if>
+							</tr>  	    	    	 
+					</s:iterator> 
+			</s:if>
+			  </table>
+	  
+	  <!--主要内容结束-->
+	  </td>
+	 <td  width="24px" style="background:url(./img/rightborder.png) "></td>
+	</tr>
+	<tr>
+	  <td width="24px" height="24px" style="background:url(./img/leftdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td   height="24px"   style="background:url(./img/downborder.png)   "></td>
+	  <td width="24px" height="24px"  style="background:url(./img/rightdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+  </table> 
  
- 当前 <s:property value="pageNo"/> 页 ， 共 <s:property value="totalRecords"/> 条记录 ，共计 <s:property value="pageCounts"/> 页
-  </td>
-</tr>
-  </table>
   
  <script type="text/javascript">
  $(function(){
@@ -157,11 +184,15 @@ body{
        });
        $("#create_tag").click(
        function(){
-       var href="addApply.action";
+       var href="access.action";
        window.location.href=href;
        }
        );
        
+       $("#my_tag").click(function(){
+           var href="myTagAction.action?jspmes=0&userId="+userId;
+           window.location.href=href;
+       });
        
         $("#taginfo_table tr:gt(0)").mouseenter(
 	         function(){	
@@ -176,17 +207,21 @@ body{
 		
 		});
 		var sixtd="";
-	   //alert($("#taginfo_table tr").length);
-		for (i=1;i<$("#taginfo_table tr").length;i++){	
-		   sixtd=$("#taginfo_table tr:eq("+i+") td:eq(5)").text();	  
-			if (sixtd=="已退回"){
-				$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已处理");
-			}else if(sixtd=="已发布"){
-				$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已处理");
-			}else if(sixtd=="待生成标签"){
-				$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已审批");
-			}
+//		alert($("#taginfo_table tr").length);
+		for (i=1;i<$("#taginfo_table tr").length;i++){
+	
+	   sixtd=$("#taginfo_table tr:eq("+i+") td:eq(5)").text();
+	  
+		if (sixtd=="已退回"){
+			$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已处理");
+		}else if(sixtd=="已发布"){
+			$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已处理");
+		}else if(sixtd=="待生成标签"){
+			$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已审批");
 		}
+		}
+		
+
  });
 </script>  
   </body>

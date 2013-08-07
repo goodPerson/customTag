@@ -48,7 +48,8 @@ public class LogAspectJ {
 	   	  }
 	   	  String param=sb.toString();  //参数组合    	  
 	   	  String createTime=sdf.format(new Date());    	  
-   	      operateLogDao.addOperateLog(userId,  userName,  regionId,  regionName, "", "", methodName , param, createTime);   	      
+//   	      operateLogDao.addOperateLog(userId, userName, regionId, regionName, methodName, "", createTime,"");
+   	      
 		 // operateLogDao.addOperateLog("111", "111", "111", "111", "111", "111", "111");
    	     // logger.info("记录日志");
 	}

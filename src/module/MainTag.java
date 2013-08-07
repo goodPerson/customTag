@@ -18,6 +18,16 @@ public class MainTag {
 	private String is_share;           //是否共享 
 	private String tag_status;         //标签状态
 	private String tag_url;              //标签下载地址
+	private String is_used;            //是否可用
+	/**
+	 * 20130801 ywz
+	 * @return
+	 */
+	private Integer subsCnt;     //标签统计人数
+	private String regionName;//地域名称
+	private String parentRegionId;//父地域Id
+	private String regionId; //地域Id
+	
 	
 	public String getTag_url() {
 		return tag_url;
@@ -109,6 +119,35 @@ public class MainTag {
 	public void setTag_status(String tag_status) {
 		this.tag_status = tag_status;
 	}
-	
-	
+	public String getIs_used() {
+		return is_used;
+	}
+	public void setIs_used(String is_used) {
+		this.is_used = is_used;
+	}
+	public Integer getSubsCnt() {
+		return subsCnt;
+	}
+	public void setSubsCnt(Integer subsCnt) {
+		this.subsCnt = subsCnt;
+	}
+	public String getRegionName() {
+		return regionName;
+	}
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
+	public String getParentRegionId() {
+		return parentRegionId;
+	}
+	public void setParentRegionId(String parentRegionId) {
+		this.parentRegionId = parentRegionId;
+	}
+	public String getRegionId() {
+		return regionId;
+	}
+	public void setRegionId(String regionId) {
+		this.regionId = regionId;
+	}
+		
 }

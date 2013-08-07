@@ -24,7 +24,7 @@ public class ArrtClassAction extends ActionSupport {
    private String threeName;                                                                                        //第三级属性名称参数
    private String secName;                                                                                           //第二级属性名称参数
    //private	ArrtClassDaoImpl attrClassDao=new ArrtClassDaoImpl();                              //dao层
-   private 	ArrtClassDaoImpl attrClassDao;                              //dao层
+   private static	ArrtClassDaoImpl attrClassDao;                              //dao层
    private List  listThreeClassName;                                                                              //第三级属性名称List
    private List  listSecClassName;                                                                                 //第二级属性名称List
    private List  baisAttr;                                                                                               //基本属性
@@ -39,10 +39,8 @@ public class ArrtClassAction extends ActionSupport {
 	
    static ApplicationContext factory=null;
    
-	public  void initTagUnifyView(){
+	public static void initTagUnifyView(){
 		XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		//if (null==factory)
-		//	factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 		attrClassDao=(ArrtClassDaoImpl) factory.getBean("arrtClassDaoImpl"); 
 	}
 	/**
@@ -51,7 +49,7 @@ public class ArrtClassAction extends ActionSupport {
 	 * @throws UnsupportedEncodingException
 	 */
 	public String getListThreeName() throws UnsupportedEncodingException{
-		//if (null==attrClassDao)
+		if (null==attrClassDao)
 			this.initTagUnifyView();
 		HttpServletRequest request=ServletActionContext.getRequest();
 		HttpServletResponse response=ServletActionContext.getResponse();
@@ -68,7 +66,7 @@ public class ArrtClassAction extends ActionSupport {
 	 * @throws UnsupportedEncodingException
 	 */
 	public String getListSecName() throws UnsupportedEncodingException{
-		//if (null==attrClassDao)
+		if (null==attrClassDao)
 			this.initTagUnifyView();
 		baisAttr=this.attrClassDao.getListSecName("基本属性");                                                                                              //基本属性
 		voiceAttr=this.attrClassDao.getListSecName("语音属性");																								//语音属性
@@ -81,6 +79,8 @@ public class ArrtClassAction extends ActionSupport {
 		contentLike=this.attrClassDao.getListSecName("内容偏好");                                                                                         //内容偏好	
 		return SUCCESS;
 	}	
+	
+
 
 	public String getThreeName() {
 		return threeName;

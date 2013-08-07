@@ -25,24 +25,26 @@ public class GetLog {
 		 operateLogDao=(OperateLogDaoImpl) factory.getBean("operateLogDaoImpl");
     }   
     /**
-     * 获得日志
+     * 
+     * @param columnName  栏目名称
      * @param operateType   操作类型
-     * @param actionName    Action名称
+     * @param operateName  操作名称
+     * @param operatePara    操作参数
      */
-
-	public static void getLog(String columnName,String operateType,String operateName, String operatePara) {
-		  if (null==operateLogDao)
-			  initOperate();				  
-		  HttpServletRequest  request=ServletActionContext.getRequest();
-		  HttpSession session=request.getSession();
-		  SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");   	  
-	   	  String  userId=(String) session.getAttribute("userId");
-	   	  String  userName=(String) session.getAttribute("userName");
-	   	  String  regionId=(String) session.getAttribute("regionId");
-	   	  String  regionName=(String) session.getAttribute("regionName"); 	  
-	   	  String createTime=sdf.format(new Date());    	  
- 	      operateLogDao.addOperateLog(    userId,  userName,  regionId,  regionName,
+ 	public static void getLog(String columnName,String operateType,String operateName, String operatePara) {
+ 		  if (null==operateLogDao)
+ 			  initOperate();				  
+ 		  HttpServletRequest  request=ServletActionContext.getRequest();
+ 		  HttpSession session=request.getSession();
+ 		  SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddhhmmss");   	  
+ 	   	  String  userId=(String) session.getAttribute("userId");
+ 	   	  String  userName=(String) session.getAttribute("userName");
+ 	   	  String  regionId=(String) session.getAttribute("regionId");
+ 	   	  String  regionName=(String) session.getAttribute("regionName"); 	  
+ 	   	  String createTime=sdf.format(new Date());    	  
+ 	   	operateLogDao.addOperateLog(    userId,  userName,  regionId,  regionName,
  	    		    columnName, operateType, operateName , operatePara, createTime);
-      }
+  	      //operateLogDao.addOperateLog(userId, userName, regionId, regionName, actionName, "", createTime,operateType);
+       }
 		
 }

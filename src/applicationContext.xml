@@ -13,28 +13,43 @@
             http://www.springframework.org/schema/context 
             http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-
  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
   <property value="com.ibm.db2.jcc.DB2Driver" name="driverClassName"/>
   <property value="jdbc:db2://127.0.0.1:50000/TESTDATA" name="url"/>
   <property value="db2admin" name="username"/>
   <property value="123" name="password"/>
- </bean>     
-     <!--     
- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
+ </bean>
+<!--
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+  <property value="com.ibm.db2.jcc.DB2Driver" name="driverClassName"/>
+  <property value="jdbc:db2://133.96.71.1:50000/HEBDW" name="url"/>
+  <property value="app_vgop" name="username"/>
+  <property value="hebmc0@517" name="password"/>
+ </bean>
+ 
+<bean>
+       <property name="dialect">org.hibernate.dialect.DB2Dialect</property>
+        <property name="hibernate.connection.url">jdbc:db2://133.96.71.1:50000/HEBDW</property>
+		<property name="hibernate.connection.username">app_vgop</property>
+		<property name="hibernate.connection.password">hebmc0@517</property>
+        <property name="connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
+        <property name="myeclipse.connection.profile">HEBDW</property>  </bean>
+        --> 
+<!-- 
+  <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
         <property name="jndiName">  
             <value>jdbc/testmudata</value>  
         </property>  
-    </bean>  
- 
+    </bean> 
+  -->
+<!--
         <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
         <property name="jndiName">  
             <value>jdbc/hebdw</value>  
         </property>  
     </bean>  
-        -->
-     <!--  
-<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+ -->
+    <!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
         <property name="dataSource">  
             <ref bean="dataSource" />  
         </property>  
@@ -61,7 +76,7 @@
  <property name="dataSource" ref="dataSource"></property>
  </bean>
  
-  <bean id="DownLoad" class="dao.DownLoadInfoImpl" depends-on="dataSource">
+   <bean id="DownLoad" class="dao.DownLoadInfoImpl" depends-on="dataSource">
  <property name="dataSource" ref="dataSource"></property>
  </bean> 
   <!-- 杨卫争 20130521 属性类别 -->
@@ -109,14 +124,29 @@
  <bean id="operateLogDaoImpl" class="dao.OperateLogDaoImpl" depends-on="dataSource">
  	<property name="dataSource" ref="dataSource"></property>
  </bean>
- <!-- 杨卫争 20130609 切面类 -->
-  <bean id="logAspectJ" class="aop.LogAspectJ"/>
-<!-- 
-    <aop:config proxy-target-class="true" >
-     <aop:aspect  ref="logAspectJ">
-           <aop:pointcut id="myAspect" expression="execution(* dao.*.*(..))" />
-           <aop:before pointcut-ref="myAspect" method="myBeforeAdvice"/>
-     </aop:aspect>
- </aop:config>
-  -->
+
+ <!-- 杨卫争 20130704 排行访问统计 -->
+ <bean id="orderInfoImpl" class="dao.OrderInfoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+  <!-- 杨卫争 20130711 日月周期 日期-->
+ <bean id="cycleImpl" class="dao.CycleImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+   <!-- 杨卫争 20130716 月 排行访问统计  -->
+ <bean id="orderInfoMImpl" class="dao.OrderInfoMImpl" depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource"></property>
+ </bean>
+    <!-- 杨卫争 20130717 客户标签日统计  -->
+ <bean id="custDdao" class="dao.CustTagAndGroupMonitorDImpl" depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource"></property>
+ </bean> 
+     <!-- 杨卫争 20130718 客户标签月统计   -->
+ <bean id="custMdao" class="dao.CustTagAndGroupMonitorMImpl" depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource"></property>
+ </bean>
+      <!-- 杨卫争 20130729 客户标签构建   -->
+ <bean id="structureImp" class="dao.StructureImpl" depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource"></property>
+ </bean>
 </beans>

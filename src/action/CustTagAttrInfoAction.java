@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javassist.bytecode.Descriptor.Iterator;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import module.AttrTable;
+import module.CustomGroup;
 import module.ExportUserInfo;
 import module.Region;
 import net.sf.json.JSONArray;
@@ -25,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
+import common.GetLog;
 import common.PrintExcelUtil;
 
 import dao.AttrTableDaoImpl;
@@ -32,34 +36,42 @@ import dao.CustTagAttrInfoDaoImpl;
 import dao.CustomgroupInfoDaoImpl;
 
 public class CustTagAttrInfoAction {
-	private  CustTagAttrInfoDaoImpl custTagAttrInfoDao;
-	private   AttrTableDaoImpl attrTableDao;
-	private  CustomgroupInfoDaoImpl custGroupDao;
+	private static CustTagAttrInfoDaoImpl custTagAttrInfoDao;
+	private static  AttrTableDaoImpl attrTableDao;
+	private static CustomgroupInfoDaoImpl custGroupDao;
 	private int tagUserCounts;
 	private String downPath;
 	 /*下载导出所需要的参数*/
 	String contentType;//内容类型
 	FileInputStream downloadFile;//
 	String fileName;//文件名
-	  // static ApplicationContext factory=null;
-	public  void initCustTagAttr(){
-		XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		//if (null==factory)
-		//	factory = new ClassPathXmlApplicationContext("applicationContext.xml");
+	String userId;
+	String userName;
+	String regionName;
+	String profile;
+	String tag_name;
+	String create_time;
+	String end_time;
+	String tag_id;
+	   static ApplicationContext factory=null;
+	public static void initCustTagAttr(){
+		//XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		if (null==factory)
+			factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 		custTagAttrInfoDao=(CustTagAttrInfoDaoImpl) factory.getBean("custTagAttrInfoDaoImpl");
 		
 	}
-	public  void initCustGroupInfo(){
-		XmlBeanFactory factory =new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		//if (null==factory)
-		//	factory = new ClassPathXmlApplicationContext("applicationContext.xml");
+	public static void initCustGroupInfo(){
+		//XmlBeanFactory factory =new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		if (null==factory)
+			factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 		custGroupDao=(CustomgroupInfoDaoImpl) factory.getBean("customgroupInfoDaoImpl");
 	}
 	
-	public  void initAttrTable(){
-		XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-	//	if (null==factory)
-			//factory = new ClassPathXmlApplicationContext("applicationContext.xml");
+	public static void initAttrTable(){
+		//XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		if (null==factory)
+			factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 		attrTableDao=(AttrTableDaoImpl) factory.getBean("attrTableDaoImpl");
 		
 	}
@@ -69,39 +81,88 @@ public class CustTagAttrInfoAction {
 	 * @throws UnsupportedEncodingException
 	 */
 	public String updateGroupTag() throws UnsupportedEncodingException{
-		//if (null==custTagAttrInfoDao)
+		if (null==custTagAttrInfoDao)
 		this.initCustTagAttr();
-		String flag="";
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest   request   =ServletActionContext.getRequest();
-		response.setCharacterEncoding("gbk");
+		response.setCharacterEncoding("gbk");		
 		response.addHeader("Content-Type", "text/html;charset=gbk");
 		request.setCharacterEncoding("gbk");
-		String tag_id=request.getParameter("tag_id");
+		userId=(String) request.getSession().getAttribute("userId");
+		userName=(String) request.getSession().getAttribute("userName");
+		regionName=(String) request.getSession().getAttribute("regionName");
+        profile=URLDecoder.decode(request.getParameter("tag_introduce"), "utf-8");
+		tag_name = URLDecoder.decode(request.getParameter("tag_name"), "utf-8");
+		create_time=request.getParameter("create_time");
+        end_time=request.getParameter("end_time");
+        CustomGroup newTag = new CustomGroup();
+        String share=request.getParameter("share");
+         tag_id=request.getParameter("tag_id");
+		  newTag.setTag_id(tag_id);
+		  if("0".equals(share)){
+	      newTag.setTag_name(tag_name+"（我的共享）");	  
+		  }else{
+	      newTag.setTag_name(tag_name);
+		  }
+		  newTag.setCreate_time(create_time);
+		  newTag.setEnd_time(end_time);
+		  newTag.setTag_type("myTag");
+		  newTag.setTag_serv_type("--");
+		  newTag.setProfile(profile);
+		  newTag.setTag_creator(userName);
+		  newTag.setTag_creator_id(userId);
+		  newTag.setTag_region(regionName);
+		  newTag.setTag_statement("--");
+		  newTag.setTag_class("--");
+		  newTag.setCount_subs(0);
+		  if("0".equals(share)){
+		  newTag.setIs_share("1");
+		  }else{
+		  newTag.setIs_share("0");  
+		  }
+		  newTag.setTag_status("0");
+		  newTag.setCustlist_path("");
+		  newTag.setTag_tec_stamt("");
+		  String type=request.getParameter("type");
+		  
+		
+		
+		String flag="";
+		
+		tag_id=request.getParameter("tag_id");
 		String tag_attrs=URLDecoder.decode(request.getParameter("tag_attrs"), "utf-8");
 		String stamt=URLDecoder.decode(request.getParameter("stamt"), "utf-8");		
 		String persons=URLDecoder.decode(request.getParameter("persons"), "utf-8");		
 		String sql=URLDecoder.decode(request.getParameter("sql"), "utf-8");
 				sql=sql.replace("'", "'||Chr(39)||'");		
-		
+	    if("0".equals(type)){
+	    custTagAttrInfoDao.addTag(newTag);
+	    GetLog.getLog("客户群", "创建", tag_id, userName+"创建客户群"+tag_id);
 		if (custTagAttrInfoDao.updateGroupTag(tag_id, tag_attrs, stamt,persons,sql))
 			flag="success";
 		else
 			flag="false";
 		return flag;
+		}else{
+			if (custTagAttrInfoDao.updateGroupTag(tag_id, tag_attrs, stamt,persons,sql))
+				flag="success";
+			else
+				flag="false";
+			return flag;
+		}
 	}
 	/*导出标签*/
 	public String exportTag(){
-		//if (null==custTagAttrInfoDao)
+		if (null==custTagAttrInfoDao)
 		this.initCustTagAttr();
 		
 		return "success";
 	}
 	/*筛选标签*/
 	public String filterTagExport() throws Exception{
-		//if (null==custTagAttrInfoDao)
+		if (null==custTagAttrInfoDao)
 		this.initCustTagAttr();
-		//if (null==custGroupDao)
+		if (null==custGroupDao)
 		this.initCustGroupInfo();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest   request   =ServletActionContext.getRequest();
@@ -122,7 +183,7 @@ public class CustTagAttrInfoAction {
 	/*获取筛选标签用户数*/
 	public void filterTagCounts() throws IOException{
 		//this.initCustTagAttr();
-		//if (null==custTagAttrInfoDao)
+		if (null==custTagAttrInfoDao)
 		this.initCustTagAttr();
 
 		HttpServletResponse response=ServletActionContext.getResponse();
@@ -131,7 +192,9 @@ public class CustTagAttrInfoAction {
 		response.setHeader("Content-Type", "text/html;charset=gbk");
 		request.setCharacterEncoding("gbk");
 		String attrsql=URLDecoder.decode(request.getParameter("sql"),"utf-8");
-		tagUserCounts=custTagAttrInfoDao.getUserTagConts(attrsql);
+		int date=custTagAttrInfoDao.getData();
+		String data_time=date+"";
+		tagUserCounts=custTagAttrInfoDao.getUserTagConts(attrsql,data_time.substring(0,6));
 		int data=tagUserCounts;
 		PrintWriter print=response.getWriter();
 		print.print(data);
@@ -146,7 +209,7 @@ public class CustTagAttrInfoAction {
 	 */
 	public void getAttrTable() throws IOException{
 		//this.initAttrTable();
-		//if (null==attrTableDao)
+		if (null==attrTableDao)
 			this.initAttrTable();
 		HttpServletRequest   request   =ServletActionContext.getRequest();
 		String table_name=request.getParameter("table_name");

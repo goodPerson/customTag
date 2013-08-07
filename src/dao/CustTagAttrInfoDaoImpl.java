@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import module.CustTagAttrInfo;
+import module.CustomGroup;
 import module.ExportUserInfo;
 import module.GroupTagAttrInfo;
 import module.MainTag;
@@ -36,6 +37,17 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 * 添加客户标签
 	 * @return
 	 */
+	public  void addTag(CustomGroup tag){
+	try {
+		String sql="insert into mk_vgop.tb_customgroup_info values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    Object[] params= new Object[]{tag.getTag_id(),tag.getTag_name(),tag.getTag_type(),tag.getTag_serv_type(),tag.getTag_class(),tag.getCreate_time(),tag.getEnd_time(),tag.getProfile(),tag.getCount_subs(),tag.getTag_statement(),tag.getTag_creator(),tag.getTag_creator_id(),tag.getTag_region(),tag.getIs_share(),tag.getTag_status(),tag.getTag_tec_stamt(),tag.getCustlist_path()};
+		this.getJdbcTemplate().update(sql,params);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 	public boolean addCustTag(){
 		
 		return true;
@@ -46,31 +58,33 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 * @param tagName
 	 * @return
 	 */
-	public boolean updateGroupTag(String group_id, String tag_attrs, String stamt,String persons,String sql){
-		String updateSql="update MK_VGOP.TB_CUSTOMGROUP_INFO set tag_statement='"+stamt+"' , tag_status='1',count_subs="+persons.replace("人", "")+", TAG_TEC_STAMT='"+sql+"'  where tag_id='"+group_id+"'";				
+	public boolean updateGroupTag(String tag_id, String tag_attrs, String stamt,String persons,String sql){
+		String updateSql="update MK_VGOP.TB_CUSTOMGROUP_INFO set tag_statement='"+stamt+"' , tag_status='1',count_subs="+persons.replace("人", "")+", TAG_TEC_STAMT='"+sql+"'  where tag_id='"+tag_id+"'";				
 		System.out.print(updateSql);
 		this.getJdbcTemplate().update(updateSql)	;	
 		
-        String deleteSql="delete from MK_VGOP.TB_GROUP_CREATE_TAG_INFO where  group_id='"+group_id+"'";
+        String deleteSql="delete from MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  where  tag_id='"+tag_id+"'";
         this.getJdbcTemplate().update(deleteSql)	;		
 		JSONArray array = JSONArray.fromObject(tag_attrs); 
 		for(int i = 0; i < array.size(); i++){ 
 		JSONObject jsonObject = array.getJSONObject(i);
 		String attr1 = jsonObject.get("tag_id").toString();
 		String attr2=jsonObject.get("tag_name").toString();
-		String attr3=jsonObject.get("attr_id").toString();
-		String attr4=jsonObject.get("attr_name").toString();
-		String attr5=jsonObject.get("attr_from").toString();
-		String attr6=jsonObject.get("attr_table").toString();
-		String attr7=jsonObject.get("attr_lvl").toString();		
-		String attr8=jsonObject.get("attr_type").toString();
-		String attr9=jsonObject.get("attr_value_type1").toString();
-		String attr10=jsonObject.get("attr_value1").toString();
-		String attr11=jsonObject.get("attr_value_type2").toString();
-		String attr12=jsonObject.get("attr_value2").toString();			
-		String insertSql="insert into MK_VGOP.TB_GROUP_CREATE_TAG_INFO (GROUP_ID,GROUP_NAME,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1,FORM_ATTR_VALUE_BETN2,FORM_ATTR_VALUE2)"
-			+" values (?,?,?,?,?,?,?,?,?,?,?,?)";
-		Object[] objectnew=new Object[]{attr1,attr2,attr3,attr4,attr5,attr6,attr7,attr8,attr9,attr10,attr11,attr12};    
+		String attr3 = jsonObject.get("group_id").toString();
+		String attr4=jsonObject.get("group_name").toString();		
+		String attr5=jsonObject.get("attr_tr_id").toString();
+		String attr6=jsonObject.get("attr_id").toString();
+		String attr7=jsonObject.get("attr_name").toString();
+		String attr8=jsonObject.get("attr_from").toString();
+		String attr9=jsonObject.get("attr_table").toString();
+		String attr10=jsonObject.get("attr_lvl").toString();		
+		String attr11=jsonObject.get("attr_type").toString();
+		String attr12=jsonObject.get("attr_value_type1").toString();
+		String attr13=jsonObject.get("attr_value1").toString();
+	
+		String insertSql="insert into MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  (TAG_ID,TAG_NAME,GROUP_ID,GROUP_NAME,ATTR_TR_ID,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1)"
+			+" values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		Object[] objectnew=new Object[]{attr1,attr2,attr3,attr4,attr5,attr6,attr7,attr8,attr9,attr10,attr11,attr12,attr13};    
         this.getJdbcTemplate().update(insertSql, objectnew)	;	
 		}        
 		return true;
@@ -81,14 +95,17 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 * @param id
 	 * @return
 	 */
-	public List<GroupTagAttrInfo> getGroupTags(String group_id){
-		String selectSql="select GROUP_ID,GROUP_NAME,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1,FORM_ATTR_VALUE_BETN2,FORM_ATTR_VALUE2 from  MK_VGOP.TB_GROUP_CREATE_TAG_INFO  where GROUP_ID='"+group_id+"'";				
+	public List<GroupTagAttrInfo> getGroupTags(String tag_id){
+		String selectSql="select TAG_ID,TAG_NAME, GROUP_ID,GROUP_NAME,ATTR_TR_ID,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1 from  MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  where TAG_ID='"+tag_id+"' order by GROUP_NAME";				
 		List<Map <String,Object>> listGroupAttrs=getJdbcTemplate().queryForList(selectSql);
 		List<GroupTagAttrInfo> groupTagList= new ArrayList<GroupTagAttrInfo>();
 		for(Map<String,Object> row:listGroupAttrs){
 			GroupTagAttrInfo attr= new GroupTagAttrInfo();
-			attr.setTag_id((String)row.get("GROUP_ID"));
-			attr.setTag_name((String)row.get("GROUP_NAME"));
+			attr.setTag_id((String)row.get("TAG_ID"));
+			attr.setTag_name((String)row.get("TAG_NAME"));
+			attr.setGroup_id((String)row.get("GROUP_ID"));
+			attr.setGroup_Name((String)row.get("GROUP_NAME"));
+			attr.setAttr_tr_id((String)row.get("ATTR_TR_ID"));
 			attr.setAttr_id((String)row.get("ATTR_ID"));
 			attr.setAttr_name((String)row.get("ATTR_NAME"));
 			attr.setAttr_from((String)row.get("ATTR_FORM"));
@@ -97,8 +114,7 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 			attr.setAttr_type((String)row.get("FORM_ATTR_VALUE_TYPE"));
 			attr.setAttr_value_type1((String)row.get("FORM_ATTR_VALUE_BETN1"));
 			attr.setAttr_value1((String)row.get("FORM_ATTR_VALUE1"));
-			attr.setAttr_value_type2((String)row.get("FORM_ATTR_VALUE_BETN2"));
-			attr.setAttr_value2((String)row.get("FORM_ATTR_VALUE2"));
+
 			groupTagList.add(attr);			
 	}
           return groupTagList;
@@ -112,6 +128,22 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	public int getTagAttr(String sql){		
 		return (int)getJdbcTemplate().queryForInt(sql) ;
 	}
+	/**
+	 * 查询数据月份
+	 */
+	public int getMonth(){
+		String sql="select DATE_VALUE from  MK_VGOP.TB_CUV_CUST_VIEW_SHOW_DATE where DATE_TYPE='月'";
+		return (int)getJdbcTemplate().queryForInt(sql) ;
+	}
+	/**
+	 * 查询客户统一视图数据日期
+	 */
+	public int getData(){
+		String sql="select DATE_VALUE from  MK_VGOP.TB_CUV_CUST_VIEW_SHOW_DATE where DATE_TYPE='日'";
+		return (int)getJdbcTemplate().queryForInt(sql) ;
+	}
+	
+	
 	/**
 	 * 分割字符串
 	 * @param str
@@ -258,9 +290,9 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 * @param id
 	 * @return
 	 */
-	public int getUserTagConts(String attrsql){
-		String date="201306";
-		String sql="select count(1) from MK_VGOP.TB_CUST_UNIT_VIEW_"+date+"  a  where "+attrsql;	
+	public int getUserTagConts(String attrsql,String data){
+//		String date="201306";
+		String sql="select count(1) from MK_VGOP.TB_CUST_UNIT_VIEW_"+data+"  a  where "+attrsql;	
 		return this.getJdbcTemplate().queryForInt(sql);
 	}
 	

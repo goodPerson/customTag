@@ -12,7 +12,30 @@ public class GroupTagAttrInfo {
 
 	  private String tag_id;//	                          varchar(32)	not null           --标签标识                       
 	  private String tag_name;//	                      varchar(64)                    --标签名称
-	  private String attr_id;                                             //标签标识
+	  private String group_id;
+	  private String group_Name;
+	  
+	  
+	  public String getGroup_id() {
+		return group_id;
+	}
+	public void setGroup_id(String group_id) {
+		this.group_id = group_id;
+	}
+	public String getGroup_Name() {
+		return group_Name;
+	}
+	public void setGroup_Name(String group_Name) {
+		this.group_Name = group_Name;
+	}
+	private String attr_tr_id;//           
+	  public String getAttr_tr_id() {
+		return attr_tr_id;
+	}
+	public void setAttr_tr_id(String attr_tr_id) {
+		this.attr_tr_id = attr_tr_id;
+	}
+	private String attr_id;                                             //标签标识
 	  private String attr_name;                                        //标签属性字段		  
 	  private String attr_from;//                 varchar(64)                    --标签构成属性
 	  private String attr_table;                                                     //  --属性表格
@@ -32,8 +55,6 @@ public class GroupTagAttrInfo {
 	  private String attr_type;//                  varchar(4)                     --标签构成属性值类型（1码值、2连续型、3是否码值、4其他） 
 	  private String attr_value_type1;//       varchar(10)                    --标签构成属性区间范围(>=,<=,=)
 	  private String attr_value1;//               decimal(18,4)                  --标签构成属性值
-	  private String attr_value_type2;//       varchar(10 )                   --标签构成属性区间范围(>=,<=,=)
-      private String attr_value2;//               decimal(18,4)                  --标签构成属性值 
 	  	  
 	  public String getTag_id() {
 		return tag_id;
@@ -83,18 +104,7 @@ public class GroupTagAttrInfo {
 	public void setAttr_value1(String attr_value1) {
 		this.attr_value1 = attr_value1;
 	}
-	public String getAttr_value_type2() {
-		return attr_value_type2;
-	}
-	public void setAttr_value_type2(String attr_value_type2) {
-		this.attr_value_type2 = attr_value_type2;
-	}
-	public String getAttr_value2() {
-		return attr_value2;
-	}
-	public void setAttr_value2(String attr_value2) {
-		this.attr_value2 = attr_value2;
-	}
+
 
 
 	

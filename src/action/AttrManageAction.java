@@ -9,9 +9,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import common.GetLog;
+import common.Session;
 
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -19,10 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
-import common.GetLog;
-
 import module.AttrUnify;
-import module.OperateLog;
 import module.Region;
 
 import dao.RegionDaoImpl;
@@ -31,33 +31,26 @@ import dao.TagAttrDaoImpl;
 
 
 public class AttrManageAction {
-	private  TagAttrDaoImpl AttrDao;
+	private static TagAttrDaoImpl AttrDao;
 	private List<AttrUnify> listAttrName;
 	private List<AttrUnify> listAttrName1;
 	private List<AttrUnify> listAttrName2;
-	private String attr_classifyPar ;
-	private String attr_classify_onePar ;
-	private String attr_classify_twoPar ;
-	//分页功能参数  start
+	private String attr_classify ;
+	private String attr_classify_one ;
+	private String attr_classify_two ;
+	private String attr_name;
 	
-	private int pageNo;  //当前页
-	private int pageCounts;  //总页数
-	private int totalRecords; //总记录数
+	static ApplicationContext factory=null;
 	
-	//分页功能参数  end
-	//static ApplicationContext factory=null;
-	
-	public  void initattr(){
+	public static void initattr(){
     	XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		//if (null==factory)
-		//	factory = new ClassPathXmlApplicationContext("applicationContext.xml");
     	AttrDao=(TagAttrDaoImpl) factory.getBean("TagAttrDao");
     }
 	
 	
 	
 	public void getAttr()  throws IOException{
-		//if (null==AttrDao)
+		if (null==AttrDao)
 			this.initattr();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest  request   =ServletActionContext.getRequest();
@@ -80,7 +73,7 @@ public class AttrManageAction {
 	}
 	
 	public void getAttr1() throws IOException{
-		//if (null==AttrDao)
+		if (null==AttrDao)
 			this.initattr();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest  request   =ServletActionContext.getRequest();
@@ -105,7 +98,7 @@ public class AttrManageAction {
 	}
 	
 	public void getAttr2() throws IOException{
-		//if (null==AttrDao)
+		if (null==AttrDao)
 			this.initattr();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest  request   =ServletActionContext.getRequest();
@@ -128,53 +121,63 @@ public class AttrManageAction {
 	}
 	
 	public String getAttrList() throws IOException{
-		int pageSize=15;
-	//	if (null==AttrDao)
+		if (null==AttrDao)
 			this.initattr();
 		HttpServletResponse response=ServletActionContext.getResponse();
 		HttpServletRequest  request   =ServletActionContext.getRequest();
 		response.setCharacterEncoding("gbk");
 		response.addHeader("Content-Type", "text/html;charset=gbk");
-		String pageNoS=request.getParameter("pageNo");
-		if (null==pageNoS || pageNoS.trim().length()==0){
-			pageNo=1;
-		}else{
-			pageNo=Integer.parseInt(pageNoS);
-		}
+		HttpSession session=request.getSession();
+		String userName=session.getAttribute("userName").toString();
+
 		if("".equals(request.getParameter("attr_classify")) || request.getParameter("attr_classify") == null){
-			attr_classifyPar="基本属性";
+			attr_classify="基本属性";
 		}else{
-		 attr_classifyPar = URLDecoder.decode(request.getParameter("attr_classify"),"utf-8");
+		 attr_classify = URLDecoder.decode(request.getParameter("attr_classify"),"utf-8");
 		 }
 		if("".equals(request.getParameter("attr_classify_one")) || request.getParameter("attr_classify_one")==null){
-			attr_classify_onePar="";   
+			attr_classify_one="";   
 		}else{
-			attr_classify_onePar = URLDecoder.decode(request.getParameter("attr_classify_one"),"utf-8");
+			attr_classify_one = URLDecoder.decode(request.getParameter("attr_classify_one"),"utf-8");
+			attr_classify_one =attr_classify_one.trim();
 		}
 		if("".equals(request.getParameter("attr_classify_two")) || request.getParameter("attr_classify_two")==null){
-			attr_classify_twoPar="";
+			attr_classify_two="";
 		}else{
-			 attr_classify_twoPar = URLDecoder.decode(request.getParameter("attr_classify_two"),"utf-8");
+			 attr_classify_two = URLDecoder.decode(request.getParameter("attr_classify_two"),"utf-8");
 		}
-		 List<AttrUnify> templistAttrName =AttrDao.listAttr(attr_classifyPar, attr_classify_onePar, attr_classify_twoPar,pageNo,pageSize);	
-       pageCounts=AttrDao.getPageInfo().getTotalPages();		
-       if (pageNo<=1){
-			pageNo=1;
-		}else if (pageNo>=pageCounts){
-			pageNo=pageCounts;
+		if("".equals(request.getParameter("attr_name")) || request.getParameter("attr_name")==null){
+			attr_name="";
+		}else{
+			attr_name = URLDecoder.decode(request.getParameter("attr_name"),"utf-8");
 		}
-			
-		totalRecords=AttrDao.getPageInfo().getTotalRows();
-		if (totalRecords<1)
-			totalRecords=1;		
-		
-		listAttrName =AttrDao.listAttr(attr_classifyPar, attr_classify_onePar, attr_classify_twoPar,pageNo,pageSize);	
-		GetLog.getLog("属性管理", "查找", "属性查找", attr_classifyPar+","+attr_classify_onePar+","+attr_classify_twoPar);
+		listAttrName1=AttrDao.listattr1(attr_classify);
+	   listAttrName =AttrDao.listAttr(attr_classify, attr_classify_one, attr_classify_two,attr_name);
+	   GetLog.getLog("查询属性", "查询", attr_classify, userName+"查询"+attr_classify);
+		return "success";
+	}
+	
+	public String getAttrDesc() throws IOException{
+		if (null==AttrDao)
+			this.initattr();
+		HttpServletResponse response=ServletActionContext.getResponse();
+		HttpServletRequest  request   =ServletActionContext.getRequest();
+		response.setCharacterEncoding("gbk");
+		response.addHeader("Content-Type", "text/html;charset=gbk");
+		HttpSession session=request.getSession();
+		String userName=session.getAttribute("userName").toString();
+		if("".equals(request.getParameter("attr_name")) || request.getParameter("attr_name")==null){
+			attr_name="";
+		}else{
+			attr_name = URLDecoder.decode(request.getParameter("attr_name"),"utf-8");
+		}
+		listAttrName=AttrDao.Attr(attr_name);
+		 GetLog.getLog("查询属性", "查询", attr_name, userName+"查询"+attr_name);
 		return "success";
 	}
 	
 	public void renameAttr() throws IOException{ 
-	//	if (null==AttrDao)
+		if (null==AttrDao)
 		  this.initattr();
 		  HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
@@ -187,7 +190,7 @@ public class AttrManageAction {
 	}
 	
 	public void delAttr() throws IOException{ 
-		//if (null==AttrDao)
+		if (null==AttrDao)
 		 this.initattr();
 		  HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
@@ -203,7 +206,7 @@ public class AttrManageAction {
 	}
 	
 	public void addAttr() throws  IOException{ 
-	//	if (null==AttrDao)
+		if (null==AttrDao)
 		 this.initattr();
 		  HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
@@ -255,42 +258,33 @@ public class AttrManageAction {
 	public void setListAttrName(List<AttrUnify> listAttrName) {
 		this.listAttrName = listAttrName;
 	}
+	
+	public List<AttrUnify> getListAttrName1() {
+		return listAttrName1;
+	}
+	public void setListAttrName1(List<AttrUnify> listAttrName1) {
+		this.listAttrName1 = listAttrName1;
+	}
+	public String getAttr_classify() {
+		return attr_classify;
+	}
+	public void setAttr_classify(String attr_classify) {
+		this.attr_classify = attr_classify;
+	}
+	public String getAttr_classify_one() {
+		return attr_classify_one;
+	}
+	public void setAttr_classify_one(String attr_classify_one) {
+		this.attr_classify_one = attr_classify_one;
+	}
+	public String getAttr_classify_two() {
+		return attr_classify_two;
+	}
 
-	public String getAttr_classifyPar() {
-		return attr_classifyPar;
-	}
-	public void setAttr_classifyPar(String attr_classifyPar) {
-		this.attr_classifyPar = attr_classifyPar;
-	}
-	public String getAttr_classify_onePar() {
-		return attr_classify_onePar;
-	}
-	public void setAttr_classify_onePar(String attr_classify_onePar) {
-		this.attr_classify_onePar = attr_classify_onePar;
-	}
-	public String getAttr_classify_twoPar() {
-		return attr_classify_twoPar;
-	}
-	public void setAttr_classify_twoPar(String attr_classify_twoPar) {
-		this.attr_classify_twoPar = attr_classify_twoPar;
-	}
-	public int getPageNo() {
-		return pageNo;
-	}
-	public void setPageNo(int pageNo) {
-		this.pageNo = pageNo;
-	}
-	public int getPageCounts() {
-		return pageCounts;
-	}
-	public void setPageCounts(int pageCounts) {
-		this.pageCounts = pageCounts;
-	}
-	public int getTotalRecords() {
-		return totalRecords;
-	}
-	public void setTotalRecords(int totalRecords) {
-		this.totalRecords = totalRecords;
+
+
+	public void setAttr_classify_two(String attr_classify_two) {
+		this.attr_classify_two = attr_classify_two;
 	}
 	
 

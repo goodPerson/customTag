@@ -1,5 +1,6 @@
 package common;
 
+
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -91,7 +92,8 @@ public class Pagination extends JdbcDaoSupport {
 	StringBuffer paginationSQL = new StringBuffer(" SELECT * FROM ( ");
 	//paginationSQL.append(" SELECT temp.*  FROM ( ");
 	paginationSQL.append(sql);
-	paginationSQL.append(" ) as a1 where a1.rn BETWEEN "+startIndex+" AND "+lastIndex+"");
+	//paginationSQL.append(" ) as a1 where a1.rn BETWEEN "+startIndex+" AND "+lastIndex+"");
+	paginationSQL.append(" ) as a1 where a1.rn > "+startIndex+" AND  a1.rn <="+lastIndex+"");
 	//paginationSQL.append(" fetch first "+ numPerPage +" rows only");
 
 	//paginationSQL.append(" ) WHERE	¡¡¡¡num > " + startIndex);

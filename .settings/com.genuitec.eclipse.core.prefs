@@ -1,4 +1,4 @@
-#Fri Jun 21 10:10:36 CST 2013
+#Mon Jul 29 11:01:02 CST 2013
 eclipse.preferences.version=1
-validator.Checked=WebRoot/js,WebRoot/views,WebRoot/index.jsp
+validator.Checked=WebRoot/views/tagverify.jsp,WebRoot/views/tagrequest.jsp,WebRoot/js,WebRoot/views/downReasonRequest.jsp
 validator.Unchecked=

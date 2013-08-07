@@ -3,6 +3,7 @@ package action;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import module.Attr;
 import module.CustomTag;
@@ -25,7 +27,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 import com.opensymphony.xwork2.ActionSupport;
-import common.GetLog;
 
 import dao.MainTagDaoImpl;
 import dao.TagInfoDaoImpl;
@@ -33,7 +34,7 @@ import dao.TagInfoDaoImpl;
 public class MainTanAction extends ActionSupport {
 	
 	//private MainTagDaoImpl tagDao =new MainTagDaoImpl(); //数据源
-	private  MainTagDaoImpl tagDao; //数据源
+	private static MainTagDaoImpl tagDao; //数据源
 	private List<MainTag>mainTagList = new  ArrayList<MainTag>();//核心标签LIST
 	private int serv_type=0;//0表示
 	private String serv_name="";//
@@ -47,15 +48,19 @@ public class MainTanAction extends ActionSupport {
 	private String url6="./img/maintag/jiaowangq2.png";                  //交往圈类
 	private String url7="./img/maintag/yuyinhui.png";                       //语音类
 	private String url8="./img/maintag/taocanhui.png";                     //位置类	
+	private int date;
+	private String mon;
+	private List<MainTag> listRegion;
+	private  String tagName;
 	
-	//static ApplicationContext cxt=null;
+	static ApplicationContext cxt=null;
 	//初始化数据源
-	public  void initTagDao(){
-		XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		tagDao=(MainTagDaoImpl)factory.getBean("MainTagDao");
-		//if (null==cxt)
-			//cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-		//tagDao=(MainTagDaoImpl)cxt.getBean("MainTagDao");
+	public static void initTagDao(){
+		//XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		//tagDao=(MainTagDaoImpl)factory.getBean("MainTagDao");
+		if (null==cxt)
+			cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
+		tagDao=(MainTagDaoImpl)cxt.getBean("MainTagDao");
 		
 	}
 	
@@ -69,8 +74,8 @@ public class MainTanAction extends ActionSupport {
 	
 	//初始化核心标签内容
 	public String  initMainTag() throws IOException{
-		//  if (null==tagDao)
-		  this.initTagDao();
+		  if (null==tagDao)
+			  this.initTagDao();
 		  HttpServletRequest request = ServletActionContext.getRequest();	
 		  request.setCharacterEncoding("GBK");
           this.serv_type=( Integer.parseInt(request.getParameter("serv_type").toString()));
@@ -79,7 +84,32 @@ public class MainTanAction extends ActionSupport {
         	  this.serv_name="短信";                
           }else{
         	  this.serv_name=URLDecoder.decode(request.getParameter("serv_name"), "utf-8");
-        	  this.serv_name_src=URLDecoder.decode(request.getParameter("serv_name_src"), "utf-8");        	 
+        	 // this.serv_name_src=URLDecoder.decode(request.getParameter("serv_name_src"), "utf-8");
+        	  if("短信".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/duanxin.png";
+        	  }else if ("彩信".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/caixin.png";
+        	  }else if ("MM".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/MMbiaoqian.png";
+        	  }else if ("手机导航".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/daohang.png";
+        	  }else if ("手机动漫".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/shoujidongman.png";
+        	  }else if ("手机视频".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/shoujishipin.png";
+        	  }else if ("手机邮箱".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/youxiang.png";
+        	  }else if ("手机游戏".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/youxi.png";
+        	  }else if ("手机阅读".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/yuedu.png";
+        	  }else if ("手机支付".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/zhifu.png";
+        	  }else if ("无线音乐".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/wuxianyinyue.png";
+        	  }else if ("GPRS流量".equals(this.serv_name)){
+        		  this.serv_name_src="img/maintag/shoujishangwang.png";
+        	  }
           }
           
     	  switch(this.serv_type){
@@ -111,151 +141,141 @@ public class MainTanAction extends ActionSupport {
 		  	 	  this.url8="./img/maintag/taocanlan.png";
 		  	 	  break; 
 	  }
-          
-		  this.mainTagList=this.tagDao.listTag(serv_type, serv_name);	
-		  GetLog.getLog("标签地图", "浏览", serv_name+"浏览", "");
+          HttpSession session=request.getSession();
+          String regionId=session.getAttribute("regionId").toString();
+//		  this.mainTagList=this.tagDao.listTag(serv_type, serv_name);       20130801 bak
+    	  this.mainTagList=this.tagDao.listTag(serv_type, serv_name,regionId);   
+		  date=tagDao.getMonth();
+	      mon=(String.valueOf(date)).substring(0,4)+"年"+(String.valueOf(date)).substring(4,6)+"月";
           return SUCCESS;
 	}
+
+	
+	/*获取各地区、区县标签人数*/
+	public String listRegionData() throws UnsupportedEncodingException{
+		HttpServletRequest request=ServletActionContext.getRequest();
+		HttpServletResponse response=ServletActionContext.getResponse();
+	   request.setCharacterEncoding("utf-8");
+	   String tagId=request.getParameter("tagId");
+	   tagName=URLDecoder.decode(request.getParameter("tagName"), "utf-8");
+	   String regionId=request.getParameter("regionId").trim();
+	   if ("".equals(regionId)){
+		   regionId=request.getSession().getAttribute("regionId").toString();
+	   }
+	   listRegion=tagDao.listRegionData(regionId, tagId);
+	   
+		return SUCCESS;
+	}
+	
 	
 	public String getUrl7() {
 		return url7;
 	}
-
-
 	public void setUrl7(String url7) {
 		this.url7 = url7;
 	}
-
-
 	public String getUrl8() {
 		return url8;
 	}
-
-
 	public void setUrl8(String url8) {
 		this.url8 = url8;
-	}
-
-
-	
-	
+	}	
 	public String getUrl0() {
 		return url0;
 	}
-
-
 	public void setUrl0(String url0) {
 		this.url0 = url0;
 	}
-
-
 	public String getUrl1() {
 		return url1;
 	}
-
-
 	public void setUrl1(String url1) {
 		this.url1 = url1;
 	}
-
-
 	public String getUrl2() {
 		return url2;
 	}
-
-
 	public void setUrl2(String url2) {
 		this.url2 = url2;
 	}
-
-
 	public String getUrl3() {
 		return url3;
 	}
-
-
 	public void setUrl3(String url3) {
 		this.url3 = url3;
 	}
-
-
 	public String getUrl4() {
 		return url4;
 	}
-
-
 	public void setUrl4(String url4) {
 		this.url4 = url4;
 	}
-
-
 	public String getUrl5() {
 		return url5;
 	}
-
-
 	public void setUrl5(String url5) {
 		this.url5 = url5;
 	}
-
-
 	public String getUrl6() {
 		return url6;
 	}
-
-
 	public void setUrl6(String url6) {
 		this.url6 = url6;
 	}
-
 	public String getServ_name_src() {
 		return serv_name_src;
 	}
-
-
 	public void setServ_name_src(String serv_name_src) {
 		this.serv_name_src = serv_name_src;
 	}
-
-
 	public String getServ_name() {
 		return serv_name;
 	}
-
-
 	public void setServ_name(String serv_name) {
 		this.serv_name = serv_name;
 	}
-
-
 	public int getServ_type() {
 		return serv_type;
 	}
-
-
 	public void setServ_type(int serv_type) {
 		this.serv_type = serv_type;
 	}
-
-
 	public List<MainTag> getMainTagList() {
 		return mainTagList;
 	}
-
-
 	public void setMainTagList(List<MainTag> mainTagList) {
 		this.mainTagList = mainTagList;
 	}
-
-
 	public MainTagDaoImpl getTagDao() {
 		return tagDao;
 	}
-
-
 	public void setTagDao(MainTagDaoImpl tagDao) {
 		this.tagDao = tagDao;
 	}
-
+	public int getDate() {
+		return date;
+	}
+	public void setDate(int date) {
+		this.date = date;
+	}
+	public String getMon() {
+		return mon;
+	}
+	public void setMon(String mon) {
+		this.mon = mon;
+	}
+	public List<MainTag> getListRegion() {
+		return listRegion;
+	}
+	public void setListRegion(List<MainTag> listRegion) {
+		this.listRegion = listRegion;
+	}
+	public String getTagName() {
+		return tagName;
+	}
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
+    
 
 }

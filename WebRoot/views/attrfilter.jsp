@@ -30,13 +30,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	font-size: 10pt;
 }
 html {
-	height: 100%
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 body {
 	height: 100%;
 	width: 100%;
 	font: 10pt "微软雅黑";
-	margin: 0px;
+	margin: 0px auto;
+	background:#FFF;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 a {
 	display: block;
@@ -118,7 +123,7 @@ li {
 	cursor: pointer;
 }
 .attr_tr {
-	display: none; padding-left:5px;
+	display: none; padding-left:5px; float:left;
 }
 #attr_table_edit {
 	border: solid 1px #CCC;
@@ -134,9 +139,10 @@ li {
 	height: 500px;
 	position: absolute;
 	top: 8px;
-	left: 210px;
+    float:left;
 	display: none;
 }
+
 #consit{
   cursor: pointer;
 }
@@ -204,7 +210,7 @@ li {
   opacity:0.1; 
   z-index: 1;  
   display:none;} 
-.attr_item_title_div{position: relative;left: 5px;top: 12px; height:30px;width:200px;cursor: pointer;}
+.attr_item_title_div{position: relative;left: 5px;top: 12px; height:30px;width:200px;cursor: pointer; }
 .load_div {
 	border-color: #000;
 	border-style: solid;
@@ -231,21 +237,43 @@ position:absolute;left:10px; top:62px; width:393px;border-bottom:solid #CCC 1px;
 margin:5px;color:#CCC;cursor:pointer;
 }
 #download_div{border-color:#000; border-style:solid;border-width:2px;
-			background:#FFF; width:380px; height:150px;
-			position:absolute;top:55px;right:20px;z-index:2;
+			background:#FFF; width:400px; height:150px;
+			position:absolute;top:200px;right:100px;z-index:2;
 			display:none  }
+#close_struct{	
+	width:50px;
+	height:30px;
+	line-height:30px;
+	font-size:14px;
+	font-weight:bold;	
+	}
+#line_struct{
+	z-index:-5;
+	visibility:hidden;
+	}
+#struct_condition {
+	width: auto;
+	height: 400px;
+	/*position: absolute;
+	top: 100px;
+	left:300px;
+    float:left;
+	visibility:hidden;
+	z-index:-5;*/
+}	
 </style>
 
 <body>
 <div id="wait_div" class="wait_div" >
 </div>
-
+<input type="hidden" id="req_reson" value="<s:property value='#session.regionId'/>"/>
+<input type="hidden" id="req_userId" value="<s:property value='#session.userId'/>"/>
 <img id="load_div" src="./img/load/load.jpg" width="32" height="32" align="absmiddle" style="z-index:0s; position:absolute; left:50%;top:50%; display:none">
-<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+<table width="1024px" height="100%" border="0" cellspacing="0" cellpadding="0" align="center" id="main_attr_table">
   <tr>
     <td width="200px"  align="right" valign="top">
         <div  class="attr_title_div" style="background:#094AB2; height:30px; color:#FFF; width:200px;	position: relative;left: 5px;top: 8px; line-height:30px;">
-        <div class="attr_title_div" style="width:130px;" align="left">&nbsp;&nbsp;属性视图(903)</div>
+        <div class="attr_title_div" style="width:130px;" align="left">&nbsp;&nbsp;属性视图</div>
         <div class="attr_title_div" style="width:30px; height:30px;"><img id="hidde_bt1" src="./img/bt10.png"  style="cursor:pointer;"></div>
         <div  class="attr_title_div" style="width:30px; height:30px;"><img id="hidde_bt2" src="./img/bt11.png"  style="cursor:pointer;"></div>
       </div>
@@ -444,7 +472,7 @@ margin:5px;color:#CCC;cursor:pointer;
       <div style="clear:both"></div>
       <div class="attr_item_title_div" style="background:#EAEAEA;">
       <div class="attr_title_div"><img src="./img/attr10.png" align="absmiddle" ></div>
-      <div class="attr_title_div" style=" width:145px;" align="left">&nbsp;标签属性</div>
+      <div class="attr_title_div" style=" width:145px;" align="left">&nbsp;标签</div>
       <div class="attr_title_div"></div>
       <div style="clear:both"></div>
       <div class="attr_tr">
@@ -469,9 +497,9 @@ margin:5px;color:#CCC;cursor:pointer;
     </td>
     <td width="100%" height="100%" align="right" valign="top"><table  id="chartTable" width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="16px" height="16px"><img src="./img/leftup.png" width="22" height="22"></td>
+          <td width="24px" height="24px" style="background:url(./img/leftup.png)">&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td width="100%" style="background:url(./img/upborder.png)  repeat-x"></td>
-          <td width="16px" height="16px"><img src="./img/rightup.png" width="22" height="22"></td>
+          <td width="24px" height="24px" style="background:url(./img/rightup.png)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         </tr>
         <tr>
           <td height="100%" style="background:url(./img/leftborder.png) repeat-y"></td>
@@ -483,38 +511,143 @@ margin:5px;color:#CCC;cursor:pointer;
               <tr>
                 <td id="tag_name" class="title_td" align="center" width="100%"><s:property value="title" /><input type="hidden" id="tag_id"  value='<s:property value="id" />'/>
                </td>
-                <td colspan="2" align="right"><a id="tag_detail_bt1" href="javascript:void(0)">清单导出</a></td>
+                <td colspan="2" align="right"></td>
+              </tr>
+             <s:if test="%{type==1}">
+              <tr class="tag_info" style="display:none;">
+                <td colspan="3"  valign="top" style=" font: bold; height:30px;">客户群基本信息</td>
+              </tr>
+              <tr class="tag_info" style="display:none;">
+               <td colspan="3" height="20px" style="padding-left:10px;" >
+                <div style="float:left;margin-left:5px;margin-right:5px">                                 
+                 <label>名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称：</label>
+                 </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px">
+                    <input name="" id="tag_name_text" type="text"  value="请输入客户群名称" style="width:400px; height:25px; border:1px solid  #CCC;"onfocus="if (value =='请输入客户群名称'){value =''}" onBlur="if (value ==''){value='请输入客户群名称';}" onKeyDown="{this.style.color='#000'}" >
+                  </div>
+                  </td>
+              </tr>
+               <tr class="tag_info" style="display:none;">
+               <td colspan="3" height="30px" style="padding-left:10px;" valign="middle" >
+                <div style="float:left;margin-left:5px;margin-right:5px;">                                 
+                 <label>简&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;介：</label>
+                 </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px">
+                    <input name="" id="tag_introduce" type="text"  value="客户群简介" style="width:400px; height:25px; border:1px solid  #CCC;"onfocus="if (value =='客户群简介'){value =''}" onBlur="if (value ==''){value='客户群简介';}" onKeyDown="{this.style.color='#000'}" >
+                  </div>
+                  </td>
+              </tr>
+               <tr class="tag_info" style="margin-bottom:5px;display:none;">
+               <td colspan="3" height="30px" style="padding-left:10px;" valign="middle" >
+                <div style="float:left;margin-left:5px;margin-right:5px;margin-bottom:5px;">                                 
+                 <label>有效时间：</label>
+                 </div>
+                  <div style="float:left; padding-left:2px;margin-left:6px;margin-right:5px;margin-bottom:5px;height:30px">
+                     <input  id="create_tag_date"  style="font:9pt;width:192px;" class="easyui-datebox"></input>
+                     --<input  id="end_tag_date" style="font:9pt;width:192px;" class="easyui-datebox"></input>
+                  </div>
+                  </td>
+              </tr>
+               <tr class="tag_info" style="margin-bottom:5px;display:none;">
+               <td colspan="3" height="20px" style="padding-left:10px;" >
+                <div style="float:left;margin-left:5px;margin-right:5px;margin-bottom:5px;">                                 
+                 <label>数据月份：</label>
+                 </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px;margin-bottom:5px;height:30px">
+                      <s:property value="mon" />
+                  </div>
+                  </td>
+              </tr>
+              </s:if>
+              <s:else>
+               <tr class="tag_info">
+                <td colspan="3"  valign="top" style=" font: bold; height:30px;">客户群基本信息</td>
+              </tr>
+              <tr class="tag_info">
+               <td colspan="3" height="20px" style="padding-left:10px;" >
+                <div style="float:left;margin-left:5px;margin-right:5px">                                 
+                 <label>名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称：</label>
+                 </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px">
+                    <input name="" id="tag_name_text" type="text"  value="请输入客户群名称" style="width:400px; height:25px; border:1px solid  #CCC;"onfocus="if (value =='请输入客户群名称'){value =''}" onBlur="if (value ==''){value='请输入客户群名称';}" onKeyDown="{this.style.color='#000'}" >
+                  </div>
+                  </td>
+              </tr>
+               <tr class="tag_info">
+               <td colspan="3" height="30px" style="padding-left:10px;" valign="middle" >
+                <div style="float:left;margin-left:5px;margin-right:5px;">                                 
+                 <label>简&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;介：</label>
+                 </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px">
+                    <input name="" id="tag_introduce" type="text"  value="客户群简介" style="width:400px; height:25px; border:1px solid  #CCC;"onfocus="if (value =='客户群简介'){value =''}" onBlur="if (value ==''){value='客户群简介';}" onKeyDown="{this.style.color='#000'}" >
+                  </div>
+                  </td>
+              </tr>
+               <tr class="tag_info" style="margin-bottom:5px">
+               <td colspan="3" height="30px" style="padding-left:10px;" valign="middle" >
+                <div style="float:left;margin-left:5px;margin-right:5px;margin-bottom:5px;">                                 
+                 <label>有效时间：</label>
+                 </div>
+                  <div style="float:left; padding-left:2px;margin-left:6px;margin-right:5px;margin-bottom:5px;height:30px">
+                     <input  id="create_tag_date"  style="font:9pt;width:192px;" class="easyui-datebox"></input>
+                     --<input  id="end_tag_date" style="font:9pt;width:192px;" class="easyui-datebox"></input>
+                  </div>
+                  </td>
+              </tr>
+               <tr class="tag_info" style="margin-bottom:5px">
+               <td colspan="3" height="20px" style="padding-left:10px;" >
+                <div style="float:left;margin-left:5px;margin-right:5px;margin-bottom:5px;">                                 
+                 <label>数据月份：</label>
+                 </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px;margin-bottom:5px;height:30px">
+                      <s:property value="mon" />
+                  </div>
+                  </td>
+              </tr>
+              </s:else>
+              <tr>
+                <td colspan="3"  valign="top" style=" font: bold; height:30px;margin-top:5px;">客户群基本属性</td>
               </tr>
               <tr>
-                <td colspan="3"  valign="top" style=" font: bold; height:40px;">客户群基本属性</td>
-              </tr>
-              <tr>
-                <td colspan="3" height="20px" style="padding-left:10px;" >用户地域：
-                  <select id="cityName" class="easyui-combobox" name="region" style="width:120px; height:25px" >
-                  </select>
-                  <input type="hidden" id="req_reson" value="<s:property value='#session.regionId'/>"/>
+                <td colspan="3" height="20px" style="padding-left:10px;" >
+                 <div style="float:left;margin-left:5px;margin-right:5px">                                 
+                 <label>用户地域：</label>
+                 </div>
+                 <s:if test="%{#session.regionId==1}">
+                 <div style="float:left;margin-left:5px;margin-right:5px">
+                  <select id="cityName" class="easyui-combobox" name="region" style="width:240px; height:25px" ></select><br/>
+				  <span style="color:#FF0000">说明：省与地市不可同时选择</span>
+                  </div>
+                 <div style="float:left;margin-left:5px;margin-right:5px;display:none">
                   <select id="countyName" class="easyui-combobox" name="state" style="width:120px;height:25px"> 
                   </select>
-                  &nbsp; &nbsp; &nbsp;
-                  用户状态：
-                  <select id="userState" class="easyui-combobox" name="state" style="width:120px;height:25px">
-                    <option value="ALL"   >全部</option>
+                  </div> 
+                  </s:if>
+                  <s:else>
+                  <div style="float:left;margin-left:5px;margin-right:5px;display:none">
+                  <select id="cityName" class="easyui-combobox" name="region" style="width:120px; height:25px" ></select>
+                  </div>
+                 <div style="float:left;margin-left:5px;margin-right:5px">
+                  <select id="countyName" class="easyui-combobox" name="state" style="width:240px;height:25px;" > 
+                  </select>
+				  <br/>
+				  <span style="color:#FF0000">说明：地市与所属区县不可同时选择</span>
+                  </div> 
+                  </s:else>             
+                  <div style="float:left;margin-left:5px;margin-right:5px">
+                  <label>用户状态：</label>
+                  </div>
+                  <div style="float:left;margin-left:5px;margin-right:5px">
+                  <select id="userState" class="easyui-combobox" name="state" style="width:120px;height:25px" panelHeight="auto">
+                    <option value="ALL">全部</option>
                     <option value="US10" selected>正常使用</option>
                     <option value="US30">停机</option>
                     <option value="US34">欠费</option>
                     <option value="US2">离网</option>
                     <option value="US5">其他</option>   
                   </select>
-                  &nbsp; &nbsp; &nbsp;
-                  用户品牌：
-                  <select id="userbrand" class="easyui-combobox" name="state" style="width:120px;height:25px">
-                    <option value="ALL"  selected >全部</option>
-                    <option value="BrandGotone"  >全球通</option>
-                  	<option value="BrandMzone" >动感地带</option>
-                  	<option value="BrandSzx">神州行</option>
-                  	<option value="BrandTD">TD品牌</option>
-                  	<option value="999">不详</option>
-                  </select></td>
+                  </div>
+                  </td>
               </tr>
  <!--             <tr style="display:none">
                 <td style=" font: bold; height:40px;" colspan="3">过滤名单</td>
@@ -539,41 +672,66 @@ margin:5px;color:#CCC;cursor:pointer;
                   </td>
               </tr> >-->
               <tr>
-                <td style=" font: bold; height:40px;" colspan="3">自定义标签属性</td>
+                <td style=" font: bold; height:30px;" colspan="3">自定义标签属性</td>
               </tr>
               <tr>
-                <td valign="top" style="padding-left:10px; "  height="300px;"><table  width="600px" border="0" height="300px;" cellspacing="0" cellpadding="10">
+                <td valign="top" style="padding-left:10px; "  height="300px;"><table  width="700px" border="0" height="300px;" cellspacing="0" cellpadding="10">
                     <tr>
-                      <td rowspan="3" align="left"><table id="attr_table_edit" width="600px;"  height="300px" border="1" cellspacing="0" cellpadding="0">
+                      <td rowspan="3" align="left"><table id="attr_table_edit" width="700px;"  height="300px" border="1" cellspacing="0" cellpadding="0" >
                           <tr height="25px;">
-                            <td style="color:#FFF; background:#094AB2;font:bold;">&nbsp;属性值操作</td>
+                            <td style="color:#FFF; background:#094AB2;font:bold;">&nbsp;属性编辑</td>
                           </tr>
                           <tr>
-                            <td width="600px;" height="300px;"><div style="overflow:auto; height:300px; width:600px;">
-                                <table id="attr_table_filter" width="580px" border="0" cellspacing="0" cellpadding="5">
-                    
-<input type="hidden"  value="<s:property value='attr_table' />" id="attr_table"    /> 
-<input type="hidden"  value="<s:property value='jsonAttr' />" id="jsonAttr"    />                                        
+                            <td width="700px;" height="300px;"><div id="attr_table_filter" style="overflow:auto; height:300px; width:700px;;">
+<!-- 属性编辑条件框-->                            
+                            
+
+
+
+
+</div>
+
+
+
+
+
+                            
+                                <table id="attr_table_filter1" width="680px" border="0" cellspacing="0" cellpadding="5">
+<input type="hidden"  value="<s:property value='jsonAttr' />" id="jsonAttr"    />                    
+                                        
 
                             </table>
-                              </div></td>
+                              </div>
+                              </td>
                           </tr>
-                        </table></td>
+                        </table>
+                        
+                        
+                        
+                        
+                        </td>
                       <td width="80px" align="center"><img src="./img/persons.png" width="66" height="146"></td>
                     </tr>
                     <tr>
-                      <td align="center" id="persons_td"> <s:property value="tagUserCounts"/>人</td>
+                      <td align="center" id="persons_td"> <s:property value="count"/>人</td>
                     </tr>
                     <tr>
                       <td valign="bottom" ><div><a id="tag_detail_bt3" href="javascript:void(0)" >客户筛选</a></div><br/>                    
-                      <div><a id="tag_detail_bt2" href="javascript:void(0)"  >条件保存</a></div></td>
+                      <div><a id="tag_detail_bt2" href="javascript:void(0)">条件保存</a>
+                      </div><br/> 
+                      <div><a id="tag_detail_bt1" href="javascript:void(0)">清单导出</a></div></td>
                     </tr>
-                  </table></td>
+                  </table>
+
+</td>
               </tr>
+
 
               
                            
-            </table></td>
+            </table>
+            
+          </td>
           
           <!-- END标签显示内容框
     ================================================== -->
@@ -581,9 +739,9 @@ margin:5px;color:#CCC;cursor:pointer;
           <td height="100%" style="background:url(./img/rightborder.png) repeat-y"></td>
         </tr>
         <tr>
-          <td width="16px" height="16px"><img src="./img/leftdown.png" width="22" height="22"></td>
+          <td width="24px" height="24px" style="background:url(./img/leftdown.png)"></td>
           <td  width="100%" style="background:url(./img/downborder.png)  repeat-x"></td>
-          <td width="16px" height="16px"><img src="./img/rightdown.png" width="22" height="22"></td>
+          <td width="24px" height="24px" style="background:url(./img/rightdown.png)"></td>
         </tr>
       </table></td>
   </tr>
@@ -601,7 +759,7 @@ margin:5px;color:#CCC;cursor:pointer;
 </td></tr>
     <tr><td><div class="line" style="width:100%" >&nbsp;</div></td></tr>
     <tr>
-      <td height="100%" width="100%"  ><div  style="width:100%; height:100%; overflow:auto">
+      <td height="100%" width="100%"  ><div  style="width:100%; height:320px; overflow:auto">
           <table id="attrs_list" width="100%" height="100%" border="0" cellspacing="0" cellpadding="5">
           </table>
         </div></td>
@@ -624,12 +782,12 @@ margin:5px;color:#CCC;cursor:pointer;
   </tr>
  -->  
   <tr>
-    <td colspan="2"> <label>导出字段&nbsp;&nbsp;:</label>
+    <td valign="top" width="65px"><label>导出字段&nbsp;&nbsp;:</label></td>
+    <td style=" padding-left:2px;"; align="left"> 
       <input name="电话号码" type="checkbox" value="PHONE_NO"  id="check">电话号码
       <input name="品牌" type="checkbox" value="E.BRAND_DESC"  id="check">品牌
       <input name="归属地市" type="checkbox" value="F.REGION_NAME"  id="check">归属地市
       <input name="归属县区" type="checkbox" value="B.REGION_NAME"  id="check">归属县区  <br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <input name="主体产品" type="checkbox" value="C.PRIVNAME"  id="check">主体产品
       <input name="创建渠道" type="checkbox" value="D.CHNL_NAME"  id="check">创建渠道
       <input name="上月总消费" type="checkbox" value="A.DUE_FEE"  id="check">上月总消费             
@@ -640,61 +798,222 @@ margin:5px;color:#CCC;cursor:pointer;
     <td align="right"><a id="no" href="javascript:void(0)">取消</a></td>
   </tr>
 </table>
-</div> 
-</body>
+</div>
 
+</body>
 <script>
 $(function(){
 
 
-       $("#attr_table_filter").append($("#attr_table").val());	
+    $("#attr_table_filter").append($("#attr_table").val());	
 	$.parser.parse($("#attr_table_filter"));
 	var userId="<%=request.getAttribute("userId") %>";
     var regionId=$("#req_reson").val();
     var href="<%=request.getAttribute("hre") %>";
     var group_name="<%=request.getAttribute("title") %>";
     var id="<%=request.getAttribute("id") %>";
-     var tag_sql="";  //客户群SQL
-     var count="";    //客户群人数
-     var regions="";
-       var re="";
-     var countys="";
-     var con="";
-     
+    var lvl_id="<%=request.getAttribute("lvl_id") %>";
+    var starttime="<%=request.getAttribute("starttime") %>";
+    var endtime="<%=request.getAttribute("endtime") %>";
+    var group_type="<%=request.getAttribute("type") %>";
+    var tag_sql="";  //客户群SQL
+    var list_count="";    //客户群人数
+    var tag_id;
+    var regions="";
+    var re="";
+    var countys="";
+    var con="";
+    var html_start="";
+    var html_body="";
+    var html_end=""; 
+    var html_tr_body="";
+    var tag_id="";
+    var tag_name="";
+  /*if($.trim($("#tag_name").text()).length<=1){
+     $(".tag_info").css("display","block");
+ }else{
+     $(".tag_info").css("display","none"); 
+ }*/
+ 	
+	
+
+	
+	
+ //    alert(regionId);
+
+   function  myfomatter(date) {
+	        var y = date.getFullYear();
+			var m = date.getMonth()+1;
+			var d = date.getDate();
+			return y+(m<10?('0'+m):m)+(d<10?('0'+d):d);
+ //           return y+"年"+m+"月"+d+"日";
+		};
+var myDate = new Date();
+ var yesterday_milliseconds=myDate.getTime()-1000*60*60*24;
+ var yesterday = new Date();
+ yesterday.setTime(yesterday_milliseconds);
+ var year = myDate.getFullYear();
+			var mon = myDate.getMonth()+1;
+			var day = myDate.getDate();
+			var value = year+(mon<10?('0'+mon):mon)+(day<10?('0'+day):day);
+
+$("#create_tag_date").datebox({
+     formatter:myfomatter,
+      onSelect:function(date){
+       // alert(date); 
+        var myDate = new Date();
+        //alert(myDate) ;l  
+        if(date<yesterday){
+        alert("起始日期不能小于今天");
+        $("#create_tag_date").datebox("setValue","");
+        } 
+     }
+});	
+	
+$("#end_tag_date").datebox({
+     formatter:myfomatter,
+     onSelect:function(date){
+      /*  var myDate = new Date();
+        if(date<=myDate){
+        alert("结束日期不能小于今天");
+        $("#create_tag_date").datebox("setValue","");
+        } */
+      var start =$("#create_tag_date").datebox("getValue");
+	var s = parseInt(start);
+	var end =$("#end_tag_date").datebox("getValue");
+	var e = parseInt(end);
+	if(s>e){
+	alert("开始时间不能大于结束时间");
+	 $("#end_tag_date").datebox("setValue","");
+	}
+     }
+});				
    
-     
-     
-/*   if(regionId!='1'){
-       alert("sss");
-       $("#countyName").css("display","none");
-     };*/
-//     alert(href);
-/*     if(href=='not_already'){
-     $("#tag_detail_bt1").css("background","gray");
-     $("#tag_detail_bt1").click(function(){
-          alert('文件正在生成中，暂不可下载。');
-          
-     })
-     }else{
-     $("#tag_detail_bt1").css("display","block");
-      $("#tag_detail_bt1").attr("href",href);
-     }*/
-     $("#tag_detail_bt1").click(
+    	//获取城市名称
+$("#cityName").combobox({
+				  url:'getCityName.action',
+				  editable:true,
+				  valueField:'id',
+				  textField:'text',
+				  panelHight:'auto',
+				  panelWidth:120,
+				  editable:true,
+				  multiple:true,
+				  onSelect:function(){
+				   //
+				/*   if($("#cityName").combobox("getValue")==1){
+				      alert("省与地市不可同时选择，选择地市前请删除省");
+				      $("#cityName").combobox("setValue","1");
+				   }*/
+				  var resTexts=$("#cityName").combobox("getText");
+				  var resText_Array=resTexts.split(",");
+				  var lengths=resTexts.length-3;
+				  if (resText_Array.length=1 && resText_Array[0]=="河北省"){
+				     var resTemp0=resTexts.replace("河北省,","");
+				  	 $("#cityName").combobox("setText",resTemp0);
+				  }else if (resTexts.indexOf("河北省")<lengths){
+				      var resTemp=resTexts.replace("河北省,","");
+				     $("#cityName").combobox("setText",resTemp);
+					 
+				  }else if (resTexts.indexOf("河北省")==lengths  ){
+				      var resTemp1=resTexts.replace(",河北省","");
+				     $("#cityName").combobox("setText",resTemp1);
+				  }else{
+				  	 var resTemp2=resTexts.replace("河北省,","");
+				     $("#cityName").combobox("setText",resTemp2);
+				  }
+				  
+				   /*
+				 var res=String($("#cityName").combobox('getValues')).split(",");
+				 
+				
+				  for (i=0;i<res.length;i++){
+				      if(res[i]!=1){
+				       //alert("省与地市不可同时选择，选择地市前请删除省");
+				       
+				      }else{
+					 	//$("#cityName").combobox("setValue","1");
+					  }
+				  };*/
+				  // $("#cityName").combobox("setValue",Text);
+				  }
+				  
+		  
+				 });
+$("#cityName").combobox("setValue",regionId);
+ //$("#cityName").combobox("setText","河北省");				 
+
+				 		  
+$("#countyName").combobox({
+				url:'getCountyName.action',
+				valueField:'id',
+				panelHeight:'200',
+				editable:true,	
+				textField:'text',
+				multiple:true,
+				onSelect:function(){
+			            var cuys=String($("#countyName").combobox('getValues')).split(",");
+			            for (i=0;i<cuys.length;i++){
+				             if(cuys[i]==regionId ){
+				                 alert("地市与所属区县不可同时选择，选择区县前请删除地市");
+				                 $("#countyName").combobox("setValue",regionId);
+				              }
+				        };
+						
+						/*
+					  var resTexts=$("#countyName").combobox("getText");
+					  var resText_Array=resTexts.split(",");
+					  
+					  var lengths=resTexts.length-3;
+					  if (resText_Array.length=1 && resText_Array[0]=="河北省"){
+						 var resTemp0=resTexts.replace("河北省,","")
+						 $("#cityName").combobox("setText",resTemp0);
+					  }else if (resTexts.indexOf("河北省")<lengths){
+						  var resTemp=resTexts.replace("河北省,","")
+						 $("#cityName").combobox("setText",resTemp)
+						 alert("2");
+					  }else if (resTexts.indexOf("河北省")==lengths  ){
+						 alert("3");
+						  var resTemp1=resTexts.replace(",河北省","")
+						 $("#cityName").combobox("setText",resTemp1)
+					  }else{
+						alert("4");
+						 var resTemp2=resTexts.replace("河北省,","")
+						 $("#cityName").combobox("setText",resTemp2)
+					  }
+					  */
+			    }
+          });	
+ $("#countyName").combobox("setValue",regionId);
+
+////////////////////////////////////
+      $("#tag_detail_bt1").click(
      function(){
-       if(count==0){
-       alert("清单总人数为0，请查看！");
-       }else{
-       $("#download_div").css("display","block");
+       if(list_count==0){
+       alert("请重新筛选用户！");
+       }else if(tag_id=="null" || tag_id.length==0)
+       {
+        alert("导出前请保存条件！")
+         } else{
+       	var offset1 = $("#tag_detail_bt1").offset();
+  //     	alert(offset1.left);
+ //      $("#download_div").css("display","block");
+       $("#download_div").css({
+			 "display":"block",
+	         "left":(parseInt(offset1.left)-440)+"px",
+	         "top":(parseInt(offset1.top)-120)+"px"			 
+			 });
      }
      }); 
      $("#no").click(
      function(){
        $("#download_div").css("display","none");
      });
-     $("#yes").click(
+       $("#yes").click(
      function(){
        var str="";
        var col_name="";
+  //     alert(list_count);
 //       sql =encodeURI(tag_sql);
           $("#download_table tr:eq(1)").find("input").each(function(){
           str_index=this.value;
@@ -708,14 +1027,26 @@ $(function(){
        //   alert(str);
        //   alert(col_name);
        $("#download_div").css("display","none");
+       
+      
+        id=tag_id;
+        if(userId==""){
+           userId= $("#req_userId").val();
+        }
+        
+           group_name=tag_n;
+        
+
            $.ajax({
     		type: 'POST',
     		url: 'downaddinfo.action',
-    		data:{tag_name:group_name,count:count,sql:tag_sql,id:id,col:str,col_desc:col_name,type:"group_list",region_name:$("#cityName").combobox('getText')},
+    		data:{tag_name:group_name,count:list_count,sql:tag_sql,id:id,col:str,col_desc:col_name,type:"group_list",region_name:$("#cityName").combobox('getText'),flag:'1'},
     		dataType:"text", 
     		success: function(data){
     		var href="querydown.action?userId="+userId;
              window.location.href=href; 
+             $("#wait_div").show(); 
+             $("#load_div").show();
             },
    			error: function(data){
      		
@@ -727,51 +1058,110 @@ $(function(){
     	
           
      })
-	//获取城市名称
-	if(regionId!=1){
-	 $("#cityName").combobox({
-				  url:'getCityName.action?regionId='+regionId,
-				  editable:true,
-				  valueField:'id',
-				  textField:'text',
-				  panelHight:'auto',
-				  panelWidth:100,
-				  editable:true,
-				  multiple:true,				  
-				  onChange:function(newValues,oldValues){		  
-		          $('#countyName').combobox({
-		                
-			                    url:'getCountyName.action?cityId='+newValues,
-			                    valueField:'id',
-			                    panelHeight:'200',
-								editable:true,	
-			                    textField:'text',
-			                     multiple:true
-			      });	
-			      }
-   });}else{
-      $("#cityName").combobox({
-				  url:'getCityName.action?regionId='+regionId,
-				  editable:true,
-				  valueField:'id',
-				  textField:'text',
-				  panelHight:'auto',
-				  panelWidth:100,
-				  editable:true,
-				  multiple:true	
-				  });
-     $("#countyName").combobox("setValue","ALL"); 
-     $("#countyName").combobox("disable","true");
-    
-   }
+/////////////////////////////////////////
+
+//活动htmlbody
+$.extend({'gethtmlbody':function(type,attrs_table){	
+var body_html="";
+if(type==0){
+body_html=	"<div style='float:left; padding-left:5px;line-height:32px; margin-top:3px; '>"
++			"<select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++                                "<option value='>=' selected>大于等于</option>"
++                                "<option value='<=' >小于等于</option>"
++                                "<option value='<' >小于</option>"
++                                "<option value='>' >大于</option>"
++                                "<option value='='>等于</option>"
++                        "</select></div>"
++	           "<div style='float:left;padding-left:5px;line-height:32px; margin-top:2px; '><input id='tag_name_txt' type='text'  value='0.00' style='width:140px; height:25px;border:1px solid  #CCC; '></div>";	
+}
+else if(type==1){
+body_html="<div style='float:left; padding-left:5px; margin-top:3px; '>"
++			"<select class='easyui-combobox' name='state' style='width:225px;height:25px' panelHeight='100'"
++       " data-options='valueField:\"id\",textField:\"text\",url:\"getAttrTableAction.action?table_name="+attrs_table+"\" ' >"
++                        "</select></div>";	
+
+}
+else if(type==2){
+body_html=	"<div style='float:left; padding-left:5px; margin-top:3px;'>"
++			"<select class='easyui-combobox' name='state' style='width:225px;height:25px' panelHeight='auto' >"
++                                "<option value='1' selected>是</option>"
++                                "<option value='0' >否</option>"
++                        "</select></div>";
+	
+}
+else if(type==3){
+body_html="<div style='float:left; padding-left:5px; margin-top:3px;'>"
++			"<select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++                                "<option value='like' selected>模糊</option>"
++                                "<option value='=' >等于</option>"
++                        "</select></div>"
++	           "<div style='float:left;padding-left:5px; margin-top:3px;'><input id='tag_name_txt' type='text'  value='' style='width:140px; height:25px;border:1px solid  #CCC; '></div>";	
+}
+
+return body_html;
+		}}); 
+///////////////////////////////		
+//添加同类属性事件
+$.extend({'addSameAttr':function(attr_tr){ 
+		var strs= new Array(); 
+		strs=attr_tr.replace("_tr","").split("&"); 
+		var attrs_id=strs[0];	
+	    var attrs_name=strs[1];	
+	    var attrs_type=strs[2];	
+	    var attrs_table=strs[3];
+		var attrs_group=strs[4];	
+		var attrs_tr=(attrs_group).replace("group","tr");
+		var html_body="";
+			if(attrs_type=="连续型"){html_body=$.gethtmlbody(0,attrs_table);}
+			if(attrs_type=="码表"){html_body=$.gethtmlbody(1,attrs_table);}
+			if(attrs_type=="是否码表"){html_body=$.gethtmlbody(2,attrs_table);}
+			if(attrs_type=="其他"){html_body=$.gethtmlbody(3,attrs_table);}	
+		
+
+						
+var html_tr_body="<div  style='height:32px; line-height:32px; padding-left:5px;'>"
++                "<div style='float:left;width:280px;color:#094AB2' title='"+attrs_id+"'>"+attrs_name+"</div>"
++ html_body
++                "<div style='float:left;line-height:32px; margin-top:3px;  padding-left:5px; visibility:hidden;'><select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++			"<option value='and' selected>并且</option>"
++			"<option value='or' >或者</option>"
++                  "</select></div>"
++	 "<div style='float:left; width:70px;'><img src='./img/attrs/add2.png' title='添加同类条件' style='cursor:pointer;' width='32px' height='32px' onClick='$.addSameAttr(\""+attrs_id+"&"+attrs_name+"&"+attrs_type+"&"+attrs_table+"&"+attrs_group+"_tr\")'><img id='"+attrs_id+"_tr_del' src='./img/attrs/delete2.png' width='32px' height='32px' title='删除条件组合' onClick='$.deletrAttr(this,0,\""+attrs_type+"\",\""+attrs_group+"\")' style='cursor:pointer;' ></div></div><div style='clear:both'></div>"  
+;		        
+            if($("#"+attrs_tr).children().size()>0){
+				if(attrs_type=="连续型" || attrs_type=="其他"){
+				$("#"+attrs_tr).children(":last").prev().children(":eq(3)").css("visibility","visible");
+				$("#"+attrs_tr).children(":last").prev().children(":eq(3)").find('select').combobox("setValue","and");}
+				else{
+			   	$("#"+attrs_tr).children(":last").prev().children(":eq(2)").css("visibility","visible");
+				$("#"+attrs_tr).children(":last").prev().children(":eq(2)").find('select').combobox("setValue","and");	
+				}
+                 
+			}
+
+			   $("#"+attrs_tr).append(html_tr_body);
+			   $.parser.parse($("#"+attrs_tr)); 
+		}});
+/////////////////////////////
 
 
- 
-//过滤条件       				
+		
+	
+//读取筛选条件   
+ var old_attr_id="0";
+ var old_group_tr_id="0";
+ var old_attr_name="";
+ var old_attr_type="";
+ var old_attr_table="--";
+ var old_value_type="";
+ var old_attr_value="";
+ var body_attr=""; 
+ var edit_tr="";   				
  var jsonarry = $.parseJSON($("#jsonAttr").val());
+
  $.each(jsonarry, function(i,attr){ 
 
-		var bt_id=attr.attr_id+"_tr";
+		var bt_id=attr.attr_tr_id;
 		if(attr.attr_id=="CITY_ID")
 		{ 
 			$("#cityName").combobox("setValues",attr.attr_value1);	
@@ -785,33 +1175,154 @@ $(function(){
 		{	   
 			$("#userState").combobox("setValue",attr.attr_value1);	
 ;}			
-		if(attr.attr_id=="BRAND_ID")
-		{	   
-			$("#userbrand").combobox("setValue",attr.attr_value1); 
-;}			
-						   
-		  if (attr.attr_type=="连续型"){	
-			         
-				   $("#"+bt_id).children(" :eq(1)").find('select').combobox("setValue",attr.attr_value_type1);
-				   $("#"+bt_id).children(":eq(2)").children().val(attr.attr_value1);	  		  
-				   $("#"+bt_id).children(":eq(3)").find('select').combobox("setValue",attr.attr_value_type2);				                   $("#"+bt_id).children(":eq(4)").children().val(attr.attr_value2);		
-	  
-		  } else {
-	         
-				  if(attr.attr_type=="其他")
-				  {
-                   $("#"+bt_id).children(":eq(1)").children().val(attr.attr_value1);	
-											  			 				  
-				  }else
-				  {
-				   $("#"+bt_id).children(":eq(1)").find('select').combobox("setValue",attr.attr_value1);					   					   		
-				  }
-			 				 	
-		  }  		  
+			
+/////////////////////////////////////////////////////////////////////////////////////////////////						   
+		  if (attr.attr_id!="CITY_ID"&&attr.attr_id!="COUNTY_ID"&&attr.attr_id!="SUBS_STAT"&&attr.attr_id!="BRAND_ID"){	
+			   if(old_group_tr_id!=attr.group_id){
+				     old_group_tr_id=attr.group_id;
+				 	 old_attr_id=attr.attr_id;
+					 old_attr_name=attr.attr_name;
+					 old_attr_type=attr.attr_type;
+					 old_attr_table=attr.attr_table;
+html_start="<div id='"+attr.group_id+ "' title='"+attr.attr_id+"_group'  style='float:left;'>"                                                    
++    "<div style='margin-left:5px;  margin-top:5px; width:675px;  border-top:1px solid #CCC;border-left:1px solid #CCC;border-right:1px solid #CCC; height:32px; line-height:32px;'>"
++	 "<div style='float:left; padding-left:5px; width:520px'>条件组合</div>"
++	 "<div style='float:left;width:80px; line-height:32px; margin-top:3px; visibility:hidden;'>"
++	      "<select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++                      "<option value='and' selected>并且</option>"
++                      "<option value='or' >或者</option>"
++              "</select></div>"
++	 "<div style='float:left; width:70px;'><img id='"+old_attr_id+"_tr_struct' src='./img/attrs/goucheng2.png' title='构成分析' style='cursor:pointer;' width='32px' height='32px' onClick='$.consitAttr(this,\""+attrs_type+"\",\""+attrs_name+"\")'><img id='"+old_attr_id+"_tr_del' src='./img/attrs/delete2.png' width='32px' height='32px' title='删除条件组合'  style='cursor:pointer;' onClick='$.deletrAttr(this,1,0,\""+attr.group_id+"\")'></div>"     
++     "</div>"                     
+
++     "<div style=' float:left;  margin-left:5px; width:675px;  border:1px solid #CCC' >"
++        "<div id='"+attr.attr_tr_id+"' title='"+old_attr_name+"&"+old_attr_type+"&"+old_attr_table+"' style='float:left;   width:100%;'>"
++             "<div  style='height:32px;line-height:32px;padding-left:5px;'>"
++                "<div style='float:left;width:280px;color:#094AB2' title='"+old_attr_id+"'>"+old_attr_name+"</div>";
+	
+html_end="<div style='float:left;line-height:32px; margin-top:3px; padding-left:5px;visibility:hidden;'><select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++			"<option value='and' selected>并且</option>"
++			"<option value='or' >或者</option>"
++                  "</select></div>"
++	 "<div style='float:left; width:70px;'><img src='./img/attrs/add2.png' title='添加同类条件' style='cursor:pointer;' width='32px' height='32px' onClick='$.addSameAttr(\""+old_attr_id+"&"+old_attr_name+"&"+old_attr_type+"&"+old_attr_table+"&"+attr.group_id+"_tr\")'><img id='"+old_attr_id+"_tr_del' src='./img/attrs/delete2.png' width='32px' height='32px' title='删除条件组合' onClick='$.deletrAttr(this,0,\""+old_attr_type+"\",\""+attr.group_id+"\")'  style='cursor:pointer;' ></div>"   
+
++	      "</div><div style='clear:both'></div>"
++         "</div>"
++     "</div>"
++"</div>"
++"<div style='clear:both'></div>";
+
+if(old_attr_type=="连续型"){
+body_attr=$.gethtmlbody(0,"--");			
+}
+if(old_attr_type=="其他"){
+body_attr=$.gethtmlbody(3,"--");		
+}
+if(old_attr_type=="码表"){
+body_attr=$.gethtmlbody(1,old_attr_table);		
+}
+if(old_attr_type=="是否码表"){
+body_attr=$.gethtmlbody(2,"--");	
+}
+if(old_attr_id!="0"){
+  $("#attr_table_filter").append(html_start+body_attr+html_end);	
+  $.parser.parse("#"+attr.group_id);}				   
+			   }else{
+
+  $.addSameAttr(old_attr_id+"&"+old_attr_name+"&"+old_attr_type+"&"+old_attr_table+"&"+attr.group_id+"_tr");
+				   
+			   }				 	  
+		  } 			  
+///////////////////////////////////////////////////////////////////////////////////////////////		  		  
  });
+//生成读取条件的值
+old_attr_id="0";
+old_group_tr_id="0";
+var tr_index=0;
+var jsonarry1 = $.parseJSON($("#jsonAttr").val());
+
+ $.each(jsonarry1, function(i,attr){  
+	if(attr.attr_id!="CITY_ID"&&attr.attr_id!="COUNTY_ID"&&attr.attr_id!="SUBS_STAT"&&attr.attr_id!="BRAND_ID"){
+ 	if(old_group_tr_id!=attr.group_id){
+		             old_group_tr_id=attr.group_id;
+				 	 old_attr_id=attr.attr_id;
+					 old_attr_name=attr.attr_name;
+					 old_attr_type=attr.attr_type;
+					 old_attr_table=attr.attr_table;
+					 edit_tr=attr.group_id;
+					 var attr_from=$.trim(attr.attr_from);
+					 if(attr_from=="and"||attr_from=="or"){
+						 $("#"+attr.group_id).children(":eq(0)").children(":eq(1)").find('select').combobox("setValue",attr_from);
+						 $("#"+attr.group_id).children(":eq(0)").children(":eq(1)").css("visibility","visible");}
+					  var tr_child=$("#"+attr.group_id).children(":eq(1)").children(":eq(0)");
+					  var element=$(tr_child).children(":eq(0)"); 
+					  var attr_lvl=$.trim(attr.attr_lvl);
+					  if(old_attr_type=="连续型"){						  
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(3)").css("visibility","visible");}
+							element.children(":eq(3)").find('select').combobox("setValue",attr_lvl);
+							element.children(":eq(1)").find('select').combobox("setValue",$.trim(attr.attr_value_type1));
+							element.children(":eq(2)").children().val(attr.attr_value1);
+					  }
+					  if(old_attr_type=="其他"){
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(3)").css("visibility","visible");}															                            element.children(":eq(3)").find('select').combobox("setValue",attr_lvl);
+							element.children(":eq(1)").find('select').combobox("setValue",$.trim(attr.attr_value_type1));
+							element.children(":eq(2)").children().val(attr.attr_value1.replace("'","").replace("%","").replace("'","").replace("%",""));  
+						  
+					  }						 
+					  if(old_attr_type=="码表"){
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(2)").css("visibility","visible");}						                            element.children(":eq(2)").find('select').combobox("setValue",attr_lvl);                  
+							element.children(":eq(1)").find('select').combobox("setValue",attr.attr_value1.replace("'","").replace("'",""));           
+						  
+					  }
+					  if(old_attr_type=="是否码表"){
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(2)").css("visibility","visible");}						                            element.children(":eq(2)").find('select').combobox("setValue",attr_lvl);                  
+							element.children(":eq(1)").find('select').combobox("setValue",attr.attr_value1.replace("'","").replace("'","")); 
+					  }
+			  		  tr_index=2;		 
+					
+	  }else{
+		              var tr_child=$("#"+attr.group_id).children(":eq(1)").children(":eq(0)");
+					  var element=$(tr_child).children(":eq("+tr_index+")"); 
+					  var attr_lvl=$.trim(attr.attr_lvl);
+					  if(old_attr_type=="连续型"){						  
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(3)").css("visibility","visible");}
+							element.children(":eq(3)").find('select').combobox("setValue",attr_lvl);
+							element.children(":eq(1)").find('select').combobox("setValue",$.trim(attr.attr_value_type1));
+							element.children(":eq(2)").children().val(attr.attr_value1);
+					  }
+					  if(old_attr_type=="其他"){
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(3)").css("visibility","visible");}															                            element.children(":eq(3)").find('select').combobox("setValue",attr_lvl);
+							element.children(":eq(1)").find('select').combobox("setValue",$.trim(attr.attr_value_type1));
+							element.children(":eq(2)").children().val(attr.attr_value1.replace("'","").replace("%",""));  
+						  
+					  }						 
+					  if(old_attr_type=="码表"){
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(2)").css("visibility","visible");}						                            element.children(":eq(2)").find('select').combobox("setValue",attr_lvl);                  
+							element.children(":eq(1)").find('select').combobox("setValue",attr.attr_value1);           
+						  
+					  }
+					  if(old_attr_type=="是否码表"){
+						  if(attr_lvl=="and"||attr_lvl=="or"){
+							element.children(":eq(2)").css("visibility","visible");}						                            element.children(":eq(2)").find('select').combobox("setValue",attr_lvl);                  
+							element.children(":eq(1)").find('select').combobox("setValue",attr.attr_value1); 
+					  }	
+		 tr_index=tr_index+2; 
+	  }
+	}
+ });
+ ////////////////////////////////////////////////////////////////////////////////////////// //条件组合赋值
+     $.extend({'readattr':function(index){
+
+		 	
+}});
  
-
-
    	var initCityName=$("#cityName").combobox("getValue");
 	var initCountyName=$("#countyName").combobox("getText");
 	if (initCityName==""){
@@ -835,71 +1346,68 @@ $("#attr_text").keyup(function(){
 	  var type11="";  		
 	  $.third_attr_panel_tishi('2',type1,type2,type11);	
   
-	}
-  
+	}	
+});
+
+//属性组合keup事件
+$("#grouptext").keyup(function(event){
+
+
+
+	 //sel = document.selection.createRange();
+	  
+     //sel.text = "ssss"; 
 	
 });
 
-
-
-   
+//属性组合框单属性点击事件
+$.extend({'attr_click':function(even){
+	    $("#group_text_div").hide();
+		var html="<div style='float:left; height:40px;width=100px;margin-left:5px;border:1px soild;'>"+$(even).text()+"</div>";
+		$("#grouptext").append(html);
+		//$("#grouptext").focus();		
+		//sel = document.selection.createRange();	 
+       // sel.text = $(even).text(); 
+	
+}});
+ 
+ 
     //导出客户标签
     $("#tag_detail_bt1").click(function(){
-		
-    //$(window.parent.document).find("#iframe").attr("src","TaginfoAction.action?userId="+userId);	
- 
-    	///alert(tag_id);
-//   		$.ajax({
-//    		type: 'POST',
-//    		url: "filterTagExport.action",
-//    		data:{tag_id:tag_id},
-//    		dataType:"text", //ajax返回值设置为text（json格式也可用它返回，可打印出结果，也可设置成json）
- //   		success: function(downPath){     
- //   			if (downPath==""){
- //   				alert("无下载路径");
- //   			}else{
- //   				window.location.href=downPath;
- //   			}    			
-  //          },
-  // 			error: function(data){
-  //   		alert("json=" + data);
-   //  		return false;
-   // 		}
-   // 	});	
     });
    //群体筛选
    	$("#tag_detail_bt3").click(function(){	
-	 //  $("#wait_div").show(); 
+
 	    document.getElementById("wait_div").style.display="block";
 	    document.getElementById("wait_div").style.filter="alpha(opacity=20)";
+
 		var attrs= $.attr_build();
 		$("#load_div").show();
+
 		if(attrs==null){$("#wait_div").hide(); $("#load_div").hide(); }
 		var sql =encodeURI(attrs[0]);
-//			alert(sql);
-//		alert(regions.length);
-//	alert(re);
-//		alert(con);
-//		alert($("#cityName").combobox('getText'));
+
 	  	 	$.ajax({
 	    		type: 'POST',
 	    		url: 'filterTagCounts.action',
 	    		data:{sql:sql},
 	    		dataType:"text", //ajax返回值设置为text（json格式也可用它返回，可打印出结果，也可设置成json）
 	    		success: function(data){  
-	    		count=data; 
+	    		list_count=data; 
 	    			$("#persons_td").text(data+'人'); 
 					$("#wait_div").hide(); 
 					$("#load_div").hide(); 
 					re="";
 					con="";
-//			     sql="";
-//				tag_sql="";   
+					regions="";
+
 	            },
 	   			error: function(data){
 	     		alert("客户群筛选失败"); 
 				$("#wait_div").hide(); 
-				$("#load_div").hide();  
+				$("#load_div").hide(); 
+				re="";
+			    con=""; 
 	     		return false;
 	    		}
 	    	});	
@@ -907,7 +1415,53 @@ $("#attr_text").keyup(function(){
 	});
 
 //群体条件保存	
-   $("#tag_detail_bt2").click(function(){	
+      $("#tag_detail_bt2").click(function(){
+    var start =$("#create_tag_date").datebox("getValue");
+	var end =$("#end_tag_date").datebox("getValue");
+	//alert(start);
+	//alert($("#tag_name").text().length);
+/*	if(start.length==0 || end.length==0 ){
+	alert("时间均不能为空");
+	}else{*/
+            var myDate = new Date();
+            var year = myDate.getFullYear();
+			var mon = myDate.getMonth()+1;
+			var day = myDate.getDate();
+			var hour= myDate.getHours();
+			var minute= myDate.getMinutes();
+			var second= myDate.getSeconds();
+			var value = year+(mon<10?('0'+mon):mon)+(day<10?('0'+day):day)+(hour<10?('0'+hour):hour)+(minute<10?('0'+minute):minute)+(second<10?('0'+second):second);		
+   		    if(group_type!=1){
+   		    tag_id=value+$("#req_userId").val();
+   		        }else{
+   		     tag_id=id;   
+   		      }
+
+   		   if(group_type!=1){
+		    tag_n=$("#tag_name_text").val();
+		   }else{
+		     tag_n=$("#tag_name").text();
+		   }
+
+		   if(group_type==1){
+		          start=starttime;
+		   }else{
+		          start=$("#create_tag_date").datebox("getValue");
+		   }
+
+		   if(group_type==1){
+		          end=endtime;
+		   }else{
+		          end=$("#end_tag_date").datebox("getValue");
+		   }
+
+	//	   alert(start);
+		 if(start==null || end==null || start.length==0 || end.length==0){
+		      alert("请选择起始时间!")
+		 }else if(tag_n=='请输入客户群名称'){
+		      alert("请输入客户群名称！")
+		 }else{
+
    		var b= $.attr_build();	
         var sql =encodeURI(b[0]);
    	    document.getElementById("wait_div").style.display="block";
@@ -919,7 +1473,7 @@ $("#attr_text").keyup(function(){
 				$.ajax({
 	    		type: 'POST',
 	    		url: 'updateGroupTag.action',
-	    		data:{tag_id:$("#tag_id").val(),tag_attrs:encodeURI(b[2]),stamt:encodeURI(b[1]),persons:encodeURI($("#persons_td").text()),sql:sql},
+	    		data:{tag_id:tag_id,tag_attrs:encodeURI(b[2]),stamt:encodeURI(b[1]),persons:encodeURI($("#persons_td").text()),sql:sql,create_time:start,end_time:end,tag_introduce:encodeURI($("#tag_introduce").val()),tag_name:encodeURI(tag_n),type:((group_type==1)?1:0),share:((group_type==0)?0:1)},
 	    		dataType:"text", //ajax返回值设置为text（json格式也可用它返回，可打印出结果，也可设置成json）
 	    		success: function(data){ 
 				    $("#wait_div").hide();   
@@ -941,13 +1495,13 @@ $("#attr_text").keyup(function(){
 				    $("#load_div").hide();
 			}	
 		
-			
+			}
 	});
 //文件上传
     $("#tag_uplod").click(function(){
 	   var usertype=$("#usertype").combobox('getValue');
 	   var filename=$("#file").val();
-       var tag_id=$("#tag_id").val();
+ //      var tag_id=$("#tag_id").val();
        alert(usertype);
   	   if (filename==""){
 	   alert('上传文件不能为空');
@@ -1005,21 +1559,27 @@ $("#attr_text").keyup(function(){
 
 //生成三级属性面板内容
     $.extend({'third_attr_build':function(data,type11){		    
-		    var table_str=""; 		    
+		    var table_str=""; 		  
 			$("#attrs_list").children().remove();			
 			$.each(data,function(i,table){				
 				$.each(table,function(l,tr){
 				    table_str=table_str+("<tr>");
 				  $.each(tr,function(k,td){
 					//atrs 说明 0 属性类型   1 属性名称  2 属性   3 属性id  4 一级属性
-					var atrs=td.attr_type+"&"+td.attr_name+"&"+td.attr_table+"&"+td.attr_id+"&"+type11;			
-					table_str=table_str+("<td valign='top'><input id='"+td.attr_id+"_bt' type='checkbox' value=''  onClick=$.edit_attr(this.name) name='"+atrs+"' >"+td.attr_name+"</td>");  
+					var atrs=td.attr_type+"&"+td.attr_name+"&"+td.attr_table+"&"+td.attr_id+"&"+type11;		
+						
+					table_str=table_str+("<td valign='top' style='cursor: pointer;'  onClick=$.edit_attr('"+atrs+"')  ><img src='./img/jiaattr.png' width='16' height='16' style='cursor: pointer;'> "+td.attr_name+"</td>");  
 					});
 					table_str=table_str+("</tr>");										 
 				});
 			});	
-			$("#attrs_list").html(table_str);	
-			$("#attr_edit_div").css("display","block");				
+			$("#attrs_list").html(table_str);
+			var set=$("#main_attr_table").offset();	
+			$("#attr_edit_div").css({
+				"display":"block",
+				"left":(parseInt(set.left)+210)+"px",
+				"top":(parseInt(set.top)+10)+"px"
+				});				
 		}
       });
 //生成三级属性面板
@@ -1122,117 +1682,147 @@ $("#attr_text").keyup(function(){
 	
 	//客户群属性生成
     $.extend({'attr_build':function(){
+		  var attr_index=0;
 		  var tag_attr_info_city=new Object();    //地市属性
 		  var tag_attr_info_country=new Object(); //乡镇属性
 		  var tag_attr_info_state=new Object();   //用户状态属性
 		  var tag_attr_info_brand=new Object();   //用户品牌属性
 		  var attrFlag=0;                         //标志属性选择是否正确 0表示正确，1表示不正确
-		  var tag_id=$("#tag_id").val();//客户群标识
-		  var tag_name=$("#tag_name").text();//客户群名称
+//		  var tag_id=$("#tag_id").val();//客户群标识
+           if($("#tag_name").text().length!=1){
+		   tag_name=$("#tag_name").text();//客户群名称
+		   }else{
+		   tag_name=$("#tag_name_text").val();
+		   }
 		  var tag_attr_info_list = new Array();
-		  tag_sql="";
+          tag_sql="";
 		  var tag_stmat=""; //客户群口径
-		$("#attr_table_filter tr").each(function (index, tr) { 		  
-		  var attr_type=$(tr).attr('title').split(',')[0];
-		  var attr_id=$(tr).attr('title').split(',')[2]; 
-		  var attr_table=$(tr).attr('title').split(',')[3]; 
-		  var attr_lvl=$(tr).attr('title').split(',')[1]; //0表示属性类型;//2表示属性标识;//3表示属性码表;//
-		  if (attr_type=="连续型"){	
-			    
-	  			 var tag_attr_info=new Object();
+		  var group_lvl=""; //条件组合逻辑
+		$("#attr_table_filter").children(":even").each(function (index, table) {
+			
+
+			
+
+		  	var group_id=$(table).attr('id');
+			var group_name="条件组合"+$(table).attr('id');
+			var attr_id=$(table).attr('title'); 
+		  	var attr_lvl="--"; //0表示属性类型;//2表示属性标识;//3表示属性码表;//
+			if($(table).children(":eq(0)").children(":eq(1)").css("visibility")=="visible"){           
+
+			    	group_lvl=" "+$(table).children(":eq(0)").children(":eq(1)").find('select').combobox("getValue")+" ";
+				}else{
+					group_lvl=" ";
+				}
+			tag_sql=tag_sql+group_lvl+"( ";
+			tag_stmat=tag_stmat+group_lvl+"( ";	
+			
+		  	var tr=$(table).children(":eq(1)").children(":eq(0)");
+
+		  	var attr_name=$(tr).attr('title').split('&')[0];
+	      	var attr_type=$(tr).attr('title').split('&')[1];
+		  	var attr_table=$(tr).attr('title').split('&')[2]; 
+		    $(tr).children(":even").each(function(index, element) {
+	
+				attr_index++;
+                var value_text="";
+				var tag_attr_info=new Object();
 				  tag_attr_info.tag_id=tag_id;
 				  tag_attr_info.tag_name=tag_name;
-				  tag_attr_info.attr_id=attr_id;
-				  tag_attr_info.attr_table="00";
-				  tag_attr_info.attr_lvl=attr_lvl;
-				  tag_attr_info.attr_name=$(tr).children(":eq(0)").text(); 
-				  tag_attr_info.attr_from="0";
+				  tag_attr_info.group_id=group_id;
+				  tag_attr_info.group_name=attr_index;
+				  tag_attr_info.attr_tr_id=$(element).parent().attr("id");
+				  tag_attr_info.attr_id=attr_id.replace("_group","");
+				  tag_attr_info.attr_name=attr_name; 
+				  tag_attr_info.attr_from=group_lvl;
 				  tag_attr_info.attr_type=attr_type;
-				  tag_attr_info.attr_value_type1=$(tr).children(":eq(1)").find('select').combobox("getValue");
-				  tag_attr_info.attr_value1=$(tr).children(":eq(2)").children().val();	  		  
-				  tag_attr_info.attr_value_type2=$(tr).children(":eq(3)").find('select').combobox("getValue");				  
-				  tag_attr_info.attr_value2=$(tr).children(":eq(4)").children().val();		
+			  if (attr_type=="连续型" || attr_type=="其他" ){   
+			      tag_attr_info.attr_table="--";
+				  if($(element).children(":eq(3)").css("visibility")=="visible"){
+				  	tag_attr_info.attr_lvl=" "+$(element).children(":eq(3)").find('select').combobox("getValue")+" "; 
+				  }else{
+					tag_attr_info.attr_lvl=" "; 
+				  }				 
+				  tag_attr_info.attr_value_type1=" "+$(element).children(":eq(1)").find('select').combobox("getValue")+" ";
+				  if(attr_type=="其他"){
+					  if(tag_attr_info.attr_value_type1==" like "){
+						  tag_attr_info.attr_value1="'%"+$(element).children(":eq(2)").children().val()+"%'";
+					  }
+					  else{
+						  tag_attr_info.attr_value1="'"+$(element).children(":eq(2)").children().val()+"'";  
+					  }	  
+				  }else{
+				   tag_attr_info.attr_value1=$(element).children(":eq(2)").children().val();		
+				  }
+				    		  	      
 		  		  if(tag_attr_info.attr_value1=="")   
 				  {
 					  alert("【"+tag_attr_info.attr_name+"】 属性值不能为空，请重新填写");
 					  attrFlag=1;
 					  return false;
 				  }			      
-				  else if(tag_attr_info.attr_value2=="")   
-				  {
-					  alert("【"+tag_attr_info.attr_name+"】 属性值不能为空，请重新填写");
-					  attrFlag=1;
-					  return false;
-				  }			      				  			   
-		  		  if(isNaN(new Number(tag_attr_info.attr_value1)))   
+		      				  			   
+		  		  if(isNaN(new Number(tag_attr_info.attr_value1)) && attr_type=="连续型")   
 				  {
 					  alert("【"+tag_attr_info.attr_name+"】 属性值不为数字，请重新填写");
 					  attrFlag=1;
 					  return false;
-				  }
-				  if(isNaN(new Number(tag_attr_info.attr_value2)))   
-				  {
-					  alert("【"+tag_attr_info.attr_name+"】 属性值不为数字，请重新填写");
-					  attrFlag=1;
-					  return false;
-				  }	
-				  
-	                         
-				  tag_stmat=tag_stmat+tag_attr_info.attr_name+tag_attr_info.attr_value_type1+tag_attr_info.attr_value1+"并且"+tag_attr_info.attr_value_type2+tag_attr_info.attr_value2+";";
-	  
-				  tag_sql=tag_sql+"a."+tag_attr_info.attr_id+tag_attr_info.attr_value_type1+tag_attr_info.attr_value1+" and "+"a."+tag_attr_info.attr_id+ tag_attr_info.attr_value_type2+tag_attr_info.attr_value2+" and ";
- 
+				  }      
+				  tag_stmat=tag_stmat+tag_attr_info.attr_name+tag_attr_info.attr_value_type1+$(element).children(":eq(2)").children().val()+tag_attr_info.attr_lvl;	
+				  tag_sql=tag_sql+"a."+tag_attr_info.attr_id+tag_attr_info.attr_value_type1+tag_attr_info.attr_value1+tag_attr_info.attr_lvl;
+                 
 	             tag_attr_info_list.push(tag_attr_info);
-	  
 		  } else {
-	  			 var tag_attr_info=new Object();
-				  tag_attr_info.tag_id=tag_id;
-				  tag_attr_info.tag_name=tag_name;
-				  tag_attr_info.attr_id=attr_id;
-				  tag_attr_info.attr_name=$(tr).children(":eq(0)").text(); 
-				  tag_attr_info.attr_from="0";
-				  tag_attr_info.attr_type=attr_type;
-				  tag_attr_info.attr_value_type1="=";	
-				  tag_attr_info.attr_lvl=attr_lvl;	  
-				  if(attr_type=="其他")
-				  {
-					  tag_attr_info.attr_table="00";
 
-                      tag_attr_info.attr_value1=$(tr).children(":eq(1)").children().val();	
-					  tag_stmat=tag_stmat+tag_attr_info.attr_name+tag_attr_info.attr_value_type1+$(tr).children(":eq(1)").children().val()+ ";";	
-					  if(tag_attr_info.attr_value1=="")   
-				  		{
-					  		alert("【"+tag_attr_info.attr_name+"】 属性值不能为空，请重新填写");
-							attrFlag=1;
-					  		return false;
+			      tag_attr_info.attr_value_type1="=";
+				  if($(element).children(":eq(2)").css("visibility")=="visible"){
+				  	tag_attr_info.attr_lvl=" "+$(element).children(":eq(2)").find('select').combobox("getValue")+" "; 
+				  }else{
+					tag_attr_info.attr_lvl=" "; 
+				  }	
+
+				  if(attr_type=="码表"){
+					   		tag_attr_info.attr_table=attr_table;
+							tag_attr_info.attr_value1="'"+$(element).children(":eq(1)").find('select').combobox("getValue")+"'";
+							value_text=$(element).children(":eq(1)").find('select').combobox("getText");
+				  	   }else{
+					   		tag_attr_info.attr_table="--";
+                            tag_attr_info.attr_value1="'"+$(element).children(":eq(1)").find('select').combobox("getValue")+"'";	
+							value_text=$(element).children(":eq(1)").find('select').combobox("getText");						
 				  		}
-											  			 				  
-				  }else
-				  {
-					  tag_attr_info.attr_table=attr_table;
-				      tag_attr_info.attr_value1=$(tr).children(":eq(1)").find('select').combobox("getValue");
-					  tag_stmat=tag_stmat+tag_attr_info.attr_name+tag_attr_info.attr_value_type1+$(tr).children(":eq(1)").find('select').combobox("getText")+ ";";	
-					  if(tag_attr_info.attr_value1=="")   
+			      tag_stmat=tag_stmat+tag_attr_info.attr_name+tag_attr_info.attr_value_type1+value_text+tag_attr_info.attr_lvl;
+				  	
+				  tag_sql=tag_sql+"a."+tag_attr_info.attr_id+tag_attr_info.attr_value_type1+tag_attr_info.attr_value1+tag_attr_info.attr_lvl;
+					 if(tag_attr_info.attr_value1=="")   
 				  		{
 					  		alert("【"+tag_attr_info.attr_name+"】 属性值不能为空，请重新填写");
 							attrFlag=1;
 					  		return false;
-				  		}					   					   		
-				  }
-			      tag_attr_info.attr_value_type2="--";
-				  tag_attr_info.attr_value2="--";	
-				  tag_sql=tag_sql+"a."+tag_attr_info.attr_id+tag_attr_info.attr_value_type1+"'"+tag_attr_info.attr_value1+"' and ";	
-				  
-	              tag_attr_info_list.push(tag_attr_info);				 				 	
-		  }  		   		       
-		});
+				  		}											  			 					
+	              tag_attr_info_list.push(tag_attr_info);	
+	 				 	
+		  }  		   		        
+        });
+		tag_sql=tag_sql+" ) ";
+		tag_stmat=tag_stmat+" ) ";
+		
+	});
+	    if(tag_sql!=""){
+			tag_sql=tag_sql+" and ";
+			tag_stmat=tag_stmat+" and ";
+		}
 		//attrFlag标志为0表示条件正常
 		if(attrFlag==0){
-
-			if($("#cityName").combobox('getValue')!="ALL"){
+			if($("#cityName").combobox('getValue')!="1"){
 				  tag_attr_info_city.tag_id=tag_id;
 				  tag_attr_info_city.tag_name=tag_name;
+				  tag_attr_info_city.group_id="--";
+				  tag_attr_info_city.group_name=attr_index;
+				  tag_attr_info_city.attr_tr_id="--";
+				  if(lvl_id==3){
+				  tag_attr_info_city.attr_id="COUNTY_ID";
+				  }else{
 				  tag_attr_info_city.attr_id="CITY_ID";
+				  }
 				  tag_attr_info_city.attr_name="地市";
 				  tag_attr_info_city.attr_table="00";
 				  tag_attr_info_city.attr_lvl="--"; 
@@ -1242,8 +1832,7 @@ $("#attr_text").keyup(function(){
                   tag_attr_info_city.attr_value1=$("#cityName").combobox('getValues');	
 			      tag_attr_info_city.attr_value_type2="--";
 				  tag_attr_info_city.attr_value2="--";	
-				  regions=String($("#cityName").combobox('getValues')).split(",");
-				
+				  regions=String($("#cityName").combobox('getValues')).split(",");				
 				  for (i=0;i<regions.length;i++){
 				  if(i!=regions.length-1){
 				      re+="'"+regions[i]+"'"+",";
@@ -1252,21 +1841,21 @@ $("#attr_text").keyup(function(){
 				      re+="'"+regions[i]+"'";
 				  }
 				  };
-				  tag_sql=tag_sql+"a."+tag_attr_info_city.attr_id+tag_attr_info_city.attr_value_type1+"("+re+") and ";					  
-				  
-				  tag_stmat=tag_stmat+tag_attr_info_city.attr_name+"="+$("#cityName").combobox('getText');+" ;";				  
-				  			  	   
+				  tag_sql=tag_sql+"a."+tag_attr_info_city.attr_id+tag_attr_info_city.attr_value_type1+"("+re+") and ";									  
+				  tag_stmat=tag_stmat+tag_attr_info_city.attr_name+"="+$("#cityName").combobox('getText');+" ;";					  			  	   
 	              tag_attr_info_list.push(tag_attr_info_city);						   
 				}
 
-			if($("#countyName").combobox('getValue')!="ALL"){
+			if($("#countyName").combobox('getValue')!=regionId){
 				  tag_attr_info_country.tag_id=tag_id;
 				  tag_attr_info_country.tag_name=tag_name;
+				  tag_attr_info_country.group_id="--";
+				  tag_attr_info_country.group_name=attr_index;
+				  tag_attr_info_country.attr_tr_id="--";
 				  tag_attr_info_country.attr_id="COUNTY_ID";
 				  tag_attr_info_country.attr_name="乡镇";
 				  tag_attr_info_country.attr_table="00";
-				  tag_attr_info_country.attr_lvl="--"; 
-				   
+				  tag_attr_info_country.attr_lvl="--"; 				   
 				  tag_attr_info_country.attr_from="0";
 				  tag_attr_info_country.attr_type="码表";
 				  tag_attr_info_country.attr_value_type1=" in";		  
@@ -1289,12 +1878,12 @@ $("#attr_text").keyup(function(){
 				  tag_stmat=tag_stmat+tag_attr_info_country.attr_name+"="+$("#countyName").combobox('getText')+" ;";				  				  			  	   
 	              tag_attr_info_list.push(tag_attr_info_country);			   
 				}
-				
-				
-				
 			if($("#userState").combobox('getValue')!="ALL"){
 				  tag_attr_info_state.tag_id=tag_id;
-				  tag_attr_info_state.tag_name=tag_name;
+				  tag_attr_info_state.tag_name="--";
+				  tag_attr_info_state.group_id="--";
+				  tag_attr_info_state.group_name=attr_index;
+				  tag_attr_info_state.attr_tr_id="--";
 				  tag_attr_info_state.attr_id="SUBS_STAT";
 				  tag_attr_info_state.attr_name="用户状态"; 
 				  tag_attr_info_state.attr_table="MK_VGOP.T_DIM_SUBS_STAT";
@@ -1314,30 +1903,9 @@ $("#attr_text").keyup(function(){
 	              tag_attr_info_list.push(tag_attr_info_state);						  
 				}
 			
-				
-			if($("#userbrand").combobox('getValue')!="ALL"){
-				  tag_attr_info_brand.tag_id=tag_id;
-				  tag_attr_info_brand.tag_name=tag_name;
-				  tag_attr_info_brand.attr_id="BRAND_ID";
-				  tag_attr_info_brand.attr_name="品牌"; 
-				  tag_attr_info_brand.attr_table="MK_VGOP.T_DIM_BRAND";
-				  tag_attr_info_brand.attr_lvl="状态属性"; 				  
-				  
-								  
-				  tag_attr_info_brand.attr_from="0";
-				  tag_attr_info_brand.attr_type="码表";
-				  tag_attr_info_brand.attr_value_type1="=";		  
-                  tag_attr_info_brand.attr_value1=$("#userbrand").combobox('getValue');	
-			      tag_attr_info_brand.attr_value_type2="--";
-				  tag_attr_info_brand.attr_value2="--";					  
-				  tag_sql=tag_sql+"a."+tag_attr_info_brand.attr_id+tag_attr_info_brand.attr_value_type1+"'"+tag_attr_info_brand.attr_value1+"' and ";					  
-				  
-				  
-				  tag_stmat=tag_stmat+tag_attr_info_brand.attr_name+tag_attr_info_brand.attr_value_type1+$("#userbrand").combobox('getText')+";";				  
-				  			  	   
-	              tag_attr_info_list.push(tag_attr_info_brand);						   
-				}
-			var b = JSON.stringify(tag_attr_info_list); 	
+
+			var b = JSON.stringify(tag_attr_info_list); 
+
             var attrs = new Array();
 			attrs.push(tag_sql+"  1=1 ");
 			attrs.push(tag_stmat);
@@ -1346,78 +1914,164 @@ $("#attr_text").keyup(function(){
 		
 	}	
 	});	
-	//属性弹出框内容		
+	
+	
+	//属性弹出框内容
+	var group_index=0;		
 	$.extend({'edit_attr':function(atrs){		
-	//if($(this).attr("checked")==true){
+    //初始化参数 		//atrs 说明 0 属性类型   1 属性名称  2 属性   3 属性id  4 一级属性
 
 		var strs= new Array(); 
 		strs=atrs.split("&");
-		var checked=$("#"+strs[3]+"_bt").attr("checked");
-		var edit_tr="#"+strs[3]+"_tr";
-		if(checked=="checked"){
-		var htmlconent;
-		if(strs[0]=="连续型"){
-		 htmlconent="<tr id='"+strs[3]+"_tr' title='"+strs[0]+","+strs[4]+","+strs[3]+","+strs[2]+"'><td width='80px'>"+strs[1]+"</td>"
-                          +  "<td><select class='easyui-combobox' name='state' style='width:80px;height:25px'>"
-                          +     "<option value='>' selected>大于</option>"
-						  +     "<option value='>=' >大于等于</option>"
-                          +      "<option value='<' >小于</option>"
-						  +      "<option value='<=' >小于等于</option>"
-                          +      "<option value='='>等于</option>"
-                          +      "</select></td>"
-                          +  "<td><input id='tag_name_txt' type='text'  value='0.00' style='width:100px; height:25px;border:1px solid  #CCC;'></td>"
-                          +   "<td><select class='easyui-combobox' name='state' style='width:80px;height:25px'>"
-                          +     "<option value='>' selected>大于</option>"
-						  +     "<option value='>=' >大于等于</option>"
-                          +      "<option value='<' >小于</option>"
-						  +      "<option value='<=' >小于等于</option>"
-                          +      "<option value='='>等于</option>"
-                          +       "</select></td>"
-                          +    "<td ><input id='tag_name_txt' type='text'  value='0.00' style='width:100px; height:25px;border:1px solid  #CCC;'></td>"
-                          +    "<td width='80px'><label style='cursor: pointer;'  id='"+strs[3]+"&"+strs[0]+"'  onClick=$.consitAttr(this)>构成</label> <span id='"+strs[3]+"_dt' onClick=$.deletrAttr(this.id) style='cursor: pointer;'><lable id='"+strs[3]+"del' style='cursor: pointer;'>删除</label></span></td></tr>";
-								  
-} else if (strs[0]=="码表"){
-       htmlconent="<tr id='"+strs[3]+"_tr' title='"+strs[0]+","+strs[4]+","+strs[3]+","+strs[2]+"'><td width='80px'>"+strs[1]+"</td>"
-                        +  "<td colspan=4><select class='easyui-combobox' name='state' style='width:250px;height:25px' data-options='valueField:\"id\",textField:\"text\",url:\"getAttrTableAction.action?table_name="+strs[2]+"\" '></td>"
-                         +  "<td width='80px'><label style='cursor: pointer;' id='"+strs[3]+"&"+strs[0]+"'  onClick=$.consitAttr(this)>构成</label> <span id='"+strs[3]+"_dt' onClick=$.deletrAttr(this.id) style='cursor: pointer;'><lable  style='cursor: pointer;'>删除</label></span></td></tr>"; 
-} else if (strs[0]=="是否码表"){
-        htmlconent="<tr id='"+strs[3]+"_tr' title='"+strs[0]+","+strs[4]+","+strs[3]+","+strs[2]+"'><td width='80px'>"+strs[1]+"</td>"
-                        +  "<td colspan=4><select class='easyui-combobox' name='state' style='width:250px;height:25px'>"
-                        +   "<option value='1' selected>是</option>"
-                          +   "<option value='0' >否</option>"
-                          +    "</select></td>"
-                         +  "<td width='80px'><label style='cursor: pointer;' id='"+strs[3]+"&"+strs[0]+"'  onClick=$.consitAttr(this)>构成 </label><span id='"+strs[3]+"_dt' onClick=$.deletrAttr(this.id) style='cursor: pointer;'><lable  style='cursor: pointer;'>删除</label></span></td></tr>"; 
-} else if (strs[0]=="其他"){
-        htmlconent="<tr id='"+strs[3]+"_tr' title='"+strs[0]+","+strs[4]+","+strs[3]+","+strs[2]+"'><td width='80px'>"+strs[1]+"</td>"
-                          + "<td colspan=4><input style='width:250px;height:25px' type='text'/></td>"
-                           +  "<td width='80px'><span id='"+strs[3]+"_dt' onClick=$.deletrAttr(this.id) style='cursor: pointer;'><lable style='cursor: pointer;'>删除</label></span></td></tr>";  
-}     
-
-  $("#attr_table_filter").append(htmlconent);	
-  $.parser.parse(edit_tr);
-	}
-	else{$(edit_tr).remove();}  		
-}});
+		var attrs_id=strs[3];   //属性标识
+		var attrs_type=strs[0]; //属性类型
+		var attrs_name=strs[1]; //属性名称
+		var attrs_table=strs[2]; //属性码表
+		var distinct_flag=0;    //表示重复属性添加标志；0表示没有重复，1表示有重复
+       
 	
-    $.extend({'deletrAttr':function(even){	
-	            $("#"+even).parent().parent().remove();
-				showAttrCounts();
+		var edit_tr=attrs_id+"_group";
+       //判断重复条件组
+        var value="";
+	   $("#attr_table_filter div").each(function (index, tr) {
+			var oldId=$(tr).attr("id");
+	        if(oldId==edit_tr){
+				group_index++;
+				var myDate = new Date();
+            	var year = myDate.getFullYear();
+				var mon = myDate.getMonth()+group_index;
+				var day = myDate.getDate();
+				var hour= myDate.getHours();
+				var minute= myDate.getMinutes();
+				var second= myDate.getSeconds();
+				 value = year+(mon<10?('0'+mon):mon)+(day<10?('0'+day):day)+(hour<10?('0'+hour):hour)+(minute<10?('0'+minute):minute)+(second<10?('0'+second):second);	
+            edit_tr=attrs_id+value+"_group";	//组ID
+			}		
+	   	});
+			
+			
+			
+			
+			
+
+
+	    if(distinct_flag==1)
+		{
+			return false;
+		}
+		else{
+			
+			if(attrs_type=="连续型"){html_body=$.gethtmlbody(0,"--");}
+			if(attrs_type=="码表"){html_body=$.gethtmlbody(1,attrs_table);}
+			if(attrs_type=="是否码表"){html_body=$.gethtmlbody(2,"--");}
+			if(attrs_type=="其他"){html_body=$.gethtmlbody(3,"--");}		
+		}
+
+html_start="<div id='"+edit_tr+"' title='"+attrs_id+"_group' style='float:left;'>"                                                    
++    "<div style='margin-left:5px;  margin-top:5px; width:675px;  border-top:1px solid #CCC;border-left:1px solid #CCC;border-right:1px solid #CCC; height:32px; line-height:32px;'>"
++	 "<div style='float:left; padding-left:5px; width:520px'>条件组合</div>"
++	 "<div style='float:left;width:80px; line-height:32px; margin-top:3px; visibility:hidden;'>"
++	      "<select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++                      "<option value='and' selected>并且</option>"
++                      "<option value='or' >或者</option>"
++              "</select></div>"
++	 "<div style='float:left; width:70px;'><img id='"+attrs_id+"_tr_struct' src='./img/attrs/goucheng2.png' title='构成分析' style='cursor:pointer;' width='32px' height='32px' onClick='$.consitAttr(this,\""+attrs_type+"\",\""+attrs_name+"\")'><img id='"+attrs_id+"_tr_del' src='./img/attrs/delete2.png' width='32px' height='32px' title='删除条件组合'  style='cursor:pointer;' onClick='$.deletrAttr(this,1,0,\""+edit_tr+"\")'></div>"     
++     "</div>"                     
+
++     "<div style=' float:left;  margin-left:5px; width:675px;  border:1px solid #CCC' >"
++        "<div id='"+attrs_id+value+"_tr' title='"+attrs_name+"&"+attrs_type+"&"+attrs_table+"' style='float:left;   width:100%;'>"
++             "<div  style='height:32px;line-height:32px;padding-left:5px;'>"
++                "<div style='float:left;width:280px;color:#094AB2' title='"+attrs_id+"'>"+attrs_name+"</div>";
+		
+html_end="<div style='float:left;line-height:32px; margin-top:3px; padding-left:5px;visibility:hidden;'><select class='easyui-combobox' name='state' style='width:80px;height:25px' panelHeight='auto' >"
++			"<option value='and' selected>并且</option>"
++			"<option value='or' >或者</option>"
++                  "</select></div>"
++	 "<div style='float:left; width:70px;'><img src='./img/attrs/add2.png' title='添加同类条件' style='cursor:pointer;' width='32px' height='32px' onClick='$.addSameAttr(\""+attrs_id+"&"+attrs_name+"&"+attrs_type+"&"+attrs_table+"&"+edit_tr+"_tr\")'><img id='"+attrs_id+"_tr_del' src='./img/attrs/delete2.png' width='32px' height='32px' title='删除条件组合' onClick='$.deletrAttr(this,0,\""+attrs_type+"\",\""+edit_tr+"\")' style='cursor:pointer;' ></div>"   
+
++	      "</div><div style='clear:both'></div>"
++         "</div>"
++     "</div>"
++"</div>"
++"<div style='clear:both'></div>";		
+
+
+  $("#attr_table_filter").append(html_start+html_body+html_end);
+   if($("#attr_table_filter").children().size()>2){
+	  $("#attr_table_filter").children().last().prev().children(":eq(0)").children(":eq(1)").css("visibility","visible");
+  }	
+  $.parser.parse("#"+edit_tr);		
+}});
+
+
+
+
+
+
+//属性编辑框删除	
+    $.extend({'deletrAttr':function(even,type,attr_type,attr_group){
+	var tr_id =$(even).attr("id").replace("_tr_del","");
+	
+	if(type==0) //条件行删除
+	{
+
+	      if($(even).parent().parent().parent().children().size()<=2){
+			 $("#"+attr_group).next().remove(); 
+		  if($("#"+attr_group).children(":eq(0)").children(":eq(1)").css("visibility")=="hidden"){		
+			 $("#"+attr_group).next().next().children(":eq(0)").children(":eq(1)").css("visibility","hidden");} 			 
+			 $("#"+attr_group).remove();
+		    }
+	      else{
+			  $(even).parent().parent().next().remove();
+			  if(attr_type=="连续型" ||attr_type=="其它"){
+				  if($(even).parent().parent().children(":eq(3)").css("visibility")=="hidden"){
+				  	 $(even).parent().parent().prev().prev().children(":eq(3)").css("visibility","hidden");}   
+				}else{
+				  if($(even).parent().parent().children(":eq(2)").css("visibility")=="hidden"){
+				  	 $(even).parent().parent().prev().prev().children(":eq(2)").css("visibility","hidden");}
+				}
+		  	  $(even).parent().parent().remove();
+		  }
+	}
+	else{//条件组删除
+        $("#"+attr_group).next().remove(); 
+		 if($("#"+attr_group).children(":eq(0)").children(":eq(1)").css("visibility")=="hidden"){		 
+			 $("#"+attr_group).next().children(":eq(0)").children(":eq(1)").css("visibility","hidden");  } 
+		$("#"+attr_group).remove();
+	}
 		}});
 	
 //构成分析	
-    $.extend({'consitAttr':function(even){	
-                var attrIdArray=new Array();
-				var attrId=$(even).attr("id");			
-				attrIdArray=attrId.split("&");				
-				var typeFlag=attrIdArray[1];
-				if (typeFlag=="是否码表"){
-					 $("#barchar").css("display","none");
-					 $("#piebar").css("display","block");
-				}else{
-					 $("#barchar").css("display","block");
-					 $("#piebar").css("display","none");
-				}
-		}});
+    $.extend({'consitAttr':function(even,attr_type,attrs_name){
+	            //alert(attrs_name+"_"+attr_type);
+	            window.open("buildContion.action?attrType="+encodeURI(attr_type)+"&attrName="+encodeURI(attrs_name),"","height=500,width=700,top=200,left=400,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no");
+	            /*
+				$.ajax({
+					type: 'POST',
+					url: 'buildContion.action',
+					data:{attrType:encodeURI(attr_type)},
+					dataType:"text", 
+					success: function(msg){						
+						if (msg.indexOf("连续型")<10 && msg.indexOf("连续型")!=-1){
+							alert("连续型");
+							alert(msg.indexOf("连续型"));
+						}else if (msg.indexOf("是否码表")<10 && msg.indexOf("是否码表")!=-1){
+						    alert("是否码表");
+						    alert(msg.indexOf("是否码表"));
+						}else if(msg.indexOf("码表")<10 && msg.indexOf("码表")!=-1){
+							alert("码表");
+						}else{
+							alert("其他");
+						}
+					
+					},
+					error: function(data){
+					
+					return false;
+					}
+				});	 
+	            */
+	}});
 		
 		
 	$(".attr_item_title_div").mouseenter(function(){
@@ -1456,26 +2110,7 @@ function countSubstr(str,substr,isIgnore){
      } 
      return count; 
 }
-function showAttrCounts(){
-	var basicCounts=countSubstr($("#attr_table_filter").html(),"基本属性",true);     
- $("#baisc_id").text(basicCounts);
- var voiceCounts=countSubstr($("#attr_table_filter").html(),"语音属性",true);     
- $("#voice_id").text(voiceCounts);
- var flowCounts=countSubstr($("#attr_table_filter").html(),"流量属性",true);     
- $("#flow_id").text(flowCounts);
- var termalCounts=countSubstr($("#attr_table_filter").html(),"终端属性",true);     
- $("#termal_id").text(termalCounts);
- var groupCounts=countSubstr($("#attr_table_filter").html(),"集团属性",true);     
- $("#group_id").text(groupCounts);
- var smsmmsCounts=countSubstr($("#attr_table_filter").html(),"短信",true);     
- $("#smsmms_id").text(smsmmsCounts);
- var keysCounts=countSubstr($("#attr_table_filter").html(),"重点业务",true);     
- $("#keys_id").text(keysCounts);
- var busCounts=countSubstr($("#attr_table_filter").html(),"业务偏好",true);     
- $("#bus_id").text(busCounts);
- var contentCounts=countSubstr($("#attr_table_filter").html(),"内容偏好",true);     
- $("#content_id").text(contentCounts);
-}
+
 //上传文件检查
 function filecheckmethod(){
 				if($('#file').val()=="" || $('#file')==null){

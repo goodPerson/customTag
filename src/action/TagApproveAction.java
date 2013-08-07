@@ -6,7 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-
+import common.GetLog;
 import module.TagAprove;
 
 import org.apache.struts2.ServletActionContext;
@@ -16,17 +16,16 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 import com.opensymphony.xwork2.ActionSupport;
-import common.GetLog;
 
 import dao.ApproverInfoDaoImpl;
-import dao.TabRequestDetlDaoImpl;
 import dao.TagApproveImpl;
 
 
 
 
 public class TagApproveAction extends ActionSupport{
-	private  TagApproveImpl tagapprove ;
+	//private TagApproveImpl tagapprove =new TagApproveImpl();
+	private static TagApproveImpl tagapprove;
 	private String userId;
 	private String jspmes;
 	private String role;
@@ -34,76 +33,62 @@ public class TagApproveAction extends ActionSupport{
 
 	private String url1="./img/maintag/finished.png";
 	private String url2="./img/maintag/none_finish.png" ;
+	private String url3="./img/maintag/my_tag.png" ;
 	private List<TagAprove> listtag= new ArrayList<TagAprove>();
-	
-	//分页功能参数  start
-	
-	private int pageNo;  //当前页
-	private int pageCounts;  //总页数
-	private int totalRecords; //总记录数
-	
-	//分页功能参数  end
-	
-	//static ApplicationContext cxt=null;
-	public  void initTag(){
-		XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+	private List<TagAprove> myListtag=null;
+			
+	static ApplicationContext factory=null;
+	public static  void initTag(){
+		//XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		if (null==factory)
+			factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 		tagapprove=(TagApproveImpl)factory.getBean("TagApprove");
-		//if (null==cxt)
-		  //cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-		//tagapprove=(TagApproveImpl)cxt.getBean("TagApprove");
 	}
 	public static  void initApproverInfo(){
-		XmlBeanFactory factory =new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		approverInfoDao=(ApproverInfoDaoImpl) factory.getBean("approverInfoDaoImpl");	
-		//if (null==cxt)
-		//  cxt = new ClassPathXmlApplicationContext("applicationContext.xml");
-		//approverInfoDao=(ApproverInfoDaoImpl) cxt.getBean("approverInfoDaoImpl");
+		//XmlBeanFactory factory =new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		if (null==factory)
+			factory = new ClassPathXmlApplicationContext("applicationContext.xml");
+		approverInfoDao=(ApproverInfoDaoImpl) factory.getBean("approverInfoDaoImpl");		
 	}
 	
 	public String listtgappro()  throws Exception{
-		//if (null==tagapprove)
-			this.initTag();
-		//if (null==approverInfoDao)
-			this.initApproverInfo();
-        int pageSize=15;
+		if (null==tagapprove)
+		this.initTag();
+		if(null==approverInfoDao)
+		this.initApproverInfo();
 		HttpServletRequest request = ServletActionContext.getRequest();
-		
 		jspmes=request.getParameter("jspmes");
-		String pageNoS=request.getParameter("pageNo");
 		
-		if (null==pageNoS || pageNoS.trim().length()==0){
-			pageNo=1;
-		}else{
-			pageNo=Integer.parseInt(pageNoS);
-		}
-		//无分页
-		//listtag=tagapprove.listtag(userId, jspmes);
-		//分页
-	    List<TagAprove> tempListtag=null;
-	    tempListtag=tagapprove.listtagPage(userId, jspmes, pageNo, pageSize);		
-		pageCounts=tagapprove.getPageInfo().getTotalPages();		
-		if (pageNo<=1){
-			pageNo=1;
-		}else if (pageNo>=pageCounts){
-			pageNo=pageCounts;
-		}
-			
-		totalRecords=tagapprove.getPageInfo().getTotalRows();
-		if (totalRecords<1)
-			totalRecords=1;
-		listtag=tagapprove.listtagPage(userId, jspmes, pageNo, pageSize);
+		listtag=tagapprove.listtag(userId, jspmes);
 		HttpSession session=request.getSession();
 		String id=session.getAttribute("userId").toString();
 		role=approverInfoDao.getRoleById(id);
 		
+
 		switch (Integer.parseInt(jspmes)){
 		case  0 :url1="./img/maintag/finished_gray.png";break;
-		case  1:url2="./img/maintag/no_fished_gray.png";break;
-			
+		case  1:url2="./img/maintag/no_fished_gray.png";break;			
 		}
-		GetLog.getLog("标签管理", "浏览", "标签浏览",jspmes);
+	    url3="./img/maintag/my_tag_gray.png" ;
 		return 	SUCCESS;
 	}
+	/**
+	 * 我的标签
+	 * @return
+	 */
+	public String myListtgappro(){
+		if (null==tagapprove)
+			this.initTag();
+		HttpServletRequest  request=ServletActionContext.getRequest();
+		HttpSession session=request.getSession();
+		String id=session.getAttribute("userId").toString();
+		myListtag=tagapprove.myListtag(id);
+		url1="./img/maintag/finished_gray.png";
+	    url2="./img/maintag/no_fished_gray.png" ;
+	    url3="./img/maintag/my_tag.png" ;
+		return SUCCESS;
+	}
+	
 
 	public String getUserId() {
 		return userId;
@@ -164,22 +149,17 @@ public class TagApproveAction extends ActionSupport{
 	public void setApproverInfoDao(ApproverInfoDaoImpl approverInfoDao) {
 		this.approverInfoDao = approverInfoDao;
 	}
-	public int getPageNo() {
-		return pageNo;
+	public List<TagAprove> getMyListtag() {
+		return myListtag;
 	}
-	public void setPageNo(int pageNo) {
-		this.pageNo = pageNo;
+	public void setMyListtag(List<TagAprove> myListtag) {
+		this.myListtag = myListtag;
 	}
-	public int getPageCounts() {
-		return pageCounts;
+	public String getUrl3() {
+		return url3;
 	}
-	public void setPageCounts(int pageCounts) {
-		this.pageCounts = pageCounts;
+	public void setUrl3(String url3) {
+		this.url3 = url3;
 	}
-	public int getTotalRecords() {
-		return totalRecords;
-	}
-	public void setTotalRecords(int totalRecords) {
-		this.totalRecords = totalRecords;
-	}	
+	
 }

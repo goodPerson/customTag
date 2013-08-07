@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
-<%@ page language="java" import="java.net.*" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -23,25 +22,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>  
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script> 
-
-  </head>
+    <script type="text/javascript" src="js/DD_roundies_min.js"></script>
+     
+    
+</head>
    <style>
 *{font-family: "微软雅黑";font-size: 10pt;
 }
 html{
-	height:100%;
-	overflow-x: hidden;
-	overflow-y: hidden;
-	}
-body{
-	height:100%;
-	width:100%;
-	font:10pt "微软雅黑" ;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-right: 0px;
 	overflow-x: hidden;
 	overflow-y: auto;
+	}
+body{
+
+	width:1024px;
+	font:10pt "微软雅黑" ;
+	text-align:center;
+	margin:0px auto;
+	background:#fff;
 	}
   #taginfo_table{
     table-layout: fixed;
@@ -62,6 +60,14 @@ body{
 　text-overflow:ellipsis;
   }
  .line {
+	height: 0px;
+	font-size: 0px;
+	background: #E8E8E8;
+	line-height: 0px;
+	float: left;
+	
+}
+ .line_de {
 	height: 1px;
 	font-size: 0px;
 	background: #E8E8E8;
@@ -85,11 +91,6 @@ body{
 #create_div a:visited {text-decoration:none ; background:#094AB2; color:#FFF ;}
 #create_div a:hover {text-decoration:none ; background:#03F; color:#FFF ;}
 #create_div a:active {text-decoration:none ;background:#000; color:#FFF ;}
-#find_button a{ display:block; width:50px; height:22px; text-align:center; font-size:10pt; line-height:22px;}			
-#find_button a:link{text-decoration:none ; background:#094AB2; color:#FFF ;}
- #find_button a:visited {text-decoration:none ; background:#094AB2; color:#FFF ;}
- #find_button a:hover {text-decoration:none ; background:#03F; color:#FFF ;}
- #find_button a:active {text-decoration:none ;background:#000; color:#FFF ;}
 .img_div {
 	height: 40px;
 	float: left;
@@ -104,102 +105,139 @@ body{
   width: 100%;  
   position: absolute; 
   opacity:0.1; 
-  z-index: 1;  }  
+  z-index: 1;  
+}
+.label{
+	height:30px;
+	line-height:30px;
+	width:9.8%;
+	text-align:center;
+	float:left;
+    cursor: pointer;
+} 
+.label_one{
+  length:20px;
+  margin-right:14px;
+  margin-top:5px;
+  margin-bottom:5px;
+  text-align:right;
+} 
+#nav a{
+  font-size:12pt;
+  font-family:"微软雅黑";
+  font-weight: 550;
+  text-decoration : none;
+}
+#attr_one a{
+  font-size:11pt;
+  font-family:"微软雅黑";
+  font-weight: 550;
+  text-decoration : none;
+}
+.label_in {
+  color:#5ab4f9;
+
+}
+.labelin_one{
+   text-decoration:underline;
+}
+#serch_attr_div{
+position:absolute;left:710px; top:60px; width:414px;border-bottom:solid #CCC 1px; border-left:solid #CCC 1px; border-right:solid #CCC 1px; display:block; background:#FFF; height:200px; overflow:auto; z-index:2;display:none;	
+}
+.attr_tishi_div{
+margin:2px;color:#666;cursor:pointer;
+}
+.attr_desc_div {
+
+    margin-left:5px;
+    padding-bottom:2px;
+	float: left;
+	width: 85px;
+	height: 25px; 
+	cursor: pointer;
+	text-align:center; 
+	color:#999;
+	line-height:25px;
+}
+.attr_desc_div_in{
+     color:#5ab4f9;
+}
+#chartTable_one{
+    width:1024px;
+    height:100%;
+}
    </style>
   <body>
     <!------------------------ 灰层---------------------------------------- -->
-  <div id="gray" style="display:none"></div>
-  <div style="float:left;margin-top:10px;margin-bottom:10px">
-  <label>属性分类:</label>&nbsp; <select id="attr_classify" class="easyui-combobox" name="state" style="width: 100px;"></select> 
-  <label>属性子类1:</label>&nbsp; <select id="attr_classify_one" class="easyui-combobox" name="state" style="width: 100px;"></select>
-  <label>属性子类2:</label>&nbsp; <select id="attr_classify_two" class="easyui-combobox" name="state" style="width: 100px;"></select>
+      <table  id="chartTable_one" width="1024px"  border="0"  cellspacing="0" cellpadding="0">
+	<tr>
+	  <td width="24px" height="24px" style="background:url(./img/leftup.png)"></td>
+	  <td width="100%" style="background:url(./img/upborder.png)  repeat-x"></td>
+	  <td width="24px" height="24px" style="background:url(./img/rightup.png)" ></td>
+	</tr>
+	<tr>
+	  <td height="100%" style="background:url(./img/leftborder.png) repeat-y"></td>
+	  <td width="100%" valign="top">
+	  <!--主要内容开始-->
+      <div id="gray" style="display:none;"></div>
+  <div style="width:100%;margin-left:255px">
+  <div style="float:left;width:415px;">
+    <input type="text" id="attr_name" value="属性名称" style="border:solid #5ab4f9 2px;padding-top:1px;height:30px;width:415px;color:gray;"onfocus="if (value =='属性名称'){value =''}" onBlur="if (value ==''){value='属性名称';this.style.color='gray'}" onKeyDown="{this.style.color='#000'}">
   </div>
-  <div id="find_button"><a  href="javaScript:void(0)"  id="query" style="float:left;margin-left:10px;margin-top:10px">查询</a> </div>
-<!--    <div id="create_pic" class="img_div" ><img src="./img/maintag/create.png" align="absmiddle" /></div>
-  <div id="create_attr" class="title_div">创建</div>
-  <div id="" class="img_div" ><img src="./img/maintag/rename.png" align="absmiddle" /></div>
-  <div id="edit_attr" class="title_div">编辑</div>
-  <div id="" class="img_div" ><img src="./img/maintag/manage.png" align="absmiddle" /></div>
-   <div id="del_attr" class="title_div">删除</div> -->
-  
-   <div class="line" style="width:100%;" >&nbsp;</div>
+     
+   <div id="find_button" style="float:left;">
+   <div id="serch_attr_div" style="border:1px solid #999"></div>
+<img id="query" src="./img/bt_attr.png" width="80" height="30">
+    </div>
+   </div> 
+<div style="clear:both"></div>
+ <div id="nav" style="float:left;height:30px; margin-top:10px; border-top:1px solid #CCC; border-left:1px solid #CCC;; border-right:1px solid #CCC;;width:100%;">
+<div class="label" >基本属性</div>
+<div class="label" >语音属性</div>
+<div class="label" >流量属性</div>
+<div class="label" >短/彩信属性</div>
+<div class="label" >业务属性</div>
+<div class="label" >终端属性</div>
+<div class="label" >集团属性</div>
+<div class="label" >区域属性</div>
+<div class="label" >渠道属性</div>
+<div class="label" >标签</div>
+  </div>
+   <div class="line" style="width:100%;border:solid #5ab4f9 1px;" >&nbsp;</div>
+   <div id="attr_one" style="float:left;width:100%;margin-bottom:5px;border:1px solid #CCC;">
+   <div class="attr_tr" style="width:100%; ">
+      <s:iterator value="listAttrName1"  id="AttrUnify1">
+       <div class="attr_desc_div"  title="<s:property value='attr_classify_one'/>">
+         <s:if test="%{attr_classify_one.length()>5}">
+         	<s:property value="%{attr_classify_one.substring(0,4)+'...'}" escape="false" />
+         </s:if>
+         <s:else>
+        	 <s:property value="attr_classify_one"/>
+         </s:else>
+       </div>                         
+      </s:iterator>
+   </div>
+   </div>
+
  <!------------------------ 内容table---------------------------------------- -->
+ <div style="clear:both" />
+ <div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>属性表格</div>
+ <div style="border:#CCC 1px solid; width:100%">
   <table id="taginfo_table" width="100%" border="0" cellspacing="0" cellpadding="5">
   <tr >
-<!-- <td width="2%"><input name="" type="checkbox" value="" onClick="check_all(this)" id="check"> </td>-->
-    <td style="color:#030;" width="10%">属性名称</td>
-    <td style="color:#030;" width="10%">属性分类</td>
-    <td style="color:#030;" width="10%">属性子类1</td>
-    <td style="color:#030;" width="10%">属性子类2</td>
-    <td style="color:#030;" width="20%">统计口径</td>
-    <td style="display:none">num</td>
- <!--    <td style="color:#030;  ">标签结束时间</td>
-    <td style="color:#030;  ">标签创建人</td>
-    <td style="color:#030;  ">标签地市</td>
-     -->
+    <td style="color:#030;font-style:bold" width="20%">属性名称</td>
+    <td style="color:#030;" width="60%">统计口径</td>
   </tr>
   <s:iterator  value="listAttrName"   var="AttrUnify">  	     	
  	     <tr id="table_text" >
-<!-- style="color:#000099"  		<td><input name="subBox" type="checkbox" /></td>    -->
-    		<td style="color:#666" width="10%"> <s:property value="attr_desc" /></td>
-    		<td style="color:#666" width="10%"><s:property value="attr_classify" /></td>
-    		<td style="color:#666" width="10%"><s:property value="attr_classify_one" /></td>
-    		<td style="color:#666" width="10%"><s:property value="attr_classify_two" /></td>
-    		<td style="color:#666;" width="20%"><a style="width:300px;text-align:left;" title="<s:property value="statis_requmts" />"><s:property value="statis_requmts" /></a></td>
-    		<td  width="20%" style="display:none"><s:property value="num_order" /></td>
-    	 <!-- 	<td style="color:#666"><s:property value="" /></td>
-   			<td style="color:#666"><s:property value="" /></td>
-   			<td style="color:#666 "><s:property value="" /></td>
-   			<td style="display:none"><s:property value="" /></td> -->
+    		<td style="color:#094AB2" width="20%"> <a style="width:90%;text-align:left;" title="<s:property value="attr_desc" />"><s:property value="attr_desc" /></a></td>
+    		<td style="color:#666" width="40%"> <a style="width:90%;text-align:left;" title="<s:property value="statis_requmts" />"><s:property value="statis_requmts" /></a></td>
   		</tr>  	    	    	 
 </s:iterator> 
-<tr>
-<td colspan="6"  align="center">
-<input id="attr_classifyPar"  type="hidden" value="<s:property value='attr_classifyPar'/>"/>
-<input id="attr_classify_onePar" type="hidden" value="<s:property value='attr_classify_onePar'/>"/>
-<input id="attr_classify_twoPar" type="hidden" value="<s:property value='attr_classify_twoPar'/>"/>
-<input id="page1" type="hidden" value="1"/>
-<input id="page2" type="hidden" value="<s:property value='pageNo-1'/>"/>
-<input id="page3" type="hidden" value="<s:property value='pageNo+1'/>"/>
-<input id="page4" type="hidden" value="<s:property value='pageCounts'/>"/>
-<s:if test="%{pageNo==1}">
- 第一页&nbsp;  
- 上一页&nbsp;
- </s:if>
- <s:else>
- <a href="javaScript:void(0)"  id="first" >第一页</a>&nbsp;
-  <a href="javaScript:void(0)"  id="front" >上一页</a>&nbsp;
-   
-   <!-- 
- <a href="getAttrListAction.action?attr_classify=<%=URLEncoder.encode(request.getAttribute("attr_classifyPar").toString(),"utf-8")%>&attr_classify_one=<%=URLEncoder.encode(request.getAttribute("attr_classify_onePar").toString(),"utf-8")%>
-  &attr_classify_two=<%=URLEncoder.encode(request.getAttribute("attr_classify_twoPar").toString(),"utf-8")%>&pageNo=1">第一页</a>&nbsp;
-  <a href="getAttrListAction.action?attr_classify=<%=URLEncoder.encode(request.getAttribute("attr_classifyPar").toString(),"utf-8")%>&attr_classify_one=<%=URLEncoder.encode(request.getAttribute("attr_classify_onePar").toString(),"utf-8")%>
-  &attr_classify_two=<%=URLEncoder.encode(request.getAttribute("attr_classify_twoPar").toString(),"utf-8")%>&pageNo=<s:property value="pageNo-1"/>">上一页 </a>&nbsp;
-  --> 
- </s:else>
- 
- <s:if test="%{pageNo==pageCounts}"> 
-  下一页 &nbsp;
-  尾页 &nbsp;
- </s:if>  
- <s:else>
-
-  <a href="javaScript:void(0)"  id="next" >下一页</a>&nbsp;
-  <a href="javaScript:void(0)"  id="tail" >尾页</a>&nbsp;
- <!--
-  <a href="getAttrListAction.action?attr_classify=<%=URLEncoder.encode(request.getAttribute("attr_classifyPar").toString(),"utf-8")%>&attr_classify_one=<%=URLEncoder.encode(request.getAttribute("attr_classify_onePar").toString(),"utf-8")%>
-  &attr_classify_two=<%=URLEncoder.encode(request.getAttribute("attr_classify_twoPar").toString(),"utf-8")%>&pageNo=<s:property value="pageNo+1"/>">下一页 </a> &nbsp;
-  <a href="getAttrListAction.action?attr_classify=<%=URLEncoder.encode(request.getAttribute("attr_classifyPar").toString(),"utf-8")%>&attr_classify_one=<%=URLEncoder.encode(request.getAttribute("attr_classify_onePar").toString(),"utf-8")%>
-  &attr_classify_two=<%=URLEncoder.encode(request.getAttribute("attr_classify_twoPar").toString(),"utf-8")%>&pageNo=<s:property value="pageCounts"/>"> 尾页 </a>&nbsp;
-   --> 
- </s:else>
-
-
- 当前 <s:property value="pageNo"/> 页 ， 共 <s:property value="totalRecords"/> 条记录 ，共计 <s:property value="pageCounts"/> 页</td>
-</tr>
   </table>
+  </div>
  <!------------------------ 创建标签对话框---------------------------------------- -->
- <div id='create_div'>
+ <div id='create_div' style="border:1px solid #CCC;">
 <table width="100%" border="0" cellspacing="0" cellpadding="10" >
   <tr>
     <td colspan="2" style="font-size:12pt;">创建属性</td>
@@ -222,18 +260,173 @@ body{
   </tr>
 </table>
 </div> 
-  <script type="text/javascript">
+	  
+	  <!--主要内容结束-->
+	  </td>
+	 <td  width="24px" style="background:url(./img/rightborder.png) "></td>
+	</tr>
+	<tr>
+	  <td width="24px" height="24px" style="background:url(./img/leftdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td   height="24px"   style="background:url(./img/downborder.png)   "></td>
+	  <td width="24px" height="24px"  style="background:url(./img/rightdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+  </table> 
+
+ <script type="text/javascript">
+//   DD_roundies.addRule('.label', '5px 5px 0 0', true);
+   DD_roundies.addRule('.attr_desc_div_in', '2px', true);
    $(function(){
- 
-   // var  cla="<%=request.getAttribute("attr_classifyPar") %>";
-   // var  one="<%=request.getAttribute("attr_classify_onePar") %>";
-   // var  two="<%=request.getAttribute("attr_classify_twoPar") %>";
-    var  cla="<%=request.getAttribute("attr_classifyPar") %>";
-    var  one="<%=request.getAttribute("attr_classify_onePar") %>";
-    var  two="<%=request.getAttribute("attr_classify_twoPar") %>";
+   
+    var  cla="<%=request.getAttribute("attr_classify") %>";
+    var  one="<%=request.getAttribute("attr_classify_one") %>";
+    var  two="<%=request.getAttribute("attr_classify_two") %>";
+    var name="<%=request.getAttribute("attr_classify") %>";
+    //alert(name);
+    
+//    $(".attr_desc_div").css("border","1px solid #999999");
+    if(!+[1,]); 
+ //   else $("#find_button").css("margin-top","10px");
+   
+    //属性查询事件
+var oldtext="";
+$("#attr_name").keyup(function(){
+	if($(this).val()!=oldtext){
+  		//alert($(this).val());
+		//oldtext=$(this).val();
+		
+	  var type1="";//一级属性类
+	  var type2=encodeURI($("#attr_name").val());//二级属性类
+	  var type11="";  		
+	  $.third_attr_panel_tishi('2',type1,type2,type11);	
+  
+	}
+	 if($("#attr_name").val()=="" || $("#attr_name").val()=="查询属性名称"){
+        $("#serch_attr_div").css("display","none");
+    }
+  
+	
+});
+
+//生产三级属性查询提示框面板
+    $.extend({'third_attr_panel_tishi':function(value_type,type1,type2,type11){	
+	  $.ajax({
+    		type: 'POST',
+    		url: 'listAttrTagAction.action',
+    		data:{type_1:value_type,type_2:type2},
+    		dataType:'json', 
+    		success: function(data){ 
+		    var table_str=""; 		    
+			$("#serch_attr_div").children().remove();			
+			$.each(data,function(i,table){				
+				$.each(table,function(l,tr){
+				  $.each(tr,function(k,td){
+					//atrs 说明 0 属性类型   1 属性名称  2 属性   3 属性id  4 一级属性		
+					table_str=table_str+"<div class='attr_tishi_div' onClick='$.attr_tishi(this)' onMouseover='$.attr_tishi_over(this)' onMouseOut='$.attr_tishi_out(this)'  >"+td.attr_name+"</div> ";  
+					});								 
+				});
+			});	
+
+			$("#serch_attr_div").html(table_str);
+			var set =$("#attr_name").offset();
+			$("#serch_attr_div").css({
+			             "display":"block",
+						 "left":set.left+"px",
+						 "top":(parseInt(set.top)+30)+"px"
+						 });	
+
+            },
+   			error: function(data){
+            alert(data);
+     		return false;
+    		}
+    	});			
+		
+	}
+	});
+//提示框点击事件
+    $.extend({'attr_tishi':function(evet){	
+	  $("#attr_name").val($(evet).text());
+	  $("#serch_attr_div").hide();
+	
+	}});
+//提示框移出移入变化
+    $.extend({'attr_tishi_over':function(evet){	
+	  $(evet).css('background','#d4d4d4');	
+	}});
+	
+    $.extend({'attr_tishi_out':function(evet){
+      $(evet).css('background','');	
+	  $(evet).css('color','#666');	
+	}});
+    var index1="";
+      $("#nav").find("div").each(function(){
+          str_index=$(this).text();
+         // alert(str_index);
+         if(str_index==name){
+         $(this).addClass("label_in");
+         }             
+          });
+          $(".attr_desc_div").each(function(){
+          str_index=$(this).attr("title");
+         // alert(str_index);
+         if(str_index==one){
+//          $(this).css("background","#094AB2");
+        $(this).addClass("attr_desc_div_in");
+         
+         }             
+          });
+    //alert(index1);
    //  alert(classify);
-          
-      $("#attr_classify").combobox({
+    $(".attr_desc_div").mouseenter(
+       function(){
+        var index=$(".attr_desc_div").index(this);
+         // alert($("#nav children:eq(0)").text());
+         if(one!=$(this).attr("title")){
+         $(this).addClass("attr_desc_div_in");
+         }
+    });
+    $(".attr_desc_div").mouseleave(
+       function(){
+        var index=$(".attr_desc_div").index(this);
+        if(one!=$(this).attr("title")){
+         $(this).removeClass("attr_desc_div_in");
+         }
+    });
+    $("#nav").children().mouseenter(
+       function(){
+       var text=$(this).text();
+        if(text!=name){
+        $(this).addClass("label_in");
+        }
+    
+    });
+    
+     $("#nav").children().mouseleave(
+       function(){
+       var text=$(this).text();
+        if(text!=name){
+        $(this).removeClass("label_in");
+        }
+    
+    });
+    $("#nav").children().click(
+          function(){
+           $(this).addClass("label_in");
+         var hee="getAttrListAction.action?attr_classify="+encodeURI(encodeURI($(this).text()))+"&attr_classify_one="+""+"&attr_classify_two="+"";
+         window.location.href=hee;
+    });  
+//     $("#attr_one").children().click(
+      $(".attr_desc_div").click(
+         function(){
+          // $(this).addClass("label_in");
+          // index1=$("#attr_one").children().index(this);
+          // alert($(this).attr("title"));
+         var hre="getAttrListAction.action?attr_classify="+encodeURI(encodeURI(name))+"&attr_classify_one="+encodeURI(encodeURI($(this).attr("title")))+"&attr_classify_two="+"";
+         window.location.href=hre;
+    });    
+ //   alert(index1);
+    
+    $("#attr_classify").combobox({
                 url: 'getAttrAction.action',
                 editable:false,
 				valueField: 'id',
@@ -286,7 +479,7 @@ body{
       
       
    
-     $("#query").click(
+/*     $("#query").click(
      function(){
       var attr_classify =$("#attr_classify").combobox("getValue");
       var attr_classify_one =$("#attr_classify_one").combobox("getValue");
@@ -295,6 +488,13 @@ body{
 //          window.location.href=a; 
       $("#query").attr("href",a);
       
+     });*/
+     
+     $("#query").click(function(){
+       var attr_name=$("#attr_name").val();
+       var a ="getAttrDescAction.action?attr_name="+encodeURI(encodeURI(attr_name));
+      // $("#query").attr("href",a);
+	  window.location.href=a;
      });
      
       $("#attr_classify").combobox("setValue",cla) ;
@@ -314,34 +514,6 @@ body{
     $("#taginfo_table tr:eq("+tr_index+") td").css("color","#FFFFFF");
    }
    });*/
-   
-   //fenye 
-   var attr_classifyPar         =$("#attr_classifyPar").val();
-   var attr_classify_onePar              =$("#attr_classify_onePar").val();
-   var attr_classify_twoPar    =$("#attr_classify_twoPar").val();
-   var page1                      =$("#page1").val();
-   var page2                      =$("#page2").val();
-   var page3                      =$("#page3").val();
-   var page4                      =$("#page4").val();
-   var hrefFy="getAttrListAction.action?attr_classify="+encodeURI(encodeURI(attr_classifyPar))+"&attr_classify_one="+encodeURI(encodeURI(attr_classify_onePar))+"&attr_classify_two="+encodeURI(encodeURI(attr_classify_twoPar));
- $("#first").click(function(){
-	 var hrefFyf=hrefFy+"&pageNo="+page1;
-	 $("#first").attr("href",hrefFyf);
- });
- $("#front").click(function(){
-	 var hrefFye=hrefFy+"&pageNo="+page2;
-	 $("#front").attr("href",hrefFye);
- });
- $("#next").click(function(){
-	 var hrefFyt=hrefFy+"&pageNo="+page3;
-	 $("#next").attr("href",hrefFyt);
- });
- $("#tail").click(function(){
-	 var hrefFyfo=hrefFy+"&pageNo="+page4;
-	 $("#tail").attr("href",hrefFyfo);
- });
-   
-   
    
    
    $("#taginfo_table tr:gt(0)").mouseenter(
@@ -502,7 +674,7 @@ $("#createAttr_bt").click(
    }
    }
   };
-			});
-		</script>
+  });
+    </script>
   </body>
 </html>

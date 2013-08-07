@@ -32,9 +32,9 @@ import dao.UploadLtLogDaoImpl;
 import module.TypeUserInfo;
 
 public class TypeUserInfoAction {
-	   private  TypeUserInfoDaoImpl typeUserInfoDao;
-	   private   TagInfoDaoImpl customTagDao;
-	   private  UploadLtLogDaoImpl upLoadLtLogDao;
+	   private static TypeUserInfoDaoImpl typeUserInfoDao;
+	   private static  TagInfoDaoImpl customTagDao;
+	   private static UploadLtLogDaoImpl upLoadLtLogDao;
 	   private boolean flag=false;
 	//文件导入参数开始
 		private String path;//导入的文件的路径
@@ -49,14 +49,10 @@ public class TypeUserInfoAction {
 		
 		public void initTypeUserInfo(){
 			XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-			//if (null==factory)
-				//factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 			typeUserInfoDao=(TypeUserInfoDaoImpl) factory.getBean("typeUserInfoDaoImpl");
 		}
 		public void initUploadLt(){
 			XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-			//if (null==factory)
-			//	factory = new ClassPathXmlApplicationContext("applicationContext.xml");
 			upLoadLtLogDao=(UploadLtLogDaoImpl) factory.getBean("uploadLtLogDaoImpl");
 		}
 		/*
@@ -94,9 +90,9 @@ public class TypeUserInfoAction {
 		 * @throws IOException */
 		@SuppressWarnings("deprecation")
 		public String importUser() throws IOException {
-			//if (null==typeUserInfoDao)
+			if (null==typeUserInfoDao)
 			this.initTypeUserInfo();
-			//if (null==upLoadLtLogDao)
+			if (null==upLoadLtLogDao)
 			this.initUploadLt();
 			int countSucess=0;
 			int countFail=0;

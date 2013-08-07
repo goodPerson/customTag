@@ -34,29 +34,28 @@ html{
 	}
 body{
 	height:100%;
-	width:100%;
+	width:1024px;
 	font:10pt "微软雅黑" ;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	margin-right: 0px;
-	overflow-x: hidden;
-	overflow-y: auto;
+	margin:0px auto;
+	text-align:center;
+	background:#FFF;
+
 	}
 td {color:#000}
 #taginfo_table {
-  visibility : hidden;
+  display : none;
 }
 #create_div{border-color:#000; border-style:solid;border-width:2px;
 			background:#FFF; width:380px; height:250px;
 			position:absolute;top:40px;left:60px;z-index:2;
-			visibility:hidden}
+			display:none}
 #no_data {
-  visibility : hidden;
-  font:15pt "微软雅黑" ;
+  display:none;
+  font:12pt "微软雅黑" ;
   color: #A9A9A9; 
 }
 #menu_div{
-background:#fff; width:100%; height:30px;
+background:#fff; width:1024px; height:30px;
 }
 #create_tg{
 cursor:pointer; float:left;
@@ -127,7 +126,7 @@ cursor:pointer;
 cursor:pointer;
 }
 #gray{
- background:#FFFFFF;
+ background:gray;
   height: 90%;  
   left: 0%;  
   right: 0%;  
@@ -141,6 +140,14 @@ cursor:pointer;
 	background: #E8E8E8;
 	line-height: 1px;
 	float: left;
+}
+ .line1 {
+	height: 0px;
+	font-size: 0px;
+	background: #E8E8E8;
+	line-height: 0px;
+	float: left;
+	
 }
 .title_div {
 	cursor: pointer;
@@ -162,63 +169,75 @@ cursor:pointer;
   <div id="gray" style="display:none"></div>
 <!------------------------ 导航条---------------------------------------- -->
 <input type="hidden" id="region_n" value="<s:property value='#session.regionName'/>"/>
-<div id="menu_div">
-<div id="create_tg" class="nav_bt_div">
- <div id="create_pic" class="img_div" ><img src="./img/maintag/create.png" align="absmiddle" /></div>
-<div id="" class="title_div">创建</div>
-</div>
-<div id="open_t" class="nav_bt_div">
-<div id="" class="img_div" ><img src="./img/maintag/open.png" align="absmiddle" /></div>
-<div id="" class="title_div">打开</div>
-</div>
-<div id="t_rename" class="nav_bt_div">
-<div id="img_rename" class="img_div" ><img src="./img/maintag/rename.png" align="absmiddle" /></div>
-<div id="" class="title_div">重命名</div>
-</div>
-<div id="mana_t" class="nav_bt_div">
-<div id="img_ma" class="img_div" ><img src="./img/maintag/manage.png" align="absmiddle" /></div>
-<div id="" class="title_div">管理</div>
-</div>
-<div id="order" class="nav_bt_div">
-<div id="img_order" class="img_div" ><img src="./img/maintag/order.png" align="absmiddle" /></div>
-<div id="" class="title_div">排序<label id="order_t" style="visibility:hidden;">标签名称</label></div>
-</div>
-<div style="height:30px;float:left;margin-top:10px">
-<label>客户群选择：</label>&nbsp; <select id="cust_group" class="easyui-combobox" name="state" style="width: 100px;"></select> 
+
+   <%--          END导航内容         --%>
+   <table  id="chartTable_one" width="1024px"  height="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+	  <td width="24px" height="24px" style="background:url(./img/leftup.png)  ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td width="24px" style="background:url(./img/upborder.png)  "></td>
+	  <td width="24px" height="24px" style="background:url(./img/rightup.png)  ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	</tr>
+	<tr>
+	  <td  width="24px" style="background:url(./img/leftborder.png) "></td>
+	  <td width="100%" valign="top">
+
+
+  <!--主要内容开始-->
+       
+ 
+  <div id="select_option"style="height:23px;float:left;margin-top:0px;margin-bottom:5px;margin-left:10px;display:none">
+<label>客户群选择：</label>&nbsp; <select id="cust_group" class="easyui-combobox" name="state" style="width: 100px;margin-bottom:5px;"></select> 
  </div>
-  <div style="float:left;margin-top:10px;cursor:pointer" id="find"><a  href="javaScript:void(0)"  id="query" style="float:left;margin-left:10px">搜索</a></div>
- </div> 
-  
-  <div class="line" style="width:100%;" >&nbsp;</div>
- <!------------------------ 内容table---------------------------------------- -->
- <table id="taginfo_table" width="100%" border="0" cellspacing="0" cellpadding="5" >
+  <div style="float:left;margin-top:0px;height:18px;margin-bottom:5px;cursor:pointer;display:none;" id="find"><img  src="./img/find.png"  id="query" style="float:left;margin-left:10px"></div>
+ <div id="line" class="line1" style="width:100%;border:solid #5ab4f9 1px;display:none;" >&nbsp;</div>
+ <div id="no_data" >没有该类型的客户群</div>
+ <table id="taginfo_table" width="1024px" border="0" cellspacing="0" cellpadding="5" >
   <tr >
     <td><input name="" type="checkbox" value="" onClick="check_all(this)" id="check"> </td>
     <td style="color:#030;  ">客户群名称</td>
-    <td style="color:#030;  ">客户群简介</td>
-    <td style="color:#030;  ">客户群人数</td>
-    <td style="color:#030;  ">客户群口径</td>
-    <td style="color:#030;  ">开始时间</td>
-    <td style="color:#030;  ">结束时间</td>
+    <td style="color:#030;  ">简介</td>
+    <td style="color:#030;  ">人数</td>
+    <td style="color:#030;  ">口径</td>
+    <td style="color:#030;display:none">开始时间</td>
+    <td style="color:#030; display:none ">结束时间</td>
+    <td style="color:#030;">有效时间</td>
     <td style="color:#030;  ">创建人</td>
     <td style="color:#030;  ">地市</td>
     <td style="display:none">id</td>
+    <td style="color:#030;  ">数据月份</td>
 <!--     <td style="color:#030;  ">状态</td>
     <td style="color:#030;  ">下载</td> -->
   </tr>
  
   <s:iterator  value="listTag"   var="tag">  	     	
- 	     <tr id="table_text" >
+ 	     <tr id="table_text" height="40px;"  valign="top">
   			<td><input name="subBox" type="checkbox" /></td>
     		<td style="color:#000099"> <img src="./img/tag.png" width="15" height="15"><s:property value="tag_name" /></td>
-    		<td style="color:#666"><s:property value="profile" /></td>
+    		<td style="color:#666"width="70px" title="<s:property value="profile" />">
+    		  <s:if test="%{profile.length()>10}">
+         	<s:property value="%{profile.substring(0,10)+'...'}" escape="false" />
+            </s:if>
+            <s:else>
+        	 <s:property value="profile"/>
+            </s:else>
+    		</td>
     		<td style="color:#666"><s:property value="count_subs" />人</td>
-    		<td width="300px" style="color:#666"><s:property value="tag_statement" /></td>
-    		<td style="color:#666"><s:property value="create_time" /></td>
-    		<td style="color:#666"><s:property value="end_time" /></td>
+    		<td width="300px" style="color:#666" title="<s:property value="tag_statement" />">
+    		<s:if test="%{tag_statement.length()>45}">
+         	<s:property value="%{tag_statement.substring(0,44)+'...'}" escape="false" />
+            </s:if>
+            <s:else>
+        	 <s:property value="tag_statement"/>
+            </s:else>
+    		</td>
+    		<td style="color:#666;display:none" ><s:property value="create_time" /></td>
+    		<td style="color:#666;display:none"><s:property value="end_time" /></td>
+   			<td style="color:#666"><s:property value="create_time" />-<s:property value="end_time" /></td>
    			<td style="color:#666"><s:property value="tag_creator" /></td>
+   			
    			<td style="color:#666 "><s:property value="tag_region" /></td>
    			<td style="display:none"><s:property value="tag_id" /></td>
+   			<td style="color:#666 "><s:property value="mon" /></td>
  <!--   			<td style="color:#666 "><s:property  value="tag_status"/></td>
             <s:if test="%{#tag['custlist_path']==''}" >
    			<td style="color:#666 ">文件生成中</td>
@@ -230,9 +249,27 @@ cursor:pointer;
 </s:iterator>  
 
 </table>
+ <!------------------------ 内容table---------------------------------------- -->	  
+	  <!--主要内容结束-->
+	  </td>
+	 <td  width="24px" style="background:url(./img/rightborder.png) "></td>
+	</tr>
+	<tr>
+	  <td width="24px" height="24px" style="background:url(./img/leftdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	  <td   height="24px"   style="background:url(./img/downborder.png)   "></td>
+	  <td width="24px" height="24px"  style="background:url(./img/rightdown.png)   ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+  </table> 
+  
+  
+  
+  
+
+ 
+
 
 <!------------------------ 创建标签对话框---------------------------------------- -->
- <div id='create_div'>
+<%-- <div id='create_div'>
 <table width="100%" border="0" cellspacing="0" cellpadding="10" >
   <tr>
     <td colspan="2" style="font-size:12pt;">创建客户群</td>
@@ -297,8 +334,8 @@ cursor:pointer;
         </div>
         <div></div>
 
-    </div> 
-    <div id="no_data" >没有该类型的客户群</div>
+    </div> --%>
+
 <script type="text/javascript">
 
 $(function(){
@@ -309,12 +346,21 @@ var userName="<%=request.getAttribute("userName") %>";
 var regionId="<%=request.getAttribute("regionId") %>";
 var regionName=$("#region_n").val();
 var judge ="<%=request.getAttribute("custom_type") %>";
-//alert(regionName);
+//alert(judge);
+if(judge=="我的客户群"){
+   $("#select_option").css("display","none");
+   $("#find").css("display","none");
+   $("#line").css("display","none");
+}else{
+    $("#select_option").css("display","block");
+   $("#find").css("display","block");
+   $("#line").css("display","block");
+}
 var size="<%=request.getAttribute("a") %>";
 if(size!=0){
-   $("#taginfo_table").css("visibility","visible");
+   $("#taginfo_table").show();
          }else{
-      $("#no_data").css("visibility","visible");   
+      $("#no_data").show();   
   }
 
  var tr_index=0;
@@ -557,21 +603,28 @@ $("#taginfo_table tr:gt(0)").live("click",function (){
     $("#taginfo_table tr:eq("+tr_index+") td").css("color","#FFFFFF");
    } 
 });
-if(judge=="我的客户群"){
+if(judge!=""){
  $("#taginfo_table tr:gt(0)").dblclick(
   function(){
    var hre="";
-    var text=$("#taginfo_table tr:eq("+tr_index+") td:eq(11)").text();
+    var text=$("#taginfo_table tr:eq("+tr_index+") td:eq(12)").text();
     if(text=="文件生成中"){
       hre="not_already";
 //      alert("ssss");
     }else{
-      hre=$("#taginfo_table tr:eq("+tr_index+") td:eq(11)").find("a").attr("href");
+      hre=$("#taginfo_table tr:eq("+tr_index+") td:eq(12)").find("a").attr("href");
     }
     var title_name=$("#taginfo_table tr:eq("+tr_index+") td:eq(1)").text();
-    var id=$("#taginfo_table tr:eq("+(tr_index)+") td:eq(9)").text();
+    var id=$("#taginfo_table tr:eq("+(tr_index)+") td:eq(10)").text();
+    var count=$("#taginfo_table tr:eq("+(tr_index)+") td:eq(3)").text();
+    var startime=$("#taginfo_table tr:eq("+(tr_index)+") td:eq(5)").text();
+    var endtime=$("#taginfo_table tr:eq("+(tr_index)+") td:eq(6)").text();
 //  $(window.parent.document).find("#iframe").attr("src","initAttrTagAction.action?title_name="+ encodeURI(encodeURI(title_name)));
-    var a ="initAttrTagAction.action?title_name="+ encodeURI(encodeURI(title_name))+"&id="+id+"&userId="+userId+"&regionId="+regionId+"&href="+hre;
+    if(judge=="我的客户群"){
+    var a ="initAttrTagAction.action?title_name="+ encodeURI(encodeURI(title_name))+"&id="+id+"&userId="+userId+"&regionId="+regionId+"&href="+hre+"&starttime="+startime+"&endtime="+endtime+"&count="+count+"&type="+1;
+    }else{
+    var a ="initAttrTagAction.action?title_name="+""+"&id="+id+"&userId="+userId+"&regionId="+regionId+"&href="+hre+"&starttime="+startime+"&endtime="+endtime+"&count="+count+"&type="+0;
+    }
     document.location.href= a;
     });
     }else{
@@ -638,16 +691,16 @@ $("#open").click(
           var s = str.split(",");
     if(s[0]>0){
      var hre="";
-    var text=$("#taginfo_table tr:eq("+s[0]+") td:eq(11)").text();
+    var text=$("#taginfo_table tr:eq("+s[0]+") td:eq(12)").text();
     if(text=="文件生成中"){
       hre="not_already";
 //      alert("ssss");
     }else{
-      hre=$("#taginfo_table tr:eq("+tr_index+") td:eq(11)").find("a").attr("href");
+      hre=$("#taginfo_table tr:eq("+tr_index+") td:eq(12)").find("a").attr("href");
     }
  //   alert(hre);
     var title_name=$("#taginfo_table tr:eq("+s[0]+") td:eq(1)").text();
-     var id=$("#taginfo_table tr:eq("+s[0]+") td:eq(9)").text();
+     var id=$("#taginfo_table tr:eq("+s[0]+") td:eq(10)").text();
 //  $(window.parent.document).find("#iframe").attr("src","initAttrTagAction.action?title_name="+ encodeURI(encodeURI(title_name)));
     var a ="initAttrTagAction.action?title_name="+ encodeURI(encodeURI(title_name))+"&id="+id+"&userId="+userId+"&regionId="+regionId+"&href="+hre;
     document.location.href= a;
@@ -666,7 +719,7 @@ $("#open").click(
           var s = str.split(",");
 	    var tag_id="";
 	    for(i=0;i<s.length-1;i++){
-	       tag_id+=$("#taginfo_table tr:eq("+s[i]+") td:eq(9)").text()+",";
+	       tag_id+=$("#taginfo_table tr:eq("+s[i]+") td:eq(10)").text()+",";
 	    }
 			$.ajax({
     		type: 'POST',
@@ -698,10 +751,10 @@ $("#open").click(
           var s = str.split(",");
 	    var tag_id="";
 	    for(i=0;i<s.length-1;i++){
-	       tag_id+=$("#taginfo_table tr:eq("+s[i]+") td:eq(9)").text()+",";
+	       tag_id+=$("#taginfo_table tr:eq("+s[i]+") td:eq(10)").text()+",";
 	    }
 	  //  alert(tag_id);
-	   var a =$("#taginfo_table tr:eq("+tr_index+") td:eq(9)").text();
+	   var a =$("#taginfo_table tr:eq("+tr_index+") td:eq(10)").text();
 			$.ajax({
     		type: 'POST',
    		url: 'shareTagAction.action',
@@ -751,7 +804,7 @@ $("#rename").click(
            $.ajax({
     		type: 'POST',
     		url: 'renameTagAction.action',
-    		data:{name:inputText ,id:$("#taginfo_table tr:eq("+(tr_index)+") td:eq(9)").text()},
+    		data:{name:inputText ,id:$("#taginfo_table tr:eq("+(tr_index)+") td:eq(10)").text()},
     		dataType:"text", //ajax返回值设置为text（json格式也可用它返回，可打印出结果，也可设置成json）
     		success: function(data){  
              document.location.reload();
@@ -792,11 +845,7 @@ $("#cust_group").combobox({
 	     textField:'text', 
 	     panelHeight:'200',
 	     editable: false,
-	     data: [{
-					id: '我的客户群',
-					text: '我的客户群'
-				},{
-					id: '省公司',
+	     data: [{   id: '省公司',
 					text: '省公司'
 				   },{
 					id: '石家庄',
@@ -853,7 +902,11 @@ $("#find").click(
 
 var judge ="<%=request.getAttribute("custom_type") %>";
 //alert(judge);
+if(judge==0){
+  $("#cust_group").combobox("setValue","全部");
+}else{
 $("#cust_group").combobox("setValue",judge);
+}
 if(judge=="我的客户群"){
 //alert("sss");
 }else{
@@ -897,17 +950,17 @@ window.onload = function() {
     $("#rename").css("display","block");
     $("#attribute").css("display","block");
     };	
-    var judge ="<%=request.getAttribute("custom_type") %>";
-  if(judge=="我的客户群"){
+ var judge ="<%=request.getAttribute("custom_type") %>";
+/*   if(judge=="我的客户群"){
    
-  }else{
+  }else{ 
     $("#open").css("display","none");
   $("#hr1").css("display","none");
    $("#hr").css("display","none");
   $("#rename").css("display","none");
   $("#share").css("display","none");
   $("#delete").css("display","none");
-  }
+  }*/
     var evt = window.event || arguments[0];
      /*获取当前鼠标右键按下后的位置，据此定义菜单显示的位置*/
         var rightedge = container.clientWidth-evt.clientX;

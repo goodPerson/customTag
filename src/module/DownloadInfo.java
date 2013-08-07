@@ -15,6 +15,7 @@ public class DownloadInfo {
 	private String manager_id;               //操作用户Id
 	private String manager;                  //操作用户
 	private String custlist_path;            //文件路径
+	private String downLoadReason;  //下载原因
 	public String getFile_name() {
 		return file_name;
 	}
@@ -99,6 +100,11 @@ public class DownloadInfo {
 	public void setCustlist_path(String custlist_path) {
 		this.custlist_path = custlist_path;
 	}
-	
+	public String getDownLoadReason() {
+		return downLoadReason;
+	}
+	public void setDownLoadReason(String downLoadReason) {
+		this.downLoadReason = downLoadReason;
+	}	
 	
 }

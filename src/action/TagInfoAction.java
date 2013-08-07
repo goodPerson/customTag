@@ -2,6 +2,7 @@ package action;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import module.Attr;
 import module.CustomTag;
 import module.GroupTagAttrInfo;
 import module.MainTag;
+import module.Structure;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -31,6 +33,8 @@ import common.GetLog;
 
 import dao.ArrtClassDaoImpl;
 import dao.CustTagAttrInfoDaoImpl;
+import dao.RegionDaoImpl;
+import dao.StructureImpl;
 import dao.TagInfoDaoImpl;
 
 public class TagInfoAction extends ActionSupport {
@@ -48,18 +52,18 @@ public class TagInfoAction extends ActionSupport {
 	private String attr_table="";                              //属性选择框
 	private String attr_value="";                              // 属性值
 	private String hre;
-	public String getAttr_value() {
-		return attr_value;
-	}
-	public void setAttr_value(String attr_value) {
-		this.attr_value = attr_value;
-	}
-	public String getAttr_table() {
-		return attr_table;
-	}
-	public void setAttr_table(String attr_table) {
-		this.attr_table = attr_table;
-	}
+	private String starttime;
+	private String endtime;
+	private String count;
+	private String type;
+   private String userId;
+   private String userName;
+   private String regionId;
+   private String regionName;
+	   
+	
+
+	private static TagInfoDaoImpl tagDao ;	
 
 
 	private List<CustomTag> listTag= new ArrayList<CustomTag>();
@@ -67,8 +71,10 @@ public class TagInfoAction extends ActionSupport {
 	private String title="sss";
 	
 	//ywz 20130521  begin
-	   private 	ArrtClassDaoImpl attrClassDao;                                //标签类别Dao
-	   private  CustTagAttrInfoDaoImpl custTagAttrDao;     //客户群筛选属性Dao
+	   private static	ArrtClassDaoImpl attrClassDao;                                //标签类别Dao
+	   private static CustTagAttrInfoDaoImpl custTagAttrDao;     //客户群筛选属性Dao
+	   private static RegionDaoImpl regionDao;//客户群筛选属性Dao
+	   private StructureImpl structDao;
 	   private List  baisAttr;                                                                                                //基本属性
 	   private List  voiceAttr;																							   //语音属性
        private List  flowAttr;                    																			   //流量属性
@@ -79,147 +85,66 @@ public class TagInfoAction extends ActionSupport {
 	   private List  regionAttr;                                                                                            //区域属性
 	   private List  qudaoAttr;                                                                                            //渠道属性
 	   private List  tagAttr;                                                                                                 //标签属性	
+	   private int date;
+	   private String mon;
 	   private List<GroupTagAttrInfo> groupTagList= new ArrayList<GroupTagAttrInfo>();  //筛选属性；
+	   private List<Structure> listStruct;
 	   private JSONArray jsonAttr=new JSONArray();
-	 //  static ApplicationContext cxt;
-	   
-		public  void initTag(){
-			XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-			tagDao=(TagInfoDaoImpl)factory.getBean("customTagDao");
-			//if (null==cxt)
-			// cxt=new ClassPathXmlApplicationContext("applicationContext.xml");
-			//tagDao=(TagInfoDaoImpl)cxt.getBean("customTagDao");
+	   static ApplicationContext cxt;
+	   static ApplicationContext factory=null;
+	   private int lvl_id;
+	   private String structAttr;
+	   private String structValue;
+	   private String attrDesc;
+	   private String attrTypeC;
+	 //ywz 20130521  end    
+	public static void initTag(){
+			//XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+			//tagDao=(TagInfoDaoImpl)factory.getBean("customTagDao");
+			if (null==cxt)
+			 cxt=new ClassPathXmlApplicationContext("applicationContext.xml");
+			tagDao=(TagInfoDaoImpl)cxt.getBean("customTagDao");
 			
 			
 		}
+		
+	public static void initRegion(){
+	    	//XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+				factory = new ClassPathXmlApplicationContext("applicationContext.xml");
+	    	regionDao=(RegionDaoImpl) factory.getBean("regionDaoImpl");
+	    }
 
-		public  void initGroupAttr(){
-			XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-			custTagAttrDao=(CustTagAttrInfoDaoImpl)factory.getBean("custTagAttrInfoDaoImpl");		
-			//if (null==cxt)
-			//cxt=new ClassPathXmlApplicationContext("applicationContext.xml");
-			//custTagAttrDao=(CustTagAttrInfoDaoImpl)cxt.getBean("custTagAttrInfoDaoImpl");
+	public static void initGroupAttr(){
+			//XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+			//custTagAttrDao=(CustTagAttrInfoDaoImpl)factory.getBean("custTagAttrInfoDaoImpl");		
+			if (null==cxt)
+			cxt=new ClassPathXmlApplicationContext("applicationContext.xml");
+			custTagAttrDao=(CustTagAttrInfoDaoImpl)cxt.getBean("custTagAttrInfoDaoImpl");
 
 		}	
-		
-		//属性类别dao
-		public  void initTagUnifyView(){
+	//初始化构建条件
+	public void initStruct(){
 			XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-			attrClassDao=(ArrtClassDaoImpl) factory.getBean("arrtClassDaoImpl"); 
-			//if (null==cxt)
-			// cxt=new ClassPathXmlApplicationContext("applicationContext.xml");
-			//attrClassDao=(ArrtClassDaoImpl) cxt.getBean("arrtClassDaoImpl"); 
+			structDao=(StructureImpl) factory.getBean("structureImp");
 		}
-
-	public JSONArray getJsonAttr() {
-		return jsonAttr;
-	}
-	public void setJsonAttr(JSONArray jsonAttr) {
-		this.jsonAttr = jsonAttr;
-	}
-	public List<GroupTagAttrInfo> getGroupTagList() {
-		return groupTagList;
-	}
-	public void setGroupTagList(List<GroupTagAttrInfo> groupTagList) {
-		this.groupTagList = groupTagList;
-	}
-
-
-	private String userId;
-	   private String userName;
-	   private String regionId;
-	   private String regionName;
-	   //ywz 20130521  end
-	
-	   
-	   
-	public String getTitle() {
-		return title;
-	}
-	public List getServAttr() {
-		return servAttr;
-	}
-	public void setServAttr(List servAttr) {
-		this.servAttr = servAttr;
-	}
-	public List getRegionAttr() {
-		return regionAttr;
-	}
-	public void setRegionAttr(List regionAttr) {
-		this.regionAttr = regionAttr;
-	}
-	public List getQudaoAttr() {
-		return qudaoAttr;
-	}
-	public void setQudaoAttr(List qudaoAttr) {
-		this.qudaoAttr = qudaoAttr;
-	}
-	public List getTagAttr() {
-		return tagAttr;
-	}
-	public void setTagAttr(List tagAttr) {
-		this.tagAttr = tagAttr;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public List<CustomTag> getListTag() {
-		return listTag;
-	}
-	public void setListTag(List<CustomTag> listTag) {
-		this.listTag = listTag;
-	}
-	
-	public int getA() {
-		return a;
-	}
-	public void setA(int a) {
-		this.a = a;
-	}
-	public TagInfoDaoImpl getTagDao() {
-		return tagDao;
-	}
-	public void setTagDao(TagInfoDaoImpl tagDao) {
-		this.tagDao = tagDao;
-	}
-   
-
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-	private static TagInfoDaoImpl tagDao ;
-	
-	
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
-   public List getVoiceAttr() {
-		return voiceAttr;
-	}
-	public void setVoiceAttr(List voiceAttr) {
-		this.voiceAttr = voiceAttr;
-	}
-
-	
-	
+		
+	//初始化属性类别dao
+	public static void initTagUnifyView(){
+			//XmlBeanFactory factory=new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+			//attrClassDao=(ArrtClassDaoImpl) factory.getBean("arrtClassDaoImpl"); 
+			if (null==cxt)
+			 cxt=new ClassPathXmlApplicationContext("applicationContext.xml");
+			attrClassDao=(ArrtClassDaoImpl) cxt.getBean("arrtClassDaoImpl"); 
+		}
 	
 	@Override
 	public String execute() throws Exception{
 		//this.addPerson();
-	//	if (null==custTagAttrDao)
+		if (null==custTagAttrDao)
 		this.initGroupAttr();
-	//	if (null==tagDao)
+		if (null==tagDao)
 		this.initTag();
-	//	if (null==attrClassDao)
+		if (null==attrClassDao)
 		this.initTagUnifyView();
 		 HttpServletRequest request = ServletActionContext.getRequest();
 		  String  bass_user_id= URLDecoder.decode(request.getParameter("userId"),"utf-8");
@@ -239,7 +164,7 @@ public class TagInfoAction extends ActionSupport {
 	
 	//获取属性列表
 	public void listAttr() throws IOException{
-	//	if (null==tagDao)
+		if (null==tagDao)
 		this.initTag();
 
 		  HttpServletResponse response = ServletActionContext.getResponse();
@@ -291,7 +216,7 @@ public class TagInfoAction extends ActionSupport {
 
 	
 	public void addTag() throws IOException {
-		//if (null==tagDao)
+		if (null==tagDao)
 		  this.initTag();
 		  HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
@@ -320,7 +245,7 @@ public class TagInfoAction extends ActionSupport {
 		  newTag.setIs_share("0");
 		  newTag.setTag_status("0");
 		  tagDao.addTag(newTag);
-		  //GetLog.getLog("创建分群", "创建"+tag_name+"分群");
+//		  GetLog.getLog("创建分群", "创建"+tag_name+"分群");
 		  PrintWriter pWriter = response.getWriter();
 		  
 		  String aa ="创建成功";
@@ -337,8 +262,18 @@ public class TagInfoAction extends ActionSupport {
 		  response.addHeader("Content-Type", "text/html;charset=gbk");	
 		  HttpServletRequest request = ServletActionContext.getRequest();
 		  String region_id=request.getParameter("regionId");
+		  starttime=request.getParameter("starttime");
+		  endtime=request.getParameter("endtime");
+		  count=request.getParameter("count");
+		  type=request.getParameter("type");
+		  if("1".equals(type)){
+		   count=count.substring(0, count.length()-1);	  
+		  }else{
+			count="";
+		  }
+		  
 		  hre=request.getParameter("href");
-		//  if (null==attrClassDao)
+		  if (null==attrClassDao)
 		  this.initTagUnifyView();
 			baisAttr=this.attrClassDao.getListSecName("基本属性");                                                                                                //基本属性
 			voiceAttr=this.attrClassDao.getListSecName("语音属性");																								//语音属性
@@ -349,77 +284,66 @@ public class TagInfoAction extends ActionSupport {
 			servAttr=this.attrClassDao.getListSecName("业务属性");                                                                                                 //业务属性
 			regionAttr=this.attrClassDao.getListSecName("区域属性");                                                                                              //区域属性
 			qudaoAttr=this.attrClassDao.getListSecName("渠道属性");                                                                                              //渠道属性
-			tagAttr=this.attrClassDao.getListSecName("标签属性");                                                                                                   //标签属性        
+			tagAttr=this.attrClassDao.getListSecName("标签");                                                                                                   //标签属性        
           this.title = URLDecoder.decode(request.getParameter("title_name"), "utf-8");
           this.id  =request.getParameter("id");
+          this.initRegion();
+          String reg_id=(String) request.getSession().getAttribute("regionId");
+          lvl_id=regionDao.getlvl(reg_id);
           this.initGroupAttr();
           groupTagList=custTagAttrDao.getGroupTags(this.id);
           getTableAttr(groupTagList);
-          return SUCCESS;
+          date=custTagAttrDao.getMonth();
+          mon=(String.valueOf(date)).substring(0,4)+"年"+(String.valueOf(date)).substring(4,6)+"月";
+           return SUCCESS;
              
+	}
+	
+	public String buildContion( ) throws IOException{
+		HttpServletRequest request=ServletActionContext.getRequest();
+		HttpServletResponse response=ServletActionContext.getResponse();
+	    response.setCharacterEncoding("gbk");
+	    response.setContentType("text/html;charset=gbk");
+	    response.addHeader("Content-Type", "text/html;charset=gbk");	
+	    String region_id=(String) request.getSession().getAttribute("regionId");
+	    attrTypeC= URLDecoder.decode(request.getParameter("attrType"), "utf-8");
+	    String attrName=URLDecoder.decode(request.getParameter("attrName"), "utf-8");
+	   
+		//构建开始
+	
+        initStruct();
+        listStruct= structDao.getListStructure(region_id,attrTypeC,attrName);
+        
+        String structAttrT="";
+//        String structValueT="";
+        StringBuffer structAttrBuf=new StringBuffer();
+//        StringBuffer structValueBuf=new StringBuffer();
+        for (int i=0;i<listStruct.size();i++){
+//        	['百度',   23],
+      	  structAttrBuf.append("	['"+listStruct.get(i).getAttrDim_desc()+"',"+ listStruct.get(i).getSubsCnt() +"],");
+//      	  structValueBuf.append(listStruct.get(i).getSubsCnt()+",");
+      	  attrDesc=listStruct.get(i).getAttrDesc();
+        }
+        structAttrT+=structAttrBuf.toString();
+//        structValueT+=structValueBuf.toString();
+        if (!"".equals(structAttrT)){
+      	  structAttr      =structAttrT.substring(0, structAttrT.lastIndexOf(","));
+        }else{
+      	  structAttr="0";
+        }
+//        if (!"".equals(structValueT)){
+//      	  structValue   =structValueT.substring(0, structValueT.lastIndexOf(","));
+//        }else{
+//      	  structValue="0";
+//        }
+		return SUCCESS;
 	}
 	
 	//属性筛选条件框值
 	
 	public void getTableAttr(List<GroupTagAttrInfo> tableAttrs){
 		this.attr_table="";	
-		jsonAttr=JSONArray.fromObject(tableAttrs); 
-		
-		 for(int i=0;i<tableAttrs.size();i++){
-			 String group_id =tableAttrs.get(i).getTag_id();
-			 String group_name=tableAttrs.get(i).getTag_name();
-			 String attr_id =tableAttrs.get(i).getAttr_id();
-			 String attr_name =tableAttrs.get(i).getAttr_name();
-			 String attr_form =tableAttrs.get(i).getAttr_from();
-			 String attr_table =tableAttrs.get(i).getAttr_table();
-			 String attr_lvl =tableAttrs.get(i).getAttr_lvl();
-			 String form_attr_value_type =tableAttrs.get(i).getAttr_type();
-			 String form_attr_value_betn1 =tableAttrs.get(i).getAttr_value_type1();
-			 String form_attr_value1 =tableAttrs.get(i).getAttr_value1();
-			 String form_attr_value_betn2 =tableAttrs.get(i).getAttr_value_type2();
-			 String form_attr_value2 =tableAttrs.get(i).getAttr_value2();
-	//                                        3属性表示识，0属性类型，4一级属性，1属性名称，2表名	
-			 if(attr_id.equals("CITY_ID") || attr_id.equals("COUNTY_ID") || attr_id.equals("SUBS_STAT")||attr_id.equals("BRAND_ID") ) continue;
-			 
-			 if(form_attr_value_type.equals("连续型")){
-				  String bt_id=attr_id+"_tr' title='"+form_attr_value_type+","+attr_lvl+","+attr_table;
-				 //this.attr_value=this.attr_value+"$(\"#"+bt_id+"\").children(\":eq(1)\").find('select').combobox(\"setValue\",\""+form_attr_value_type+"\");";
-				 this.attr_table=this.attr_table+"<tr id='"+attr_id+"_tr' title='"+form_attr_value_type+","+attr_lvl+","+attr_id+","+attr_table+"'><td width='80px'>"+attr_name+"</td>"
-                         +  "<td><select class='easyui-combobox' name='state' style='width:80px;height:25px' >"
-                         +     "<option value='>' selected>大于</option>"
-						  +     "<option value='>=' >大于等于</option>"
-                         +      "<option value='<' >小于</option>"
-						  +      "<option value='<=' >小于等于</option>"
-                         +      "<option value='='>等于</option>"
-                         +      "</select></td>"
-                         +  "<td><input id='tag_name_txt' type='text'  value='"+form_attr_value1+"' style='width:100px; height:25px;border:1px solid  #CCC;'></td>"
-                         +   "<td><select class='easyui-combobox' name='state' style='width:80px;height:25px'>"
-                         +     "<option value='>' selected>大于</option>"
-						  +     "<option value='>=' >大于等于</option>"
-                         +      "<option value='<' >小于</option>"
-						  +      "<option value='<=' >小于等于</option>"
-                         +      "<option value='='>等于</option>"
-                         +       "</select></td>"
-                         +    "<td ><input id='tag_name_txt' type='text'  value='"+form_attr_value2+"' style='width:100px; height:25px;border:1px solid  #CCC;'></td>"
-                         +    "<td width='80px'><label style='cursor: pointer;'  id='"+attr_id+"&"+form_attr_value_type+"'  onClick=$.consitAttr(this)>构成</label> <span id='"+attr_id+"_dt' onClick=$.deletrAttr(this.id)><lable id='"+attr_id+"del' style='cursor: pointer;'>删除</label></span></td></tr>";
-				 
-			 }else if(form_attr_value_type.equals("码表")){
-				 this.attr_table=this.attr_table+"<tr id='"+attr_id+"_tr' title='"+form_attr_value_type+","+attr_lvl+","+attr_id+","+attr_table+"'><td width='80px'>"+attr_name+"</td>"
-	                        +  "<td colspan=4><select class='easyui-combobox' name='state' style='width:250px;height:25px' data-options='valueField:\"id\",textField:\"text\",url:\"getAttrTableAction.action?table_name="+attr_table+"\" '></td>"
-	                         +  "<td width='80px'><label style='cursor: pointer;' id='"+attr_id+"&"+form_attr_value_type+"&"+attr_table+"'  onClick=$.consitAttr(this)>构成</label> <span id='"+attr_id+"_dt' onClick=$.deletrAttr(this.id)><lable  style='cursor: pointer;'>删除</label></span></td></tr>"; 								 
-			 }else if(form_attr_value_type.equals("是否码表")){
-				 this.attr_table=this.attr_table+"<tr id='"+attr_id+"_tr' title='"+form_attr_value_type+","+attr_lvl+","+attr_id+","+attr_table+"'><td width='80px'>"+attr_name+"</td>"
-	                        +  "<td colspan=4><select class='easyui-combobox' name='state' style='width:250px;height:25px'>"
-	                        +   "<option value='1' selected>是</option>"
-	                          +   "<option value='0' >否</option>"
-	                          +    "</select></td>"
-	                         +  "<td width='80px'><label style='cursor: pointer;' id='"+attr_id+"&"+form_attr_value_type+"'  onClick=$.consitAttr(this)>构成 </label><span id='"+attr_id+"_dt' onClick=$.deletrAttr(this.id)><lable  style='cursor: pointer;'>删除</label></span></td></tr>"; 				 				 
-			 }else if(form_attr_value_type.equals("其他")){
-				 this.attr_table=this.attr_table+"<tr id='"+attr_id+"_tr' title='"+form_attr_value_type+","+attr_lvl+","+attr_id+","+attr_table+"'><td width='80px'>"+attr_name+"</td>"
-	                          + "<td colspan=4><input style='width:250px;height:25px' type='text'/></td>"
-	                           +  "<td width='80px'><span id='"+attr_id+"_dt' onClick=$.deletrAttr(this)><lable style='cursor: pointer;'>删除</label></span></td></tr>";  				 
-			 }			 
-		 }		
+		jsonAttr=JSONArray.fromObject(tableAttrs); 	 
 		//return this.attr_table;		
 	}
 	
@@ -428,7 +352,7 @@ public class TagInfoAction extends ActionSupport {
 	
 
 public void delTag() throws IOException {
-	//if (null==tagDao)
+	if (null==tagDao)
 	  this.initTag();
 	  HttpServletResponse response = ServletActionContext.getResponse();
 	  response.setCharacterEncoding("gbk");
@@ -442,7 +366,7 @@ public void delTag() throws IOException {
 	  }
 }
 public void shareTag() throws IOException {
-	//if (null==tagDao)
+	if (null==tagDao)
 	 this.initTag();
 	  HttpServletResponse response = ServletActionContext.getResponse();
 	  response.setCharacterEncoding("gbk");
@@ -456,7 +380,7 @@ public void shareTag() throws IOException {
 	   }
 }
 public void renameTag() throws IOException{
-	//if (null==tagDao)
+	if (null==tagDao)
 	  this.initTag();
 	  HttpServletResponse response = ServletActionContext.getResponse();
 	  response.setCharacterEncoding("gbk");
@@ -468,7 +392,7 @@ public void renameTag() throws IOException{
 	  tagDao.renameTag(name, id);
 }
 public void saveTag() throws IOException{
-	//if (null==tagDao)
+	if (null==tagDao)
 	 this.initTag();
 	  HttpServletResponse response = ServletActionContext.getResponse();
 	  response.setCharacterEncoding("gbk");
@@ -557,6 +481,161 @@ public String getHre() {
 }
 public void setHre(String hre) {
 	this.hre = hre;
+}
+public int getLvl_id() {
+	return lvl_id;
+}
+public void setLvl_id(int lvl_id) {
+	this.lvl_id = lvl_id;
+}
+public String getStarttime() {
+	return starttime;
+}
+public void setStarttime(String starttime) {
+	this.starttime = starttime;
+}
+public String getEndtime() {
+	return endtime;
+}
+public void setEndtime(String endtime) {
+	this.endtime = endtime;
+}
+public String getCount() {
+	return count;
+}
+public void setCount(String count) {
+	this.count = count;
+}
+public String getMon() {
+	return mon;
+}
+public void setMon(String mon) {
+	this.mon = mon;
+}
+public String getType() {
+	return type;
+}
+public void setType(String type) {
+	this.type = type;
+}
+public String getStructAttr() {
+	return structAttr;
+}
+public void setStructAttr(String structAttr) {
+	this.structAttr = structAttr;
+}
+public String getStructValue() {
+	return structValue;
+}
+public void setStructValue(String structValue) {
+	this.structValue = structValue;
+}
+public String getAttr_value() {
+	return attr_value;
+}
+public void setAttr_value(String attr_value) {
+	this.attr_value = attr_value;
+}
+public String getAttr_table() {
+	return attr_table;
+}
+public void setAttr_table(String attr_table) {
+	this.attr_table = attr_table;
+}
+public String getMessage() {
+	return message;
+}
+public void setMessage(String message) {
+	this.message = message;
+}
+
+public List getVoiceAttr() {
+	return voiceAttr;
+}
+public void setVoiceAttr(List voiceAttr) {
+	this.voiceAttr = voiceAttr;
+}
+public String getTitle() {
+	return title;
+}
+public List getServAttr() {
+	return servAttr;
+}
+public void setServAttr(List servAttr) {
+	this.servAttr = servAttr;
+}
+public List getRegionAttr() {
+	return regionAttr;
+}
+public void setRegionAttr(List regionAttr) {
+	this.regionAttr = regionAttr;
+}
+public List getQudaoAttr() {
+	return qudaoAttr;
+}
+public void setQudaoAttr(List qudaoAttr) {
+	this.qudaoAttr = qudaoAttr;
+}
+public List getTagAttr() {
+	return tagAttr;
+}
+public void setTagAttr(List tagAttr) {
+	this.tagAttr = tagAttr;
+}
+public void setTitle(String title) {
+	this.title = title;
+}
+public List<CustomTag> getListTag() {
+	return listTag;
+}
+public void setListTag(List<CustomTag> listTag) {
+	this.listTag = listTag;
+}
+
+public int getA() {
+	return a;
+}
+public void setA(int a) {
+	this.a = a;
+}
+public TagInfoDaoImpl getTagDao() {
+	return tagDao;
+}
+public void setTagDao(TagInfoDaoImpl tagDao) {
+	this.tagDao = tagDao;
+}
+
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public JSONArray getJsonAttr() {
+	return jsonAttr;
+}
+public void setJsonAttr(JSONArray jsonAttr) {
+	this.jsonAttr = jsonAttr;
+}
+public List<GroupTagAttrInfo> getGroupTagList() {
+	return groupTagList;
+}
+public void setGroupTagList(List<GroupTagAttrInfo> groupTagList) {
+	this.groupTagList = groupTagList;
+}
+public String getAttrDesc() {
+	return attrDesc;
+}
+public void setAttrDesc(String attrDesc) {
+	this.attrDesc = attrDesc;
+}
+
+public String getAttrTypeC() {
+	return attrTypeC;
+}
+
+public void setAttrTypeC(String attrTypeC) {
+	this.attrTypeC = attrTypeC;
 }
 
 }
