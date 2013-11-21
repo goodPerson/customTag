@@ -1,0 +1,80 @@
+--月表
+-----------创建目标表---------------
+CREATE TABLE MK_VGOP.TB_CUST_TAG_COUNTY_M
+(
+ STATIS_MONTH                  INTEGER        --月份
+,REGION_NAME                   VARCHAR(10)    --地域名称
+,COUNTRY_NAME                  VARCHAR(70)    --县区名称
+,ACCESS_SUBS_CNT               INTEGER        --访问人数、    
+,ACCESS_CNT                    INTEGER        --访问次数、          
+,CUSTLIST_DWLN_SUBS_CNT        INTEGER        --客户清单下载人数、  
+,CUSTLIST_DWLN_CNT             INTEGER        --客户清单下载次数、  
+,CUSTGROUP_CREATE_SUBS_CNT     INTEGER        --客户分群创建人数、  
+,CUSTGROUP_CREATE_CNT          INTEGER        --客户分群创建个数、  
+,CUSTTAG_CREATE_SUBS_CNT       INTEGER        --标签新增创建人数、  
+,CUSTTAG_CREATE_CNT            INTEGER        --标签新增创建个数。  
+)IN TSC_MART_VGOP
+INDEX IN TSC_MART_VGOP
+PARTITIONING KEY(STATIS_MONTH)
+NOT LOGGED INITIALLY
+COMPRESS YES;
+
+COMMENT ON TABLE MK_VGOP.TB_CUST_TAG_COUNTY_M IS '客户标签和群地市级别汇总使用情况月表';
+COMMENT ON MK_VGOP.TB_CUST_TAG_COUNTY_M 
+(
+ STATIS_MONTH                  IS  '月份'                       
+,REGION_NAME                   IS  '地域名称'  
+,COUNTRY_NAME                  IS  '县区名称'               
+,ACCESS_SUBS_CNT               IS  '访问人数'                
+,ACCESS_CNT                    IS  '访问次数'                
+,CUSTLIST_DWLN_SUBS_CNT        IS  '客户清单下载人数'        
+,CUSTLIST_DWLN_CNT             IS  '客户清单下载次数'        
+,CUSTGROUP_CREATE_SUBS_CNT     IS  '客户分群创建人数'        
+,CUSTGROUP_CREATE_CNT          IS  '客户分群创建个数'        
+,CUSTTAG_CREATE_SUBS_CNT       IS  '标签新增创建人数'        
+,CUSTTAG_CREATE_CNT            IS  '标签新增创建个数'        
+);
+
+CREATE INDEX MK_VGOP.IDX_TB_CUST_TAG_COUNTY_M ON MK_VGOP.TB_CUST_TAG_COUNTY_M(REGION_NAME);
+COMMIT;
+
+
+--日表
+-----------创建目标表---------------
+CREATE TABLE MK_VGOP.TB_CUST_TAG_COUNTY_D
+(
+ STATIS_DATE                   INTEGER        --日期
+,REGION_NAME                   VARCHAR(10)    --地域名称
+,COUNTRY_NAME                  VARCHAR(70)    --县区名称
+,ACCESS_SUBS_CNT               INTEGER        --访问人数、    
+,ACCESS_CNT                    INTEGER        --访问次数、          
+,CUSTLIST_DWLN_SUBS_CNT        INTEGER        --客户清单下载人数、  
+,CUSTLIST_DWLN_CNT             INTEGER        --客户清单下载次数、  
+,CUSTGROUP_CREATE_SUBS_CNT     INTEGER        --客户分群创建人数、  
+,CUSTGROUP_CREATE_CNT          INTEGER        --客户分群创建个数、  
+,CUSTTAG_CREATE_SUBS_CNT       INTEGER        --标签新增创建人数、  
+,CUSTTAG_CREATE_CNT            INTEGER        --标签新增创建个数。  
+)IN TSC_MART_VGOP
+INDEX IN TSC_MART_VGOP
+PARTITIONING KEY(STATIS_DATE)
+NOT LOGGED INITIALLY
+COMPRESS YES;
+
+COMMENT ON TABLE MK_VGOP.TB_CUST_TAG_COUNTY_D IS '客户标签和群地市级别汇总使用情况月表';
+COMMENT ON MK_VGOP.TB_CUST_TAG_COUNTY_D 
+(
+ STATIS_DATE                   IS  '日期'                       
+,REGION_NAME                   IS  '地域名称'  
+,COUNTRY_NAME                  IS  '县区名称'               
+,ACCESS_SUBS_CNT               IS  '访问人数'                
+,ACCESS_CNT                    IS  '访问次数'                
+,CUSTLIST_DWLN_SUBS_CNT        IS  '客户清单下载人数'        
+,CUSTLIST_DWLN_CNT             IS  '客户清单下载次数'        
+,CUSTGROUP_CREATE_SUBS_CNT     IS  '客户分群创建人数'        
+,CUSTGROUP_CREATE_CNT          IS  '客户分群创建个数'        
+,CUSTTAG_CREATE_SUBS_CNT       IS  '标签新增创建人数'        
+,CUSTTAG_CREATE_CNT            IS  '标签新增创建个数'        
+);
+
+CREATE INDEX MK_VGOP.IDX_TB_CUST_TAG_COUNTY_D ON MK_VGOP.TB_CUST_TAG_COUNTY_D(REGION_NAME);
+COMMIT;

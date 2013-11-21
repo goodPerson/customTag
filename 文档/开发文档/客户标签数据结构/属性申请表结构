@@ -1,0 +1,41 @@
+申请Id						attr_request_id
+申请人Id                  attr_request_person_id
+申请人姓名			    attr_request_name	
+属性名称					attr_name
+申请理由					attr_reason
+审批人						attr_apporver
+备注							attr_remark
+
+CREATE TABLE "MK_VGOP"."TB_ATTR_REQUEST" (
+  "ATTR_REQUEST_ID"	VARCHAR(32)	NOT NULL,
+  "ATTR_REQUEST_PERSON_ID"	VARCHAR(32),
+  "ATTR_REQUEST_NAME"	VARCHAR(32),
+  "ATTR_REGION_ID"	INTEGER,
+  "ATTR_REGION_NAME"	VARCHAR(32),
+  "ATTR_NAME"	VARCHAR(32),
+  "ATTR_REASON"	VARCHAR(1000),
+  "ATTR_APPORVER"	VARCHAR(32),
+  "ATTR_REMARK"	VARCHAR(1000),
+  "ATTR_STATE"	INTEGER	DEFAULT 
+) 
+  IN "USERSPACE1";
+
+ALTER TABLE "MK_VGOP"."TB_ATTR_REQUEST"
+  DATA CAPTURE NONE
+  LOCKSIZE ROW
+  APPEND OFF
+  NOT VOLATILE;
+
+COMMENT ON TABLE "MK_VGOP"."TB_ATTR_REQUEST" IS '属性申请信息表';
+
+COMMENT ON "MK_VGOP"."TB_ATTR_REQUEST" ( 
+	"ATTR_REQUEST_ID" IS '申请Id',
+	"ATTR_REQUEST_PERSON_ID" IS '申请人Id ',
+	"ATTR_REQUEST_NAME" IS '申请人姓名',
+	"ATTR_REGION_ID" IS '申请人区域Id',
+	"ATTR_REGION_NAME" IS '申请人区域名称',
+	"ATTR_NAME" IS '属性名称',
+	"ATTR_REASON" IS '申请理由',
+	"ATTR_APPORVER" IS '审批人',
+	"ATTR_REMARK" IS '备注',
+	"ATTR_STATE" IS '属性申请状态 0 未审批  1  同意  2 回退' );

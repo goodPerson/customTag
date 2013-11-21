@@ -1,0 +1,79 @@
+建成展现用户明细的表格
+---------月表
+CREATE TABLE MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_M
+(
+ STATIS_MONTH         INT       
+,USER_ID              VARCHAR(50)
+,USER_NAME            VARCHAR(50)
+,REGION_NAME          VARCHAR(50)
+,COUNTRY_NAME         VARCHAR(70)
+,ACCESS_CNT           INT
+,DOWNLOAD_CNT         INT
+,GROUP_CREATE_CNT     INT
+,TAG_CREATE_CNT       INT
+)IN TSC_MART_VGOP
+INDEX IN TSC_MART_VGOP
+PARTITIONING KEY(USER_ID)
+NOT LOGGED INITIALLY
+COMPRESS YES;
+COMMIT;
+
+COMMENT ON TABLE MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_M IS '客户标签系统用户使用明细月表';
+
+COMMENT ON MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_M 
+(
+ STATIS_MONTH               IS    '统计月份'
+,USER_ID                    IS    '经分工号'
+,USER_NAME                  IS    '用户姓名'
+,REGION_NAME                IS    '地市名称'
+,COUNTRY_NAME               IS    '县区名称'
+,ACCESS_CNT                 IS    '访问次数'
+,DOWNLOAD_CNT               IS    '客户清单下载次数'
+,GROUP_CREATE_CNT           IS    '客户分群创建个数'
+,TAG_CREATE_CNT             IS    '标签新增创建个数'
+);
+
+
+CREATE INDEX MK_VGOP.IDX_TB_CUST_TAG_SUBS_USING_DETAIL_M ON MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_M(USER_ID);
+COMMIT;
+
+
+
+
+-------日表
+CREATE TABLE MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_D
+(
+ STATIS_DATE         INT       
+,USER_ID              VARCHAR(50)
+,USER_NAME            VARCHAR(50)
+,REGION_NAME          VARCHAR(50)
+,COUNTRY_NAME         VARCHAR(70)
+,ACCESS_CNT           INT
+,DOWNLOAD_CNT         INT
+,GROUP_CREATE_CNT     INT
+,TAG_CREATE_CNT       INT
+)IN TSC_MART_VGOP
+INDEX IN TSC_MART_VGOP
+PARTITIONING KEY(USER_ID)
+NOT LOGGED INITIALLY
+COMPRESS YES;
+COMMIT;
+
+COMMENT ON TABLE MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_D IS '客户标签系统用户使用明细日表';
+
+COMMENT ON MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_D 
+(
+ STATIS_DATE                IS    '统计日期'
+,USER_ID                    IS    '经分工号'
+,USER_NAME                  IS    '用户姓名'
+,REGION_NAME                IS    '地市名称'
+,COUNTRY_NAME               IS    '县区名称'
+,ACCESS_CNT                 IS    '访问次数'
+,DOWNLOAD_CNT               IS    '客户清单下载次数'
+,GROUP_CREATE_CNT           IS    '客户分群创建个数'
+,TAG_CREATE_CNT             IS    '标签新增创建个数'
+);
+
+
+CREATE INDEX MK_VGOP.IDX_TB_CUST_TAG_SUBS_USING_DETAIL_D ON MK_VGOP.TB_CUST_TAG_SUBS_USING_DETAIL_D(USER_ID);
+COMMIT;
