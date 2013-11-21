@@ -12,44 +12,32 @@
             http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
             http://www.springframework.org/schema/context 
             http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-
- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
-  <property value="com.ibm.db2.jcc.DB2Driver" name="driverClassName"/>
-  <property value="jdbc:db2://127.0.0.1:50000/TESTDATA" name="url"/>
-  <property value="db2admin" name="username"/>
-  <property value="123" name="password"/>
+      
+ 
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+	  <property value="com.ibm.db2.jcc.DB2Driver" name="driverClassName"/>
+	  <property value="jdbc:db2://10.129.240.132:50000/TESTDATA" name="url"/>
+	  <property value="db2admin" name="username"/>
+	  <property value="123" name="password"/>
  </bean>
-<!--
-<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+
+<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
   <property value="com.ibm.db2.jcc.DB2Driver" name="driverClassName"/>
   <property value="jdbc:db2://133.96.71.1:50000/HEBDW" name="url"/>
   <property value="app_vgop" name="username"/>
-  <property value="hebmc0@517" name="password"/>
- </bean>
- 
-<bean>
-       <property name="dialect">org.hibernate.dialect.DB2Dialect</property>
-        <property name="hibernate.connection.url">jdbc:db2://133.96.71.1:50000/HEBDW</property>
-		<property name="hibernate.connection.username">app_vgop</property>
-		<property name="hibernate.connection.password">hebmc0@517</property>
-        <property name="connection.driver_class">com.ibm.db2.jcc.DB2Driver</property>
-        <property name="myeclipse.connection.profile">HEBDW</property>  </bean>
-        --> 
-<!-- 
-  <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
-        <property name="jndiName">  
-            <value>jdbc/testmudata</value>  
-        </property>  
-    </bean> 
-  -->
-<!--
-        <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
+  <property value="hebmc@1113" name="password"/>
+</bean>  -->
+
+ <!--
+<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">  
         <property name="jndiName">  
             <value>jdbc/hebdw</value>  
         </property>  
-    </bean>  
+</bean>  
  -->
-    <!-- <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+ 
+ <!--
+     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
         <property name="dataSource">  
             <ref bean="dataSource" />  
         </property>  
@@ -149,4 +137,46 @@
  <bean id="structureImp" class="dao.StructureImpl" depends-on="dataSource">
  	<property name="dataSource"  ref="dataSource"></property>
  </bean>
+ <!-- 杨卫争 20130827 构成条件   -->
+ <bean id="groupConditionImpl"  class="dao.GroupConditionImpl"  depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource" />
+ </bean>
+  <!-- 杨卫争 20130909 标签库业务类获取二级类名称   -->
+ <bean id="busClassTagImpl"  class="dao.BusClassTagImpl"  depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource" />
+ </bean>
+   <!-- 杨卫争 20130916 属性申请实现类   -->
+ <bean id="attrRequest"  class="dao.AttrRequestImpl"  depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource" />
+ </bean>
+ 
+  <!-- 杨卫争 20130922 权限列表   -->
+ <bean id="right"  class="dao.RightImpl"  depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource" />
+ </bean>
+ 
+   <!-- 杨卫争 20131017用户使用列表明细   -->
+ <bean id="tagsubdet"  class="dao.TagSubsDetImpl"  depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource" />
+ </bean>
+ 
+    <!-- 杨卫争 20131029区县使用列表明细   -->
+ <bean id="tagcounty"  class="dao.TagCountyImpl"  depends-on="dataSource">
+ 	<property name="dataSource"  ref="dataSource" />
+ </bean>
+ 
+ <!-- push -->
+ <bean id="jsonImpl" class="dao.push.ComboboxJsonImpl" depends-on="dataSource">
+    <property name="dataSource" ref="dataSource"></property>
+ </bean>
+ <bean id="createImpl" class="dao.push.CreatePlanImpl" depends-on="dataSource">
+    <property name="dataSource" ref="dataSource"></property>
+ </bean>
+ <!-- kob -->
+   <bean id="markPlanInfoImpl" class="dao.push.MarkPlanInfoImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>
+   <bean id="testImpl" class="dao.push.TestImpl" depends-on="dataSource">
+ 	<property name="dataSource" ref="dataSource"></property>
+ </bean>	
 </beans>

@@ -197,11 +197,28 @@ body {
 .descripts{
 	color:#F00;
 }
+
+#serch_tag_div{
+position:absolute;
+left:710px; 
+top:60px; 
+width:414px;
+border-bottom:solid #CCC 1px; 
+border-left:solid #CCC 1px; 
+border-right:solid #CCC 1px; 
+display:block;
+ background:#FFF; 
+ height:200px; 
+ overflow:auto;
+  z-index:2;
+ display:none;
+}
 </style>
 
 <body id="maintag_body">
 <!-- <div style="width:10%;height:100%;float:left;background:#F3F3F3;align:left;border:solid #094AB2 1px"></div>
   -->
+
    <table  id="chartTable_one" width="1024px" height="100%" border="0"  cellspacing="0" cellpadding="0">
 	<tr>
 	  <td width="24px" height="24px" style="background:url(./img/leftup.png)  ">&nbsp;&nbsp;&nbsp;&nbsp;</td>
@@ -212,7 +229,25 @@ body {
 	  <td  width="24px" style="background:url(./img/leftborder.png) "></td>
 	  <td width="100%" valign="top">
 	  <!--主要内容开始-->
-       <div style="float:left;width:100%;align:center; border:1px solid #CCC;">
+	  <%--搜索框开始 --%>
+	  <div style="width:100%;margin-left:255px">
+		   <div style="float:left;width:415px;">
+		   <s:if test='%{tag_name!=""}'>
+		   <input type="text" id="tag_name_input" value="<s:property value='tag_name'/>" style="border:solid #5ab4f9 2px;padding-top:1px;height:30px;width:415px;color:gray;"onfocus="if (value =='标签名称'){value =''}" onBlur="if (value ==''){value='标签名称';this.style.color='gray'}" onKeyDown="{this.style.color='#000'}">
+		   </s:if>
+		   <s:else>
+		    <input type="text" id="tag_name_input" value="标签名称" style="border:solid #5ab4f9 2px;padding-top:1px;height:30px;width:415px;color:gray;"onfocus="if (value =='标签名称'){value =''}" onBlur="if (value ==''){value='标签名称';this.style.color='gray'}" onKeyDown="{this.style.color='#000'}">
+		   </s:else>
+		   </div>
+     
+		   <div id="find_button" style="float:left;">
+		   <div id="serch_tag_div" style="border:1px solid #999"></div>
+		   		<img id="query" src="./img/bt_attr.png" width="80" height="30">
+		   </div>
+      </div> </br>
+      <input id="tag_name_" type="hidden" value="<s:property value='tag_name'/>"/>
+	  <%--搜索框结束--%>
+	  <div style="float:left;width:100%;align:center; border:1px solid #CCC;">
  <input type="hidden" id="req_user" value="<s:property value='#session.userId'/>"/>
   <input type="hidden" id="req_regionName" value="<s:property value='#session.regionName'/>"/>
   <input type="hidden" id="req_regionId" value="<s:property value='#session.regionId'/>"/>
@@ -229,6 +264,10 @@ body {
 </div>
 <div class="line_in" style="width:100% ;border:solid #5ab4f9 1px;" >&nbsp;</div>
 <div id="attr_one" style="float:left;width:100%; height:auto;border-bottom:1px solid #CCC; display:none;position:relative;">
+<s:iterator value="bcg"  >
+	<div class="label_one" ><s:property value="ywName"/></div>
+</s:iterator>
+<!-- 
 <div class="label_one" >短信</div>
 <div class="label_one" >彩信</div>
 <div class="label_one" >GPRS流量</div>
@@ -242,7 +281,7 @@ body {
 <div class="label_one" >手机邮箱</div>
 <div class="label_one" >手机支付</div>
 <div class="label_one" >无线音乐</div>
-
+ -->
 </div>
 <%--应用分类标签，主要包括生命周期和时间偏好--%>
 <div id="main_tag" style="width:100%; height:auto; border:0px solid #CCC; position:relative;">
@@ -275,16 +314,30 @@ body {
 <%--基本类--%>
   <s:if test="%{serv_type==0}"> 
   <script> var old_tag_class="0";</script>
-  <s:iterator  value="mainTagList"   var="tag"> 
-  <script>
-  var new_tag_class="<s:property value='tag_serv_type' />"; 
-  if(old_tag_class!=new_tag_class){
- var tag_class_div="<div class='clear_div'></div><div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>&nbsp;&nbsp;&nbsp;&nbsp;"+new_tag_class+"</div>";
+  <s:iterator  value="mainTagList"   var="tag">   
+<script>
+    if ($("#tag_name_").val()=="") {
+    	  var new_tag_class="<s:property value='tag_serv_type' />"; 
+	  if(old_tag_class!=new_tag_class){
+	 var tag_class_div="<div class='clear_div'></div><div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>&nbsp;&nbsp;&nbsp;&nbsp;"+new_tag_class+"</div>";
 
-  document.write(tag_class_div);
-  old_tag_class=new_tag_class;
-  }
-   </script>
+	  document.write(tag_class_div);
+	  old_tag_class=new_tag_class;
+             }
+    }else{
+    	  var new_tag_class="<s:property value='tag_serv_type' />"; 
+	  if(old_tag_class!=new_tag_class){
+	 var tag_class_div="<div class='clear_div'></div><div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>&nbsp;&nbsp;<s:property value='tag_type' />->"+new_tag_class+"</div>";
+
+	  document.write(tag_class_div);
+	  old_tag_class=new_tag_class;
+	  }
+
+    }
+
+</script>
+
+
   <div style="margin:0px;">
     <div class="tag_div">
     <s:if test="%{#tag['is_used']==0}" >
@@ -303,7 +356,7 @@ body {
   <script> var old_tag_class="0";</script>
   <s:iterator  value="mainTagList"   var="tag"> 
   <script>
-  var new_tag_class="<s:property value='tag_serv_type' />"; 
+  var new_tag_class="<s:property value='tag_serv_type' />";   
   if(old_tag_class!=new_tag_class){
  var tag_class_div="<div class='clear_div'></div><div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>&nbsp;&nbsp;&nbsp;&nbsp;"+new_tag_class+"</div>";
 
@@ -329,9 +382,10 @@ body {
   <script> var old_tag_class="0";</script>
   <s:iterator  value="mainTagList"   var="tag"> 
   <script>
-  var new_tag_class="<s:property value='tag_class' />"; 
+ // var new_tag_class="<s:property value='tag_class' />"; 
+  var new_tag_class="<s:property value='tag_serv_type' />"; 
   if(old_tag_class!=new_tag_class){
- var tag_class_div="<div class='clear_div'></div><div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>&nbsp;&nbsp;&nbsp;&nbsp;<s:property value='tag_type' /></div>";  
+ var tag_class_div="<div class='clear_div'></div><div style='margin:5px;background-image:url(./img/1113.png);width:195px;height:35px;padding-top:4px;padding-left:5px;color:#FFF;left:-20px;position:relative;'>&nbsp;&nbsp;&nbsp;&nbsp;"+new_tag_class+"</div>";  
 //  "<div class='line' style='width:5%;background:#094AB2;'>&nbsp;</div>"+
 //  "<div class='line' style='width:95%;' >&nbsp;</div>"
   document.write(tag_class_div);
@@ -401,7 +455,7 @@ body {
 
 </div>
 <%--标签信息框结束--%>
-<!--------------------------------------------------- 下载选择框----------------------------->
+
 
 <div id='download_div'>
 <table width="100%" border="0" cellspacing="0" cellpadding="10" id="download_table">
@@ -431,7 +485,8 @@ body {
       <input id="im_county"  name="归属县区" type="checkbox" value="B.REGION_NAME"  id="check" / >归属县区<br>  
       <input id="im_product"  name="主体产品" type="checkbox" value="C.PRIVNAME"  id="check" />主体产品
       <input id="im_channel"  name="创建渠道" type="checkbox" value="D.CHNL_NAME"  id="check" />创建渠道
-      <input id="im_totalFee"  name="上月总消费" type="checkbox" value="A.DUE_FEE"  id="check" />上月总消费             
+      <input id="im_totalFee"  name="上月总消费" type="checkbox" value="A.DUE_FEE"  id="check" />上月总消费        
+      <input id="im_GPRSFee"  name="GPRS计费流量(MB)" type="checkbox" value="A.GPRS_BILL_VOL"  id="check" />GPRS计费流量(MB)           
     </td>
   </tr>
   <tr>
@@ -440,7 +495,7 @@ body {
   </tr>
 </table>
 </div>
-<!--------------------------------------------------- 构成分析选择框----------------------------->
+
  <div id='con_div'>
 <table width="100%" border="0" cellspacing="0" cellpadding="10" id="download_table">
   <tr>
@@ -492,6 +547,80 @@ $(function(){
 		$("#descript_l").text(text2);
 	}
 	*/
+	//标签属性搜索事件
+	var inittext=""
+             $("#tag_name_input").keyup(function(){
+             	if ($(this).val()!=inittext) {
+             		var tag_name=encodeURI($("#tag_name_input").val());
+             		$.tag_seach_tishi(tag_name);
+
+             	};
+             	if($("#tag_name_input").val()=="" || $("#tag_name_input").val()=="查询标签名称"){
+        			$("#serch_tag_div").css("display","none");
+   		 }             	
+             });
+
+             //弹出提示框
+             $.extend({'tag_seach_tishi':function(tag_name){
+                                       //	alert("标签名称："+tag_name);
+	                           $.ajax({
+	    		type: 'POST',
+	    		url: 'findTag.action',
+	    		data:{tag_name:tag_name},
+	    		dataType:'json', 
+	    		success: function(data){ 
+	    			//alert(data.tagName);
+                                                     var table_str=""; 		    
+				$("#serch_tag_div").children().remove();			
+				$.each(data,function(i,jarray){				
+					$.each(jarray,function(l,obj){
+					//  $.each(tr,function(k,td){
+						//atrs 说明 0 属性类型   1 属性名称  2 属性   3 属性id  4 一级属性	
+						//alert("index:"+l);	
+						//alert("tagName:"+obj.tagName);	
+						table_str=table_str+"<div class='attr_tishi_div' onClick='$.attr_tishi(this)' onMouseover='$.attr_tishi_over(this)' onMouseOut='$.attr_tishi_out(this)'  >"+obj.tagName+"</div> ";  
+						});								 
+					//});
+				});
+                                                    $("#serch_tag_div").html(table_str);
+                                                    var set =$("#tag_name_input").offset();
+				$("#serch_tag_div").css({
+				             "display":"block",
+					 "left":set.left+"px",
+					 "top":(parseInt(set.top)+30)+"px"
+					});
+
+	    			/*
+			            var table_str=""; 		    
+				$("#serch_tag_div").children().remove();			
+				$.each(data,function(i,table){				
+					$.each(table,function(l,tr){
+					  $.each(tr,function(k,td){
+						//atrs 说明 0 属性类型   1 属性名称  2 属性   3 属性id  4 一级属性		
+						table_str=table_str+"<div class='attr_tishi_div' onClick='$.attr_tishi(this)' onMouseover='$.attr_tishi_over(this)' onMouseOut='$.attr_tishi_out(this)'  >"+td.attr_name+"</div> ";  
+						});								 
+					});
+				});	
+
+				$("#serch_tag_div").html(table_str);
+				var set =$("#attr_name").offset();
+				$("#serch_tag_div").css({
+				             "display":"block",
+					 "left":set.left+"px",
+					 "top":(parseInt(set.top)+30)+"px"
+					});	
+			             */
+
+		            },
+		   	error: function(data){
+		            		alert(data);
+		     		return false;
+		    	}
+		    	});
+                          }
+             });
+
+
 	  if(type!=1){
 		  $(".label_one").css("display","none");
 		  $("#line_n").css("display","none"); 
@@ -502,9 +631,13 @@ $(function(){
 	  $(".label_one").each(
 			     function(){
 			     var a=$(this).text();
-			     if(type_se==a){
+			     //alert($("#tag_name_").val());
+			     if ($("#tag_name_").val()=="") {
+			     	if(type_se==a){
 			   	  $(this).addClass("label_one_in");
-			     }
+			             }
+			     };
+			     
 			});
 		$("#left_menu").children().each(function(){
 		   var num=$("#left_menu").children().index(this);
@@ -557,28 +690,28 @@ $(function(){
 				$(".label_one").click(
 				    function(){
 				       var type_sec=$(this).text();
-				       $(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=1&serv_name="+encodeURI(encodeURI(type_sec)));    
+				       $(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=1&serv_name="+encodeURI(encodeURI(type_sec))+"&tag_name=");    
 				});	
 				$(".label1").click(
 						   function(){
-						        var nav_title =$(this).text();        
+						        var nav_title =$(this).text(); 
 						        $(this).addClass("label_in");
 						        if(nav_title=="基本类"){	
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=0&serv_name=0");
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=0&serv_name=0&tag_name=");
 						    }else if(nav_title=="业务类"){
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=1&serv_name=0");	
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=1&serv_name=0&tag_name=");	
 							}else if(nav_title=="渠道类"){
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=2&serv_name=0");		
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=2&serv_name=0&tag_name=");		
 							}else if(nav_title=="终端类"){
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=3&serv_name=0");		
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=3&serv_name=0&tag_name=");		
 							}else if(nav_title=="互联网类"){
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=4&serv_name=0");		
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=4&serv_name=0&tag_name=");		
 							}else if(nav_title=="服务类"){
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=5&serv_name=0");		
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=5&serv_name=0&tag_name=");		
 							}else if(nav_title=="消费价值类"){		
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=6&serv_name=0");		
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=6&serv_name=0&tag_name=");		
 							}else if(nav_title=="营销活动类"){		
-								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=7&serv_name=0");		
+								$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=7&serv_name=0&tag_name=");		
 							}        
 						});
 				
@@ -629,33 +762,33 @@ $(function(){
 
 			    	if(nav_title=="业务类"){
 			    		$(".img_div img:eq(0)").attr("src","./img/maintag/serv1.png");	
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=0&serv_name=0");
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=0&serv_name=0&tag_name=");
 			        }else if(nav_title=="消费价值类"){
 			    		$(".img_div img:eq(1)").attr("src","./img/maintag/like1.png");
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=1&serv_name=0");	
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=1&serv_name=0&tag_name=");	
 			    	}else if(nav_title=="渠道类"){
 			    		$(".img_div img:eq(2)").attr("src","./img/maintag/event1.png");	
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=2&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=2&serv_name=0&tag_name=");		
 			    	}else if(nav_title=="终端类"){
 			    		$(".img_div img:eq(3)").attr("src","./img/maintag/terminal1.png");
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=3&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=3&serv_name=0&tag_name=");		
 			    	}else if(nav_title=="互联网内容类"){
 			    		$(".img_div img:eq(4)").attr("src","./img/maintag/kehu1.png");
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=4&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=4&serv_name=0&tag_name=");		
 			    	}else if(nav_title=="服务类"){
 			    		$(".img_div img:eq(5)").attr("src","./img/maintag/jiazhi1.png");
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=5&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=5&serv_name=0&tag_name=");		
 			    	}else if(nav_title=="基本类"){
 			    		$(".img_div img:eq(6)").attr("src","./img/maintag/jiaowangq1.png");		
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=6&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=6&serv_name=0&tag_name=");		
 			    	}
 			    	else if(nav_title=="营销活动类"){
 			    		$(".img_div img:eq(7)").attr("src","./img/maintag/yuyinlan.png");		
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=7&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=7&serv_name=0&tag_name=");		
 			    	}
 			    	else if(nav_title=="位置类"){
 			    		$(".img_div img:eq(8)").attr("src","./img/maintag/taocanlan.png");		
-			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=8&serv_name=0");		
+			    		$(window.parent.document).find("#iframe").attr("src","initMainTagAction.action?serv_type=8&serv_name=0&tag_name=");		
 			    	}
 			        event.stopPropagation();	
 
@@ -675,7 +808,8 @@ $(function(){
 			    	 var im_product =$("#im_product").attr("checked");
 			    	 var im_channel =$("#im_channel").attr("checked");
 			    	 var im_totalFee=$("#im_totalFee").attr("checked");
-			     var checkFlag=im_phone+"_"+im_brand+"_"+im_city+"_"+im_county+"_"+im_product+"_"+im_channel+"_"+im_totalFee;
+			    	 var im_GPRSFee=$("#im_GPRSFee").attr("checked");
+			     var checkFlag=im_phone+"_"+im_brand+"_"+im_city+"_"+im_county+"_"+im_product+"_"+im_channel+"_"+im_totalFee+"_"+im_GPRSFee;
 			     if (checkFlag.indexOf("checked")<0){
 			    	 alert("请选择导出字段！");
 			    	 return;
@@ -726,10 +860,11 @@ $(function(){
 			    $("#tag_profile_div").text(tag_pro);	
 			    $("#tag_statement_div").text(tag_stment);	
 			    $("#tag_subs_div").text(tag_subs);	
-			    $("#tag_region_div").text(tag_region);	
+			    //alert(tag_region);
+			    $("#tag_region_div").text($("#req_regionName").val());				    
 			    $("#tag_creator_div").text(tag_creator);	
 			    $("#tag_end_time_div").text(tag_time1+"-"+tag_time2);
-                $("#tag_id_flag").val(tag_id);
+                                           $("#tag_id_flag").val(tag_id);
 			    $("#tag_url_div_bt").show();
 
 			      var scroll  = document.body.scrollTop;
@@ -758,8 +893,39 @@ $(function(){
 			    	var tag_id=$("#tag_id_flag").val();
 			    	window.open("listRegionData.action?tagId="+ tag_id +"&tagName="+encodeURI(encodeURI(tag_name))+"&regionId=","","height=350,width=500,top=200,left=400,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no");
 			    	});		
-			    
-		
+
+			  //提示框点击事件
+			    $.extend({'attr_tishi':function(evet){	
+				  $("#tag_name_input").val($(evet).text());
+				  $("#serch_tag_div").hide();
+				
+				}});
+			//提示框移入变化
+			    $.extend({'attr_tishi_over':function(evet){	
+				  $(evet).css('background','#d4d4d4');	
+				}});
+			//提示框移出变化
+			    $.extend({'attr_tishi_out':function(evet){
+			      $(evet).css('background','');	
+				  $(evet).css('color','#666');	
+				}});
+
+		             $("#tag_name_input").click(function(){
+		             	$("#tag_name_input").val("");
+		             });
+
+		             $("#query").click(function(){
+
+			      var tag_name=$("#tag_name_input").val();
+			      if (tag_name=="" || tag_name=="标签名称") {
+                                                          alert("请输入标签名称！");
+                                                          $("#tag_name_input").focus();
+                                                          return false;
+			      };
+			      var a ="initMainTagAction.action?tag_name="+encodeURI(encodeURI(tag_name))+"&serv_type=0&serv_name=0";
+			      // $("#query").attr("href",a);
+		                   window.location.href=a;
+			});
 });
 </script>
 </body>

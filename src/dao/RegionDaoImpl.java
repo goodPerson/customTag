@@ -53,7 +53,7 @@ public class RegionDaoImpl extends JdbcDaoSupport {
 		String sql="";
 		if(lvl_id!=3){
 		if (cityId.equals("1") || cityId.trim().equals("")){	
-			 sql="select REGION_ID, REGION_NAME from MK_VGOP.TB_DIM_REGION where REGION_PARENT_ID='1' and lvl_id=2 and REGION_ID!='999' order by REGION_ID";			 
+			 sql="select REGION_ID, REGION_NAME from MK_VGOP.TB_DIM_REGION where REGION_PARENT_ID='1' and lvl_id='2' and REGION_ID!='999' order by REGION_ID";			 
 		}else{
 			 newCityId=cityId.substring(0, 3);
 			 sql="select REGION_ID, REGION_NAME from MK_VGOP.TB_DIM_REGION where REGION_ID like '"+newCityId+"%' and REGION_ID NOT LIKE '%999'  order by REGION_ID";

@@ -227,13 +227,18 @@ margin:2px;color:#666;cursor:pointer;
   <tr >
     <td style="color:#030;font-style:bold" width="20%">属性名称</td>
     <td style="color:#030;" width="60%">统计口径</td>
+    <td style="color:#030;" width="60%">更新周期</td>
   </tr>
   <s:iterator  value="listAttrName"   var="AttrUnify">  	     	
  	     <tr id="table_text" >
     		<td style="color:#094AB2" width="20%"> <a style="width:90%;text-align:left;" title="<s:property value="attr_desc" />"><s:property value="attr_desc" /></a></td>
     		<td style="color:#666" width="40%"> <a style="width:90%;text-align:left;" title="<s:property value="statis_requmts" />"><s:property value="statis_requmts" /></a></td>
+    		<td style="color:#666" width="40%"> <a style="width:90%;text-align:left;" title="<s:property value="update_cycle" />"><s:property value="update_cycle" /></a></td>
   		</tr>  	    	    	 
 </s:iterator> 
+<tr>
+<td colspan="3"></td>
+</tr>
   </table>
   </div>
  <!------------------------ 创建标签对话框---------------------------------------- -->
@@ -303,8 +308,6 @@ $("#attr_name").keyup(function(){
 	 if($("#attr_name").val()=="" || $("#attr_name").val()=="查询属性名称"){
         $("#serch_attr_div").css("display","none");
     }
-  
-	
 });
 
 //生产三级属性查询提示框面板
@@ -312,7 +315,7 @@ $("#attr_name").keyup(function(){
 	  $.ajax({
     		type: 'POST',
     		url: 'listAttrTagAction.action',
-    		data:{type_1:value_type,type_2:type2},
+    		data:{type_1:value_type,type_2:type2,type3:type1},
     		dataType:'json', 
     		success: function(data){ 
 		    var table_str=""; 		    

@@ -49,15 +49,32 @@
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
+    <!-- 获取 其他 大类属性模型  ywz  20130816 -->
+	<action name="getModel" method="getModel" class="action.TagInfoAction">
+		<result name="success">/views/attrfilter.jsp</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
 	
 	<action name="initAttrTagAction" method="initAttr" class="action.TagInfoAction">
 		<result name="success">/views/attrfilter.jsp</result>
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
+<!--群创建 高级构成  20130821 ywz -->
+	<action name="initBigClassName" method="initBigClassName" class="action.AdvanceTagInfoAction">
+		<result name="success">/views/advanceAttrfilter.jsp</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
 	
 	<action name="initMainTagAction" method="initMainTag" class="action.MainTanAction">
 		<result name="success">/views/maintag.jsp</result>
+		<interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<!-- 查找标签 20131008 ywz -->
+	<action name="findTag" method="findTag" class="action.MainTanAction">		
 		<interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
@@ -69,6 +86,15 @@
 	</action>
 	<action name="querydown" method="getDownInfo" class="action.DownLoadAction">
 		<result name="success">/views/downloadinfo.jsp</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<!-- 删除下载记录 ywz 20130815 -->
+	<action name="delShow" method="delShow" class="action.DownLoadAction">
+		<result name="success" type="redirectAction">
+				<param name="actionName">querydown</param>  
+                <param name="userId">%{#session.userId}</param> 			
+		</result>	
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
@@ -163,14 +189,24 @@
 		<interceptor-ref name="defaultStack"/>
 	</action>
 	<!-- 修改客户标签构建条件  ywz 20130528-->	
-	<action name="updateGroupTag" class="action.CustTagAttrInfoAction" method="updateGroupTag">
-		 	    <result name="success" type="redirectAction">
+	<action name="updateGroupTag" class="action.CustTagAttrInfoAction" method="updateGroupTag">	  
+		<!-- 
+		<result name="success" type="redirectAction">
 				<param name="actionName">initAttrTagAction</param>  
                 <param name="title_name">hhh</param> 			
 		</result>	
+		 -->
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>	
+	
+<!-- 修改客户标签构建条件  ywz 20130826-->
+	<action name="updateAdvanceGroupTag" class="action.AdvanceTagInfoAction" method="updateAdvanceGroupTag">
+		 <result name="success" >/views/advanceAttrfilter.jsp</result>	
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>	
+	
 	<!-- 客户标签导出  ywz 20130529-->	
 	<action name="exportTag" class="action.CustTagAttrInfoAction" method="exportTag">
 		 	    <result name="success" type="redirectAction">
@@ -240,9 +276,13 @@
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
-		<!-- 进入添加页面  ywz 20130605-->	
+		<!-- 获取审批人  ywz 20130605-->	
 	<action name="getAppro" class="action.TabRequestDeltAction" method="getAppro">
-		 	     <result>/views/tagrequest.jsp</result>		
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<!-- 获取审批人名字   ywz 20130917-->	
+	<action name="*_action" class="action.TabRequestDeltAction" method="{1}">
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
@@ -326,6 +366,177 @@
 		 <interceptor-ref name="loginChecked"/>
 		<interceptor-ref name="defaultStack"/>
 	</action>
+	    <!--属性申请 20130916 -->
+	<action name="*_attr" method="{1}" class="action.AttrRequesAction">		
+		<result name="addattrrequest"  type="redirectAction">
+           <param name="actionName">attrList_attr</param>
+           <param name="attrType">1</param>
+        </result>		
+		<result name="appReq"  type="redirectAction">
+           <param name="actionName">atrrAlreadyList_attr</param>
+           <param name="attrType">2</param>
+        </result>			
+	    <result name="reqForm">/views/attrRequest.jsp</result>
+		<result name="{1}">/views/{1}.jsp</result>
+		<result name="alreadyList">/views/attrList.jsp</result>
+		<result name="waitList">/views/attrList.jsp</result>
+		<result name="approvattr">/views/attrverify.jsp</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+		 <!--获取路径名 20130926 -->
+	<action name="getAttrPath" method="getAttrPath" class="action.TagInfoAction">
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	
+	<!--月/日用户使用明细查询 20131017 -->
+	<action name="getConutTag_tagsub" method="getConutTag" class="action.TagSubsDetailAction">
+	     <!--<result name="tagSubsM">/views/tagCountyCount.jsp</result>-->
+	     <result name="getConutTag">/views/tagCountyCount.jsp</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	
+  <!--获取月用户名单 20131018 -->
+	<action name="*_sechtag" method="{1}" class="action.TagSubsDetailAction">
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	
+	  <!--区县访问统计 20131018 -->
+	<action name="countyMethod" method="countyMethod" class="action.TagCountyAction">
+	     <result name="contyMethod">/views/tagCountyStatis.jsp</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	
+		  <!--导出区县统计 -->
+	<action name="exportMCount" method="exportMCount" class="action.TagCountyAction">	    
+	     		<result name="mDownLoad" type="stream">
+				<param name="inputName">downloadFile</param>
+				<param name="contentType">${contentType}</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">2048</param>
+			</result>
+
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<action name="exportDCount" method="exportDCount" class="action.TagCountyAction">	    
+				<result name="dDownLoad" type="stream">
+				<param name="inputName">downloadFile</param>
+				<param name="contentType">${contentType}</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">2048</param>
+			</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<!--导出地区统计 -->
+	<action name="exportRm"  method="exportRm" class="action.CustCounttsAction">	    
+	     		<result name="exportRm" type="stream">
+				<param name="inputName">downloadFile</param>
+				<param name="contentType">${contentType}</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">2048</param>
+			</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<action name="exportDr"  method="exportDr" class="action.CustCounttsAction">	   
+				<result name="exportDR" type="stream">
+				<param name="inputName">downloadFile</param>
+				<param name="contentType">${contentType}</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">2048</param>
+			</result>
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	
+		<!--导出明细统计 -->
+	<action name="exportMdet"  method="exportMdet" class="action.TagSubsDetailAction">	    
+	     		<result name="exportMdet" type="stream">
+				<param name="inputName">downloadFile</param>
+				<param name="contentType">${contentType}</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">2048</param>
+			</result>
+
+		 <interceptor-ref name="loginChecked"/>
+		<interceptor-ref name="defaultStack"/>
+	</action>
+	<action name="exportDdet"  method="exportDdet" class="action.TagSubsDetailAction">	  
+				<result name="exportDdet" type="stream">
+				<param name="inputName">downloadFile</param>
+				<param name="contentType">${contentType}</param>
+				<param name="contentDisposition">attachment;filename="${fileName}"</param>
+				<param name="bufferSize">2048</param>
+			</result>
+	</action>
+	<!-- 金库认证 -->
+   <action name="treasury_*"   class="action.TreasuryAction"  method="{1}">
+	
+	</action> 
+	<!-- 在线帮助下载 -->	  
+	<action name="downHelpFile"   class="action.DownLoadAction"  method="downHelpFile">
+	</action>
+<!-- 开始 -->
+	<action name="entryplan_create" class="action.push.CreatePlanAction" method="entryplan_create">
+			<result name="success">/push/plan_create.jsp</result>
+	</action>
+	<action name="importAction" class="action.push.CreatePlanAction" method="importNames">
+			<result name="success">/push/upload.jsp</result>
+	</action>
+	<action name="custJson" class="action.push.CreatePlanAction" method="getCust">
+	</action>
+	<action name="datagridjson" class="action.push.CreatePlanAction" method="datagridjson">
+	</action>
+	<action name="addUploadAction" class="action.push.CreatePlanAction" method="addUpload">
+	</action>
+	<action name="addPlanAction" class="action.push.CreatePlanAction" method="addPlan">
+	</action>
+	<action name="updatePlanAction" class="action.push.CreatePlanAction" method="updateplan">
+		  <result name="success">/push/marketlist.jsp</result>   
+		   <result name="error">/push/plan_create.jsp</result>   
+	</action>
+	<action name="delfileAction" class="action.push.CreatePlanAction" method="delupload">
+	</action>
+	<action name="deluploadbyplanid" class="action.push.CreatePlanAction" method="deluploadbyplanid">
+	</action>
+  <action name="tishiAction" class="action.push.TestAction" method="tishiname">
+	</action>
+ <action name="getplanaccess" class="action.push.MarkPlanInfoAction" method="getplanaccess">
+	</action>
+ <action name="pie" class="action.push.MarkPlanInfoAction" method="pie">
+	</action>
+	<action name="plancustlist"  class="action.push.CreatePlanAction" method="downlist">
+	</action>
+	<action name="selectedcustlist" class="action.push.CreatePlanAction" method="selectedcustlist">
+	</action>
+	<action name="searchPripro" class="action.push.TestAction" method="searchProPre"> 
+		<result name="success">/push/selectpro_pre.jsp</result>
+	</action>
+	 <action name="tishipreAction" class="action.push.TestAction" method="tishipre">
+	</action>
+	<action name="getsp_nameList" class="action.push.TestAction" method="getsp_nameList">
+	</action>	
+	<action name="getMarkPlanInfoList" class="action.push.MarkPlanInfoAction" method="getMarkPlanInfoList"> 
+	</action>
+	<action name="getPlanNameList" class="action.push.MarkPlanInfoAction" method="getPlanNameList"> 
+	</action>
+	<action name="delMarkt" class="action.push.MarkPlanInfoAction" method="delMarkt"> 
+	</action>
+	<action name="searchPrivilege" class="action.push.TestAction" method="searchPrivilege"> 
+		<result name="success">/push/test.jsp</result>
+	</action> 
+	<action name="spnametishiAction" class="action.push.TestAction" method="tishispname">
+	</action>
+	
+	<!-- 结束 -->
+	
+	
 </package>
  <package name="tagCounts" extends="json-default">
  	 <!--获取标签日统计 20130717-->
@@ -345,5 +556,36 @@
                 </param>
             </result>
 	</action>
+		<!--月/日用户使用明细查询 20130926 -->
+	<action name="getTagSubsM" method="getTagSubsM" class="action.TagSubsDetailAction">
+		   <result type="json">
+                <param name="root">
+                    jsonFinal
+                </param>
+            </result>
+	</action>
+		<action name="getTagSubsD" method="getTagSubsD" class="action.TagSubsDetailAction">
+		   <result type="json">
+                <param name="root">
+                    jsonFinal
+                </param>
+            </result>
+	</action>
+			<!--月/日区县使用明细查询 20130926 -->
+	<action name="findCtcmList" method="findCtcmList" class="action.TagCountyAction">
+		   <result type="json">
+                <param name="root">
+                    jsonFinal
+                </param>
+            </result>
+	</action>
+		<action name="findCtcdList" method="findCtcdList" class="action.TagCountyAction">
+		   <result type="json">
+                <param name="root">
+                    jsonFinal
+                </param>
+            </result>
+	</action>
+	
  </package>
 </struts>

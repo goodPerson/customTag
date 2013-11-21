@@ -13,7 +13,7 @@ public class TagAttrDaoImpl extends JdbcDaoSupport {
 	
 	public List<AttrUnify> listAttr(String attr_classify,String attr_classify_one,String attr_classify_two,String attr_name){
 		
-		String sql="select ATTR_DESC,ATTR_CLASSIFY,ATTR_CLASSIFY_ONE,ATTR_CLASSIFY_TWO,STATIS_REQUMTS,NUM_ORDER from "+
+		String sql="select ATTR_DESC,ATTR_CLASSIFY,ATTR_CLASSIFY_ONE,ATTR_CLASSIFY_TWO,STATIS_REQUMTS,NUM_ORDER,UPDATE_CYCLE from "+
 		"MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC as a where a.ATTR_CLASSIFY like '%"+attr_classify+"' and VALUE(a.ATTR_CLASSIFY_ONE,'') "+
 		"like '%"+attr_classify_one+"' and VALUE(a.ATTR_CLASSIFY_TWO,'') like '%"+attr_classify_two+"' and a.ATTR_DESC like '%"+attr_name+"'order by a.NUM_ORDER ";
 		List<Map<String,Object>> list= getJdbcTemplate().queryForList(sql);
@@ -22,25 +22,28 @@ public class TagAttrDaoImpl extends JdbcDaoSupport {
 			AttrUnify attr= new AttrUnify();
 			attr.setAttr_desc((String)row.get("ATTR_DESC"));
 			attr.setAttr_classify((String)row.get("ATTR_CLASSIFY"));
-			if(row.get("ATTR_CLASSIFY_ONE")==null){
-				attr.setAttr_classify_one("--");
-			}else{
-			attr.setAttr_classify_one((String)row.get("ATTR_CLASSIFY_ONE"));
-			}
-			if("".equals((String)row.get("ATTR_CLASSIFY_TWO"))||row.get("ATTR_CLASSIFY_TWO")==null){
-				attr.setAttr_classify_two("--");
-			}else{
-	//			System.out.print((String)row.get("ATTR_CLASSIFY_TWO"));
-			attr.setAttr_classify_two((String)row.get("ATTR_CLASSIFY_TWO"));
-		}
-			if("".equals((String)row.get("STATIS_REQUMTS"))||row.get("STATIS_REQUMTS")==null){
-				attr.setStatis_requmts("--");
-			}else{
-			attr.setStatis_requmts((String)row.get("STATIS_REQUMTS"));
-			}
+					if(row.get("ATTR_CLASSIFY_ONE")==null){
+						attr.setAttr_classify_one("--");
+					}else{
+					attr.setAttr_classify_one((String)row.get("ATTR_CLASSIFY_ONE"));
+					}
+					if("".equals((String)row.get("ATTR_CLASSIFY_TWO"))||row.get("ATTR_CLASSIFY_TWO")==null){
+						attr.setAttr_classify_two("--");
+					}else{
+			//			System.out.print((String)row.get("ATTR_CLASSIFY_TWO"));
+					attr.setAttr_classify_two((String)row.get("ATTR_CLASSIFY_TWO"));
+				  }
+					
+				if("".equals((String)row.get("STATIS_REQUMTS"))||row.get("STATIS_REQUMTS")==null){
+					attr.setStatis_requmts("--");
+				}else{
+				attr.setStatis_requmts((String)row.get("STATIS_REQUMTS"));
+				}
 			attr.setNum_order((Integer)row.get("NUM_ORDER"));
+			attr.setUpdate_cycle((String)row.get("UPDATE_CYCLE"));
 			AttrList.add(attr);
 		}
+		
 		return AttrList;
 	}
 	

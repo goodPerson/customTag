@@ -13,6 +13,7 @@ public class TagAprove {
 	private String tag_treater;                  //处理人
 	private String tag_treater_id;               //处理人ID
 	private String tag_state;                    //状态
+	private String tag_approve_remark;                    //审核备注
 	public String getTag_id() {
 		return tag_id;
 	}
@@ -73,7 +74,11 @@ public class TagAprove {
 	public void setTag_state(String tag_state) {
 		this.tag_state = tag_state;
 	}
-	
-	
+	public String getTag_approve_remark() {
+		return tag_approve_remark;
+	}
+	public void setTag_approve_remark(String tag_approve_remark) {
+		this.tag_approve_remark = tag_approve_remark;
+	}
 	
 }

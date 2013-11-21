@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -230,6 +230,9 @@ padding:5px 5px 0px 5px;
 	text-align:center;
 	margin:0px auto;
 	}
+.border {
+   border:1px solid #D3D3D3;
+}
 </style>
 
 <body>
@@ -255,65 +258,71 @@ padding:5px 5px 0px 5px;
           
           <td width="100%"   valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td colspan="4"  id="tag_name" class="title_td" align="center">标签申请单</td>               
+                <td colspan="4"  id="tag_name" class="title_td" align="center">标签/属性申请单</td>               
               </tr>
               <tr>
-                <td width="12%" valign="top" style=" font: bold; height:40px;">营销活动名称：</td>
+                			<td width="12%" valign="top" style=" font: bold; height:40px;">标签/属性名称：</td>
 				<td colspan="3" ><s:property value="%{tbrquestDel.req_name}"/><span style="color:#FF0000; margin-left:10px">*</span><input type="hidden" id="tag_id" value="<s:property value='%{tbrquestDel.req_id}'/>"/>
 				</td>
               </tr>
               <tr>
-                <td  height="20px" style="font: bold; height:40px;" >申请理由:</td>
+               			 <td  height="20px" style="font: bold; height:40px;" >申请理由:</td>
 				<td colspan="3">				
 				<s:property value="%{tbrquestDel.req_resons}"/>
 				<span style="color:#FF0000; margin-left:10px">*</span></td>
               </tr>
               <tr>
-                <td style=" font: bold; height:40px;">活动范围:</td>
-                <td colspan="3">	
+               			 <td style=" font: bold; height:40px;">标签/属性范围:</td>
+               			 <td colspan="3">	
 				<s:property value="%{tbrquestDel.req_scope.replace(\",\", \"    \")}"/>
 				</td>
               </tr>
               <tr>
-                <td  height="40px" style="font: bold; height:40px;">活动期限:</td>
+               			 <td  height="40px" style="font: bold; height:40px;">标签/属性期限:</td>
 				<td width="43%">				
 						<s:property value="%{tbrquestDel.req_time_limit.replace(\",\", \"  至  \")}"/> 
 				
 			  	</td>
-                <td width="7%" style="font: bold; height:40px;">&nbsp;</td>
+                			<td width="7%" style="font: bold; height:40px;">&nbsp;</td>
 				<td width="38%">
 						
 				</td>
               </tr>
-			  <tr>
-                <td  height="40px" style="font: bold; height:40px;">目标市场:</td>
-                <td width="43%">	<s:property value="%{tbrquestDel.req_target.replace(\",\", \"    \")}"/>	</td>
+	 <tr>
+                			<td  height="40px" style="font: bold; height:40px;">目标市场:</td>
+                			<td width="43%">	<s:property value="%{tbrquestDel.req_target.replace(\",\", \"    \")}"/>	</td>
 				<td width="7%" style="font: bold; height:40px;"></td>
 				<td width="38%"></td>
               </tr>
               <tr>
-                <td  height="40px" style="font: bold; height:40px;">客户品牌</td>
-                <td width="43%">	<s:property value="%{tbrquestDel.cus_brand.replace(\",\", \"    \")}"/>	</td>
+                			<td  height="40px" style="font: bold; height:40px;">客户品牌</td>
+               			 <td width="43%">	<s:property value="%{tbrquestDel.cus_brand.replace(\",\", \"    \")}"/>	</td>
 				<td width="7%" style="font: bold; height:40px;"></td>
 				<td width="38%">	</td>
               </tr>
-			  <tr>
-                <td style=" font: bold; height:40px;" >筛选条件:</td>
+	 <tr>
+                			<td style=" font: bold; height:40px;" >筛选条件:</td>
 				<td colspan="3"><s:property value="%{tbrquestDel.screen_condition}"/>
 				<span style="color:#FF0000; margin-left:10px">*</span>	</td>
               </tr> 
-			  <tr>
-                <td style=" font: bold; height:40px;" >审批人：</td>
+	 <tr>
+                			<td style=" font: bold; height:40px;" >审批人：</td>
 				<td colspan="3"><s:property value="%{tbrquestDel.verify}"/><span style="color:#FF0000; margin-left:10px">*</span> </td>
               </tr>     
               <tr>
-                <td style=" font: bold; height:40px;" >备注:</td>
+               			 <td style=" font: bold; height:40px;" >申请备注:</td>
 				<td colspan="3"><s:property value="%{tbrquestDel.remark}"/></td>
               </tr>  
               <tr>
+                                                   <td  style=" font: bold; height:40px;"  >审核备注：</td>
+				<td colspan="3">							
+				<textarea id="approveremark" name="approveremark"  class="border "  cols="40" rows="4"></textarea>		
+				</td>
+              </tr>  
+              <tr>
                 <td colspan="4" style=" font: bold; height:40px; text-align:center" >
-				<input id="pass"  type="button" value="同意" />
-				<input id="reject"  type="button" value="退回" />
+				<input id="pass"  type="button" style=" width:80px;height:28px;font-family:'微软雅黑';background: #094AB2;  color:#FFF; line-height:28px;overflow:hidden; border:0px; font-size:16px;" value="同意" />
+				<input id="reject"  type="button" style=" width:80px;height:28px;font-family:'微软雅黑';background: #094AB2;  color:#FFF; line-height:28px;overflow:hidden; border:0px; font-size:16px;" value="退回" />
 				</td>
               </tr>             
             </table></td>          
@@ -342,17 +351,31 @@ padding:5px 5px 0px 5px;
 $(function () {
     var tag_id=$("#tag_id").val();
     $("#pass").click(function(){   
-        var href = "verifyTag.action?req_id="+tag_id;
-         window.location.href=href; 	    	
+        if ($.trim_str()) {
+	        var href = "verifyTag.action?req_id="+tag_id+"&remark="+encodeURI(encodeURI($("#approveremark").val()));
+	         window.location.href=href; 
+         };	    	
    });    
     
-        $("#reject").click(function(){   
-          var href = "rejectTag.action?req_id="+tag_id;
-         window.location.href=href; 	    	
+   $("#reject").click(function(){ 
+        if ($.trim_str()) {
+            var href = "rejectTag.action?req_id="+tag_id+"&remark="+encodeURI(encodeURI($("#approveremark").val()));
+            window.location.href=href; 	
+        };	      	
    });  
     
-});
+    $.extend({'trim_str':function(){
+    	if($.trim($("#approveremark").val())==""){
+		alert("审核备注不能为空!");
+		$("#approveremark").focus();
+		return false;
+    	}
+    	return true;
+        }
+    });
+ 
 
+});
 </script>
 
 </html>

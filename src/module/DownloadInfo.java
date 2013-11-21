@@ -16,6 +16,7 @@ public class DownloadInfo {
 	private String manager;                  //操作用户
 	private String custlist_path;            //文件路径
 	private String downLoadReason;  //下载原因
+	private Integer downLoagFlag;  //下载标志
 	public String getFile_name() {
 		return file_name;
 	}
@@ -105,6 +106,12 @@ public class DownloadInfo {
 	}
 	public void setDownLoadReason(String downLoadReason) {
 		this.downLoadReason = downLoadReason;
+	}
+	public Integer getDownLoagFlag() {
+		return downLoagFlag;
+	}
+	public void setDownLoagFlag(Integer downLoagFlag) {
+		this.downLoagFlag = downLoagFlag;
 	}	
 	
 }

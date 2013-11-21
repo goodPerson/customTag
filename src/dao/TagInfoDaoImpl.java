@@ -92,10 +92,41 @@ public class TagInfoDaoImpl extends JdbcDaoSupport {
 		List<Attr> attrList= new ArrayList<Attr>();
 		String sql="";
 		if(type1.equals("1")){
-			sql="select attr_name,attr_desc,value_type,unit,dim_tab,'1' from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where  ATTR_CLASSIFY_one='"+type2+"' order by attr_desc";
+			sql="select attr_name,attr_desc,value_type,unit,dim_tab,'1' from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where  ATTR_CLASSIFY_one='"+type2+"' order by NUM_ORDER";
 		}
 		else if(type1.equals("2")){
-			sql="select attr_name,attr_desc,value_type,unit,dim_tab,'1' from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where attr_desc like '%"+type2+"%'";
+			sql="select attr_name,attr_desc,value_type,unit,dim_tab,'1' from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where attr_desc like '%"+type2+"%'   order by NUM_ORDER";
+		}
+		List<Map<String,Object>> list= getJdbcTemplate().queryForList(sql);
+		for(Map<String,Object> row:list){
+			Attr attr= new Attr();
+			attr.setAttr_id((String)row.get("attr_name"));
+			attr.setAttr_name((String)row.get("attr_desc"));
+			attr.setAttr_type((String)row.get("value_type"));
+			attr.setAttr_unit((String)row.get("unit"));
+			attr.setAttr_table((String)row.get("dim_tab"));
+			attr.setAttr_is_tab("1");
+			attrList.add(attr);
+		}
+		
+		return attrList;
+	}
+	/**
+	 * 解决流量属性、语音属性的二级属性相同问题（套餐订购）
+	 * @param type1
+	 * @param type2
+	 * @param typeOne
+	 * @return
+	 */
+	 
+	public List<Attr> listAtrrNew(String type1,String type2,String typeOne){
+		List<Attr> attrList= new ArrayList<Attr>();
+		String sql="";
+		if(type1.equals("1")){
+			sql="select attr_name,attr_desc,value_type,unit,dim_tab,'1' from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where ATTR_CLASSIFY='"+typeOne+"'  and  ATTR_CLASSIFY_one='"+type2+"' order by NUM_ORDER";
+		}
+		else if(type1.equals("2")){
+			sql="select attr_name,attr_desc,value_type,unit,dim_tab,'1' from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where ATTR_CLASSIFY='"+typeOne+"'  and  attr_desc like '%"+type2+"%'   order by NUM_ORDER";
 		}
 		List<Map<String,Object>> list= getJdbcTemplate().queryForList(sql);
 		for(Map<String,Object> row:list){
@@ -112,9 +143,18 @@ public class TagInfoDaoImpl extends JdbcDaoSupport {
 		return attrList;
 	}
 	
+	
 	public void saveTag (String tag_sta,String name){
 		String sql="update mk_vgop.tb_customtag_info set tag_statement=? where tag_tag=?";
 		this.getJdbcTemplate().update(sql, new Object[]{name,tag_sta});
 	}
 
+	public String getModle(String attrName){
+		if (!"--".equals(attrName)){
+			String sql="select  VALUE_SCOPE from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where ATTR_DESC='"+ attrName +"'";
+			return this.getJdbcTemplate().queryForObject(sql, String.class);
+		}
+		return "";
+		
+	}
 }

@@ -86,6 +86,7 @@ public class TagInfoAction extends ActionSupport {
 	   private List  qudaoAttr;                                                                                            //渠道属性
 	   private List  tagAttr;                                                                                                 //标签属性	
 	   private int date;
+	   private String cycleDay;                                                                                           //数据日更新周期
 	   private String mon;
 	   private List<GroupTagAttrInfo> groupTagList= new ArrayList<GroupTagAttrInfo>();  //筛选属性；
 	   private List<Structure> listStruct;
@@ -97,6 +98,14 @@ public class TagInfoAction extends ActionSupport {
 	   private String structValue;
 	   private String attrDesc;
 	   private String attrTypeC;
+	   
+	   
+		String tagIntroduce;
+		String createTagDate;
+		String endTagDate;
+		String cityName;     
+		String countyName;   
+		String userState;    
 	 //ywz 20130521  end    
 	public static void initTag(){
 			//XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
@@ -175,8 +184,14 @@ public class TagInfoAction extends ActionSupport {
 		  
 		  String type1 = URLDecoder.decode(request.getParameter("type_1"),"utf-8"); //属性搜索类型，1表示按二级类，2表示按关键字搜索
 		  String type2 = URLDecoder.decode(request.getParameter("type_2"),"utf-8");
-
-		  this.listAttr=tagDao.listAtrr(type1,type2);
+		  String type3 = URLDecoder.decode(request.getParameter("type3"),"utf-8");
+         
+		  if("语音属性".equals(type3) || "流量属性".equals(type3)){
+			  this.listAttr=tagDao.listAtrrNew(type1,type2,type3);
+		  }else{
+			  this.listAttr=tagDao.listAtrr(type1,type2);
+		  }
+		  
 	      JSONArray table = new JSONArray();
 
 	        if(listAttr != null)
@@ -264,7 +279,7 @@ public class TagInfoAction extends ActionSupport {
 		  String region_id=request.getParameter("regionId");
 		  starttime=request.getParameter("starttime");
 		  endtime=request.getParameter("endtime");
-		  count=request.getParameter("count");
+		  count=URLDecoder.decode(request.getParameter("count"), "utf-8");
 		  type=request.getParameter("type");
 		  if("1".equals(type)){
 		   count=count.substring(0, count.length()-1);	  
@@ -287,6 +302,15 @@ public class TagInfoAction extends ActionSupport {
 			tagAttr=this.attrClassDao.getListSecName("标签");                                                                                                   //标签属性        
           this.title = URLDecoder.decode(request.getParameter("title_name"), "utf-8");
           this.id  =request.getParameter("id");
+           if(title.equals("请输入客户群名称")){
+        	    title="";
+           }
+           tagIntroduce     =URLDecoder.decode(request.getParameter("tag_introduce"), "utf-8");//  群简介
+           createTagDate  =URLDecoder.decode(request.getParameter("create_tag_date"), "utf-8"); //  有效开始时间
+           endTagDate      =URLDecoder.decode(request.getParameter("end_tag_date"), "utf-8"); //    有效结束时间
+           cityName           =URLDecoder.decode(request.getParameter("cityName"), "utf-8");  //  区域地市
+           countyName     =URLDecoder.decode(request.getParameter("countyName"), "utf-8");  //区域区县
+           userState           =URLDecoder.decode(request.getParameter("userState"), "utf-8");  //区域区县用户状态
           this.initRegion();
           String reg_id=(String) request.getSession().getAttribute("regionId");
           lvl_id=regionDao.getlvl(reg_id);
@@ -294,7 +318,10 @@ public class TagInfoAction extends ActionSupport {
           groupTagList=custTagAttrDao.getGroupTags(this.id);
           getTableAttr(groupTagList);
           date=custTagAttrDao.getMonth();
+         
           mon=(String.valueOf(date)).substring(0,4)+"年"+(String.valueOf(date)).substring(4,6)+"月";
+          cycleDay=(String.valueOf(custTagAttrDao.getData())).substring(0, 4)+"年"+(String.valueOf(custTagAttrDao.getData())).substring(4, 6)+"月"+(String.valueOf(custTagAttrDao.getData())).substring(6, 8)+"日";
+          
            return SUCCESS;
              
 	}
@@ -403,6 +430,48 @@ public void saveTag() throws IOException{
 	  String name=request.getParameter("name");
 	  tagDao.renameTag(tag_sta, name);
 }
+
+/**
+ * 获取“其他”类型的输入样例
+ * @return
+ * @throws IOException 
+ */
+public String getModel() throws IOException{
+	this.initTag();
+	HttpServletResponse response=ServletActionContext.getResponse();
+//	response.setCharacterEncoding("gbk");
+//	response.setContentType("text/html;charset=gbk");
+//	response.addHeader("Content-Type", "text/html;charset=gbk");
+	HttpServletRequest request=ServletActionContext.getRequest();
+	String attrName=URLDecoder.decode(request.getParameter("attrName"), "utf-8").trim();
+	if (!"".equals(attrName) || attrName!=null ){
+		String valueScope=tagDao.getModle(attrName);
+		PrintWriter out=response.getWriter();
+		out.print(valueScope);
+		out.flush();
+		out.close();
+	}
+	return SUCCESS;
+}
+
+/**
+ * 获取属性路径
+ * @throws IOException 
+ */
+public void getAttrPath() throws IOException{
+	initTagUnifyView();
+	HttpServletRequest request=ServletActionContext.getRequest();
+	HttpServletResponse response=ServletActionContext.getResponse();
+	response.setCharacterEncoding("utf-8");
+	response.setContentType("text/html;charset=utf-8");
+	String attrName=URLDecoder.decode(request.getParameter("attrName"), "utf-8");
+	String attrPath=attrClassDao.getAttrPaht(attrName);
+	PrintWriter out=response.getWriter();
+	out.print(attrPath);
+	out.flush();
+	out.close();		
+}
+
 public List<Attr> getListAttr() {
 	return listAttr;
 }
@@ -636,6 +705,63 @@ public String getAttrTypeC() {
 
 public void setAttrTypeC(String attrTypeC) {
 	this.attrTypeC = attrTypeC;
+}
+
+public String getCycleDay() {
+	return cycleDay;
+}
+
+public void setCycleDay(String cycleDay) {
+	this.cycleDay = cycleDay;
+}
+
+
+public String getTagIntroduce() {
+	return tagIntroduce;
+}
+
+public void setTagIntroduce(String tagIntroduce) {
+	this.tagIntroduce = tagIntroduce;
+}
+
+public String getCreateTagDate() {
+	return createTagDate;
+}
+
+public void setCreateTagDate(String createTagDate) {
+	this.createTagDate = createTagDate;
+}
+
+public String getEndTagDate() {
+	return endTagDate;
+}
+
+public void setEndTagDate(String endTagDate) {
+	this.endTagDate = endTagDate;
+}
+
+public String getCityName() {
+	return cityName;
+}
+
+public void setCityName(String cityName) {
+	this.cityName = cityName;
+}
+
+public String getCountyName() {
+	return countyName;
+}
+
+public void setCountyName(String countyName) {
+	this.countyName = countyName;
+}
+
+public String getUserState() {
+	return userState;
+}
+
+public void setUserState(String userState) {
+	this.userState = userState;
 }
 
 }

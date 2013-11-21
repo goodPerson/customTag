@@ -9,7 +9,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
-    
     <title>My JSP 'attrmanage.jsp' starting page</title>
     <meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
@@ -113,7 +112,8 @@ body{
 				<td style="color:#030;" >申请时间</td>
 				<td style="color:#030;" >审批人</td>
 				<td style="color:#030;" >标签状态</td>
-				<s:if test="%{role=='审批人'}">
+				<td style="color:#030;" >审批备注</td>
+				<s:if test='%{(role=="审批人" or role=="超级管理员") and jspmes=="0"}'>
 				<td style="color:#030;" >操作</td>
 				</s:if>
 			  </tr>
@@ -127,6 +127,7 @@ body{
 								<td style="color:#666" ><s:property value="create_time" /></td>
 								<td style="color:#666;"><s:property value="tag_examiner" /></td>
 								<td style="color:#666;"><s:property value="tag_state" /></td>
+								<td style="color:#666;"><s:property value="tag_approve_remark" /></td>
 								 <s:if test="%{role=='审批人'}">
 								<td style="color:#030;" ><a name="Approver" href="getTabRequestDetl.action?req_id=<s:property value='tag_id'/>">审批</a></td>    		                                               
 								</s:if>
@@ -144,7 +145,8 @@ body{
 								<td style="color:#666" ><s:property value="create_time" /></td>
 								<td style="color:#666;"><s:property value="tag_examiner" /></td>
 								<td style="color:#666;"><s:property value="tag_state" /></td>
-								 <s:if test="%{role=='审批人'}">
+								<td style="color:#666;"><s:property value="tag_approve_remark" /></td>
+								 <s:if test='%{(role=="审批人" or role=="超级管理员") and jspmes=="0"}'>
 								<td style="color:#030;" ><a name="Approver" href="getTabRequestDetl.action?req_id=<s:property value='tag_id'/>">审批</a></td>    		                                               
 								</s:if>
 							</tr>  	    	    	 
@@ -206,22 +208,24 @@ body{
 	         $(this).css("background","");
 		
 		});
+       /*
 		var sixtd="";
 //		alert($("#taginfo_table tr").length);
 		for (i=1;i<$("#taginfo_table tr").length;i++){
 	
-	   sixtd=$("#taginfo_table tr:eq("+i+") td:eq(5)").text();
-	  
-		if (sixtd=="已退回"){
-			$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已处理");
-		}else if(sixtd=="已发布"){
-			$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已处理");
-		}else if(sixtd=="待生成标签"){
-			$("#taginfo_table tr:eq("+i+") td:eq(6)").text("已审批");
+		            sixtd=$("#taginfo_table tr:eq("+i+") td:eq(5)").text();
+		  
+			if (sixtd=="待审批"){
+				$("#taginfo_table tr:eq("+i+") td:eq(7)").text("待审批");
+			}else if(sixtd=="待生成标签"){
+				$("#taginfo_table tr:eq("+i+") td:eq(7)").text("待生成标签");
+			}else if(sixtd=="已退回"){
+				$("#taginfo_table tr:eq("+i+") td:eq(7)").text("已退回");
+			}else if(sixtd=="已发布"){
+				$("#taginfo_table tr:eq("+i+") td:eq(7)").text("已发布");
+			}
 		}
-		}
-		
-
+      */
  });
 </script>  
   </body>

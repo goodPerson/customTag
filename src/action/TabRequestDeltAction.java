@@ -3,6 +3,7 @@ package action;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -93,6 +94,43 @@ public class TabRequestDeltAction extends ActionSupport {
 	    }     
 	   
 	}
+	
+	public void getApproName() throws IOException{		
+		this.initApproverInfo();
+	HttpServletResponse response=ServletActionContext.getResponse();
+	HttpServletRequest    request  =ServletActionContext.getRequest();
+	response.setCharacterEncoding("gbk");
+	response.setContentType("text/html;charset=gbk");
+	response.setHeader("Content-Type", "text/html;charset=gbk");
+    request.setCharacterEncoding("gbk");
+    HttpSession session=request.getSession();
+    String regionName=session.getAttribute("regionName").toString();
+    List<ApproverInfo>  listAppro=null;
+    if (!regionName.equals("")){
+    	   listAppro=approverInfoDao.getApprover(regionName); 
+    	   JSONArray listJsonAppro=new JSONArray();
+   		   JSONObject object=new JSONObject();
+
+   		for(int i=listAppro.size();i>=0;i--){			 
+   			if (i!=listAppro.size()){
+   				ApproverInfo appInfo=listAppro.get(i);
+   		     	object.put("id", appInfo.getUser_name());
+   		    	object.put("text", appInfo.getUser_name());
+   			}else{
+   				object.put("id", "");
+   				object.put("text", "-请选择-");
+   			}
+   			listJsonAppro.add(object);
+   		}
+   		
+   		PrintWriter print=response.getWriter();
+   		print.print(listJsonAppro.toString());
+   		print.flush();
+   		print.close();   
+    }     
+   
+}
+	
 	/**
 	 *  添加申请详细信息       申请人信息和审批人信息
 	 * @return
@@ -205,8 +243,9 @@ public class TabRequestDeltAction extends ActionSupport {
 		  String userId=(String) request.getSession().getAttribute("userId");
 		  String req_id=request.getParameter("req_id");
 		  state=tagApproveDao.getState(req_id);
+		  String remark=URLDecoder.decode(request.getParameter("remark"), "utf-8");
 		  GetLog.getLog("标签管理", "修改", "审核申请", req_id+","+userId);
-		  if( tagApproveDao.updateTagApprove(req_id, "1"))			
+		  if( tagApproveDao.updateTagApprove(req_id, "1",remark))			
 			  return "success";		  
 		  return "fail";
 	}
@@ -225,8 +264,10 @@ public class TabRequestDeltAction extends ActionSupport {
 		  request.setCharacterEncoding("gbk");
 		  String req_id=request.getParameter("req_id");
 		  String userId=(String) request.getSession().getAttribute("userId");
+		  String remark=URLDecoder.decode(request.getParameter("remark"), "utf-8");
 		  GetLog.getLog("标签管理", "修改", "回退申请", req_id+","+userId+",");
-		  if( tagApproveDao.updateTagApprove(req_id, "2"))
+		  
+		  if( tagApproveDao.updateTagApprove(req_id, "2",remark))
 		    return "success";
 		  return "fail";
 	}

@@ -19,6 +19,8 @@ public class CustomGroup {
 	private String tag_status;         //标签状态
     private String tag_tec_stamt;      //是否生成sql
     private String custlist_path;      //用户路径
+    private Integer typeFlag;         //高级群标志   0 普通标签  1 高级标签 
+    private String stamtAdvance;  //高级群条件
 public String getTag_id() {
 	return tag_id;
 }
@@ -120,6 +122,18 @@ public String getTag_creator_id() {
 }
 public void setTag_creator_id(String tag_creator_id) {
 	this.tag_creator_id = tag_creator_id;
+}
+public Integer getTypeFlag() {
+	return typeFlag;
+}
+public void setTypeFlag(Integer typeFlag) {
+	this.typeFlag = typeFlag;
+}
+public String getStamtAdvance() {
+	return stamtAdvance;
+}
+public void setStamtAdvance(String stamtAdvance) {
+	this.stamtAdvance = stamtAdvance;
 }
 
 

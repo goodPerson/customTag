@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import module.Attr;
+import module.BusClassTag;
 import module.CustomTag;
 import module.MainTag;
 import net.sf.json.JSONArray;
@@ -30,14 +31,18 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import dao.MainTagDaoImpl;
 import dao.TagInfoDaoImpl;
+import dao.Idao.IBusClassTag;
 
 public class MainTanAction extends ActionSupport {
 	
 	//private MainTagDaoImpl tagDao =new MainTagDaoImpl(); //数据源
 	private static MainTagDaoImpl tagDao; //数据源
+	private IBusClassTag  busClassDao;                                                   //业务类二级属性名称
 	private List<MainTag>mainTagList = new  ArrayList<MainTag>();//核心标签LIST
+	private List<BusClassTag> bcg=new ArrayList<BusClassTag>();
 	private int serv_type=0;//0表示
 	private String serv_name="";//
+	private String tag_name="";//标签名称
 	private String serv_name_src="img/maintag/duanxin.png";         //短信图标
 	private String url0="./img/maintag/serv2.png";                           //业务类
 	private String url1="./img/maintag/like2.png";                            //喜爱类
@@ -71,6 +76,10 @@ public class MainTanAction extends ActionSupport {
 		return "";
 	}
 	
+	private void initBusDao(){
+		XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		busClassDao=(IBusClassTag) factory.getBean("busClassTagImpl");
+	}
 	
 	//初始化核心标签内容
 	public String  initMainTag() throws IOException{
@@ -78,8 +87,11 @@ public class MainTanAction extends ActionSupport {
 			  this.initTagDao();
 		  HttpServletRequest request = ServletActionContext.getRequest();	
 		  request.setCharacterEncoding("GBK");
+		  tag_name=URLDecoder.decode(request.getParameter("tag_name"), "utf-8");
+		  
           this.serv_type=( Integer.parseInt(request.getParameter("serv_type").toString()));
           this.serv_name=( request.getParameter("serv_name").toString());   
+          
           if(this.serv_name.equals("0")) { 
         	  this.serv_name="短信";                
           }else{
@@ -141,10 +153,16 @@ public class MainTanAction extends ActionSupport {
 		  	 	  this.url8="./img/maintag/taocanlan.png";
 		  	 	  break; 
 	  }
+    	  initBusDao();
           HttpSession session=request.getSession();
           String regionId=session.getAttribute("regionId").toString();
 //		  this.mainTagList=this.tagDao.listTag(serv_type, serv_name);       20130801 bak
-    	  this.mainTagList=this.tagDao.listTag(serv_type, serv_name,regionId);   
+          if (1==serv_type){
+        	  bcg=busClassDao.listTags();
+          }
+    	 // this.mainTagList=this.tagDao.listTag(serv_type, serv_name,regionId);   
+          this.mainTagList=this.tagDao.findListTag(serv_type, serv_name,regionId,tag_name);   
+    	  
 		  date=tagDao.getMonth();
 	      mon=(String.valueOf(date)).substring(0,4)+"年"+(String.valueOf(date)).substring(4,6)+"月";
           return SUCCESS;
@@ -165,6 +183,34 @@ public class MainTanAction extends ActionSupport {
 	   listRegion=tagDao.listRegionData(regionId, tagId);
 	   
 		return SUCCESS;
+	}
+	
+	/*查找标签*/
+	public void findTag() throws IOException{
+		this.initTagDao();
+		  HttpServletResponse response = ServletActionContext.getResponse();
+		  response.setCharacterEncoding("utf-8");
+		  response.setContentType("text/html;charset=utf-8");
+		  response.addHeader("Content-Type", "text/html;charset=utf-8");	
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String tagName=URLDecoder.decode(request.getParameter("tag_name"), "utf-8");
+		List<CustomTag> listCtag=tagDao.findTag(tagName);
+		
+		JSONArray  jarray=new JSONArray();
+		for(CustomTag cust:  listCtag){
+			JSONObject obj=new JSONObject();
+			obj.put("tagName", cust.getTag_name());
+			jarray.add(obj);			
+		}
+		
+		JSONObject jsonObjectFinal1 = new JSONObject();
+        jsonObjectFinal1.put("total", listCtag.size());
+        jsonObjectFinal1.put("rows", jarray);
+        PrintWriter printWriter = response.getWriter();
+        printWriter.print(jsonObjectFinal1.toString());
+        printWriter.flush();
+        printWriter.close();
+		
 	}
 	
 	
@@ -276,6 +322,17 @@ public class MainTanAction extends ActionSupport {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
-    
+	public List<BusClassTag> getBcg() {
+		return bcg;
+	}
+	public void setBcg(List<BusClassTag> bcg) {
+		this.bcg = bcg;
+	}
+	public String getTag_name() {
+		return tag_name;
+	}
+	public void setTag_name(String tag_name) {
+		this.tag_name = tag_name;
+	}    
 
 }

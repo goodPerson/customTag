@@ -42,8 +42,7 @@ public class GetLog {
  	   	  String  regionId=(String) session.getAttribute("regionId");
  	   	  String  regionName=(String) session.getAttribute("regionName"); 	  
  	   	  String createTime=sdf.format(new Date());    	  
- 	   	operateLogDao.addOperateLog(    userId,  userName,  regionId,  regionName,
- 	    		    columnName, operateType, operateName , operatePara, createTime);
+// 	   	operateLogDao.addOperateLog(    userId,  userName,  regionId,  regionName,columnName, operateType, operateName , operatePara, createTime);
   	      //operateLogDao.addOperateLog(userId, userName, regionId, regionName, actionName, "", createTime,operateType);
        }
 		

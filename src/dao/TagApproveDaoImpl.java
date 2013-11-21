@@ -14,8 +14,8 @@ public class TagApproveDaoImpl extends JdbcDaoSupport {
     	 }
      }
 
-     public boolean updateTagApprove(String tag_id,String state){
-    	 String sql="update MK_VGOP.TB_TAG_APPROVE set tag_state='"+state+"'  where TAG_ID='"+tag_id+"'";
+     public boolean updateTagApprove(String tag_id,String state,String remark){
+    	 String sql="update MK_VGOP.TB_TAG_APPROVE set tag_state='"+state+"', TAG_APPROVE_REMARK='"+ remark +"'  where TAG_ID='"+tag_id+"'";
     	if ( this.getJdbcTemplate().update(sql)>0)   
     	     return true;
     	return false;

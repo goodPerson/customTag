@@ -3,6 +3,7 @@ package dao;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,17 +38,69 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 * 添加客户标签
 	 * @return
 	 */
-	public  void addTag(CustomGroup tag){
-	try {
-		String sql="insert into mk_vgop.tb_customgroup_info values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	    Object[] params= new Object[]{tag.getTag_id(),tag.getTag_name(),tag.getTag_type(),tag.getTag_serv_type(),tag.getTag_class(),tag.getCreate_time(),tag.getEnd_time(),tag.getProfile(),tag.getCount_subs(),tag.getTag_statement(),tag.getTag_creator(),tag.getTag_creator_id(),tag.getTag_region(),tag.getIs_share(),tag.getTag_status(),tag.getTag_tec_stamt(),tag.getCustlist_path()};
-		this.getJdbcTemplate().update(sql,params);
+	public boolean  addTag(CustomGroup tag){
+		boolean boolFlag=false;
+		String querySql="select count(TAG_NAME) from mk_vgop.tb_customgroup_info where  TAG_NAME='"+tag.getTag_name()+"'";
+		int counts=this.getJdbcTemplate().queryForInt(querySql);
+		if (0==counts){
+			try {
+				String sql="insert into mk_vgop.tb_customgroup_info (TAG_ID,TAG_NAME,TAG_TYPE,TAG_SERV_TYPE,TAG_CLASS,CREATE_TIME,END_TIME,PROFILE,COUNT_SUBS,TAG_STATEMENT,TAG_CREATOR,TAG_CREATOR_ID,TAG_REGION,IS_SHARE,TAG_STATUS,TAG_TEC_STAMT,CUSTLIST_PATH)"
+						            +"  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			    Object[] params= new Object[]{tag.getTag_id(),tag.getTag_name(),tag.getTag_type(),tag.getTag_serv_type(),tag.getTag_class(),tag.getCreate_time(),tag.getEnd_time(),tag.getProfile(),tag.getCount_subs(),tag.getTag_statement(),tag.getTag_creator(),tag.getTag_creator_id(),tag.getTag_region(),tag.getIs_share(),tag.getTag_status(),tag.getTag_tec_stamt(),tag.getCustlist_path()};
+				this.getJdbcTemplate().update(sql,params);
+				boolFlag=true;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}			
+		}
+        return boolFlag;
+		}
+	
+	/**
+	 * 添加高级客户标签
+	 * @return
+	 */
+	public  boolean addAdvanceTag(CustomGroup tag){
+		  boolean boolFlag=false;
+
+		 String querySql="select count(TAG_NAME) as counts from mk_vgop.tb_customgroup_info where TAG_NAME='"+ tag.getTag_name() +"' ";
+		 int counts=this.getJdbcTemplate().queryForInt(querySql);
+		 if (counts==0){
+				  try {
+					String sql="insert into mk_vgop.tb_customgroup_info (TAG_ID,TAG_NAME,TAG_TYPE,TAG_SERV_TYPE,TAG_CLASS,CREATE_TIME,END_TIME,PROFILE,COUNT_SUBS,TAG_STATEMENT,TAG_CREATOR,TAG_CREATOR_ID,TAG_REGION,IS_SHARE,TAG_STATUS,TAG_TEC_STAMT,CUSTLIST_PATH,TYPE_FLAG)"
+				            +"  values('"+tag.getTag_id()+"','"+tag.getTag_name()+"','"+tag.getTag_type()+"','"+tag.getTag_serv_type()+"','"+tag.getTag_class()+"','"+tag.getCreate_time()+"','"+tag.getEnd_time()+"','"+tag.getProfile()+"',"+tag.getCount_subs()+",'"+tag.getTag_statement()+"','"+tag.getTag_creator()+"','"+tag.getTag_creator_id()+"','"+tag.getTag_region()+"','"+tag.getIs_share()+"','"+tag.getTag_status()+"','"+tag.getTag_tec_stamt()+"','"+tag.getCustlist_path()+"',"+tag.getTypeFlag()+")";
+				    //Object[] params= new Object[]{tag.getTag_id(),tag.getTag_name(),tag.getTag_type(),tag.getTag_serv_type(),tag.getTag_class(),tag.getCreate_time(),tag.getEnd_time(),tag.getProfile(),tag.getCount_subs(),tag.getTag_statement(),tag.getTag_creator(),tag.getTag_creator_id(),tag.getTag_region(),tag.getIs_share(),tag.getTag_status(),tag.getStamtAdvance(),tag.getCustlist_path(),tag.getTypeFlag()};
+					//this.getJdbcTemplate().update(sql,params);
+					this.getJdbcTemplate().update(sql);
+					boolFlag=true;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		 }
+
+             return boolFlag;
+		}
+	public boolean  upAdvanceTag(CustomGroup tag){
+		boolean boolFlag=false;
+		 String querySql="select count(TAG_ID) as counts from mk_vgop.tb_customgroup_info where  TAG_ID='"+ tag.getTag_id() +"' ";
+		 int counts=this.getJdbcTemplate().queryForInt(querySql);
+		 if (counts>0){
+				try {
+					String sql="update mk_vgop.tb_customgroup_info set TAG_NAME='"+ tag.getTag_name() +"',TAG_TYPE='"+tag.getTag_type() +"',TAG_SERV_TYPE='"+ tag.getTag_serv_type() +"',TAG_CLASS='"+ tag.getTag_class() +"',"
+							          +" PROFILE='"+ tag.getProfile() +"',COUNT_SUBS="+ tag.getCount_subs() +","
+							          +"TAG_STATEMENT='"+ tag.getTag_statement() +"',TAG_CREATOR='"+ tag.getTag_creator() +"',TAG_CREATOR_ID='"+ tag.getTag_creator_id() +"',TAG_REGION='"+ tag.getTag_region() +"',"
+							          +"IS_SHARE='"+ tag.getIs_share() +"',TAG_STATUS='"+ tag.getTag_status() +"',TAG_TEC_STAMT='"+ tag.getTag_tec_stamt() +"',CUSTLIST_PATH='"+ tag.getCustlist_path() +"',TYPE_FLAG="+ tag.getTypeFlag() +" where TAG_ID='"+ tag.getTag_id() +"'";
+					this.getJdbcTemplate().update(sql);
+					boolFlag=true;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-		}
+		 }
+		return boolFlag;
+	}
 	public boolean addCustTag(){
 		
 		return true;
@@ -60,7 +113,7 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 */
 	public boolean updateGroupTag(String tag_id, String tag_attrs, String stamt,String persons,String sql){
 		String updateSql="update MK_VGOP.TB_CUSTOMGROUP_INFO set tag_statement='"+stamt+"' , tag_status='1',count_subs="+persons.replace("人", "")+", TAG_TEC_STAMT='"+sql+"'  where tag_id='"+tag_id+"'";				
-		System.out.print(updateSql);
+		//System.out.print(updateSql);
 		this.getJdbcTemplate().update(updateSql)	;	
 		
         String deleteSql="delete from MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  where  tag_id='"+tag_id+"'";
@@ -73,6 +126,9 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 		String attr3 = jsonObject.get("group_id").toString();
 		String attr4=jsonObject.get("group_name").toString();		
 		String attr5=jsonObject.get("attr_tr_id").toString();
+		if ("--".equals(attr5)){
+			attr5="-";
+		}
 		String attr6=jsonObject.get("attr_id").toString();
 		String attr7=jsonObject.get("attr_name").toString();
 		String attr8=jsonObject.get("attr_from").toString();
@@ -81,15 +137,73 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 		String attr11=jsonObject.get("attr_type").toString();
 		String attr12=jsonObject.get("attr_value_type1").toString();
 		String attr13=jsonObject.get("attr_value1").toString();
+		if (attr13.indexOf("'")!=-1){
+			attr13=attr13.replace("'", "");
+		}
 	
-		String insertSql="insert into MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  (TAG_ID,TAG_NAME,GROUP_ID,GROUP_NAME,ATTR_TR_ID,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1)"
-			+" values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		Object[] objectnew=new Object[]{attr1,attr2,attr3,attr4,attr5,attr6,attr7,attr8,attr9,attr10,attr11,attr12,attr13};    
-        this.getJdbcTemplate().update(insertSql, objectnew)	;	
+		//String insertSql = "insert into MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  (TAG_ID,TAG_NAME,GROUP_ID,GROUP_NAME,ATTR_TR_ID,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1)"
+					//+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		//Object[] objectnew=new Object[]{attr1,attr2,attr3,attr4,attr5,attr6,attr7,attr8,attr9,attr10,attr11,attr12,attr13};    
+       //this.getJdbcTemplate().update(insertSql, objectnew)	;	
+		String insertSql = "insert into MK_VGOP.TB_GROUP_CREATE_TAG_INFO_NEW  (TAG_ID,TAG_NAME,GROUP_ID,GROUP_NAME,ATTR_TR_ID,ATTR_ID,ATTR_NAME,ATTR_FORM,ATTR_TABLE,ATTR_LVL,FORM_ATTR_VALUE_TYPE,FORM_ATTR_VALUE_BETN1,FORM_ATTR_VALUE1)"
+				+ " values ('"+attr1+"','"+attr2+"','"+attr3+"','"+attr4+"','"+attr5+"','"+attr6+"','"+attr7+"','"+attr8+"','"+attr9+"','"+attr10+"','"+attr11+"','"+attr12+"','"+attr13+"')";
+		this.getJdbcTemplate().update(insertSql)	;	
 		}        
 		return true;
 	}
 	
+	/**
+	 * 修改高级客户标签
+	 * @param id
+	 * @param tagName
+	 * @return
+	 */
+	public boolean updateAdvanceTag(String groupId, String groupName, String params){
+		boolean flag=false;
+		String sql = "select count(*) as counts from MK_VGOP.TB_GROUP_CONDITION where GROUP_ID='"
+				+ groupId + "'";
+		int counts=this.getJdbcTemplate().queryForInt(sql);
+		if (counts==0){
+			addSql( params, groupId,  groupName);
+			flag=true;
+		}else{
+			try{
+				String sqldel="delete from MK_VGOP.TB_GROUP_CONDITION where GROUP_ID='"+groupId+"' ";
+				this.getJdbcTemplate().update(sqldel);
+				addSql( params, groupId,  groupName);
+				flag=true;
+				}catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+
+		
+		return flag;
+		
+	}
+	private void addSql(String params,String groupId, String groupName){
+		String[] array=params.split("\\$");
+		int arrylength=array.length;
+		if (arrylength>1){
+			for (int i=0;i<arrylength;i++){
+				  String[] arraySun= array[i].split("@");		
+				  String arraySun1="";
+				       if (arraySun[1].indexOf("'||Chr(39)||'")!=-1){
+				    	   arraySun1="["+arraySun[1].replace("'||Chr(39)||'","\"")+"]";
+				       }else{
+				    	   arraySun1=arraySun[1];
+				       }
+				         //arraySun3="["+arraySun[3].replaceAll("'||Chr(39)||'","\"")+"]";
+					     String sqlin="insert into MK_VGOP.TB_GROUP_CONDITION  (GROUP_ID,GROUP_NAME,OPERATE_FLAG,ATTR_ID,ATTR_NAME,ATTR_TYPE,ATTR_TABLE,OPERATE_SIGN,OPERATE_VALUE,ORDER_ID) "
+					    		           +" values ('"+groupId+"','"+groupName+"','"+arraySun[0]+"','"+arraySun1+"','"+arraySun[2]+"','"+arraySun[3]+"','"+arraySun[4]+"','"+arraySun[5]+"','"+arraySun[6]+"','"+i+"')";
+					     this.getJdbcTemplate().update(sqlin);
+					     			 
+			}				
+		}
+		
+	}
 	/**
 	 * 得到客户筛选属性
 	 * @param id
@@ -292,8 +406,16 @@ public class CustTagAttrInfoDaoImpl extends JdbcDaoSupport {
 	 */
 	public int getUserTagConts(String attrsql,String data){
 //		String date="201306";
-		String sql="select count(1) from MK_VGOP.TB_CUST_UNIT_VIEW_"+data+"  a  where "+attrsql;	
-		return this.getJdbcTemplate().queryForInt(sql);
+		try{
+			String sql="select count(1) from MK_VGOP.TB_CUST_UNIT_VIEW_"+data+"  a  where "+attrsql+" with ur";	
+			return this.getJdbcTemplate().queryForInt(sql);
+		}catch(Exception e){			
+			e.printStackTrace();
+			return -1;
+			
+		}
+		//String sql="select count(1) from MK_VGOP.TB_CUST_UNIT_VIEW_"+data+"  a  where "+attrsql;	
+		//return this.getJdbcTemplate().queryForInt(sql);
 	}
 	
 	public List<ExportUserInfo> getTagList (String id ) {

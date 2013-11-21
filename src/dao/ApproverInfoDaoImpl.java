@@ -15,7 +15,8 @@ public class ApproverInfoDaoImpl extends JdbcDaoSupport{
 	 * @return
 	 */
 	public List<ApproverInfo> getApprover( String userArea){
-		 String sql="select USER_ID,USER_NAME,USER_ROLE,USER_AREA from MK_VGOP.TB_APPROVER_INFO where USER_AREA='"+userArea+"' and USER_ROLE='审批人'";      
+		// String sql="select USER_ID,USER_NAME,USER_ROLE,USER_AREA from MK_VGOP.TB_APPROVER_INFO where USER_AREA='"+userArea+"' and USER_ROLE='审批人'";
+		String sql="select USER_ID,USER_NAME,USER_ROLE,USER_AREA from MK_VGOP.TB_APPROVER_INFO where  USER_ROLE in ('审批人','超级管理员') with ur";      
 		 List<Map<String,Object>> listTemp=this.getJdbcTemplate().queryForList(sql);
 		 List<ApproverInfo> listAppr=new ArrayList<ApproverInfo>();		
 		 for(Map<String, Object> rows: listTemp){

@@ -1,4 +1,0 @@
-CUST_AGE	客户年龄	1	小于15
-CUST_AGE	客户年龄	2	大于15小于30
-CUST_AGE	客户年龄	3	大于30小于50
-CUST_AGE	客户年龄	4	大于15

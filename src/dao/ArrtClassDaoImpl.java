@@ -51,4 +51,22 @@ public class ArrtClassDaoImpl extends JdbcDaoSupport{
 		}
 		return listGigName;
 	}
+	
+	/**
+	 * 获取用户属性路径	
+	 * @param attrName
+	 * @return
+	 */
+	public String getAttrPaht(String attrName){
+		String attrPath="";
+		String sql="select ATTR_CLASSIFY,ATTR_CLASSIFY_ONE from MK_VGOP.TB_DIM_CUST_VIEW_ATTR_DESC where ATTR_DESC='"+attrName+"'";
+		List<Map<String,Object>> listTmp=this.getJdbcTemplate().queryForList(sql);	
+		int counts=listTmp.size();
+		if(counts>0){
+			attrPath=(String)listTmp.get(0).get("ATTR_CLASSIFY")+"/"+(String)listTmp.get(0).get("ATTR_CLASSIFY_ONE");		
+		}
+		 
+		return attrPath;
+	}
+	
 }

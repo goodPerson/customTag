@@ -1,6 +1,13 @@
 package action;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +57,14 @@ public class DownLoadAction extends ActionSupport{
     private String fileName;
     
     static ApplicationContext factory=null;
+	//分页功能参数  start
+	
+	private int pageNo;  //当前页
+	private int pageCounts;  //总页数
+	private int totalRecords; //总记录数
+	  HttpServletResponse response = ServletActionContext.getResponse();
+	  HttpServletRequest request = ServletActionContext.getRequest();
+	//分页功能参数  end
 	public static void initTag(){
 		XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		downloadinfo=(DownLoadInfoImpl)factory.getBean("DownLoad");
@@ -58,19 +73,19 @@ public class DownLoadAction extends ActionSupport{
 	public void addDownload() throws IOException{
 	   	if (null==downloadinfo)
 		   this.initTag();
-		  HttpServletResponse response = ServletActionContext.getResponse();
+
 		  response.setCharacterEncoding("gbk");
 		  response.setContentType("text/html;charset=gbk");
 		  response.addHeader("Content-Type", "text/html;charset=gbk");	
-		  HttpServletRequest request = ServletActionContext.getRequest();
+		  
 		  Calendar date = Calendar.getInstance();
 		  String time= new SimpleDateFormat("yyyyMMddhhmmss").format(date.getTime());
 		  group_name=request.getParameter("tag_name");
 		  count=Integer.parseInt(request.getParameter("count"));
 		 // sql=URLDecoder.decode(request.getParameter("sql"), "utf-8");
 		//	sql=sql.replace("'", "'||Chr(39)||'");
-		  String sql1=request.getParameter("sql");
-		  sql=sql1.substring(0,sql1.length()-4);
+		  String sql1=URLDecoder.decode(request.getParameter("sql"), "utf-8");
+		  sql=sql1.substring(0,sql1.length());
 		  group_id=request.getParameter("id");
 		  String  column1=request.getParameter("col");
 		  column=column1.substring(0,column1.length()-1);
@@ -118,25 +133,33 @@ public class DownLoadAction extends ActionSupport{
 	public String getDownInfo() throws Exception{
 		if (null==downloadinfo)
 		 this.initTag();
-		 HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
 		  response.setContentType("text/html;charset=gbk");
 		  response.addHeader("Content-Type", "text/html;charset=gbk");	
-		  HttpServletRequest request = ServletActionContext.getRequest();
+		  
 	//	 userId=(String) request.getSession().getAttribute("userId");
 		 userId=request.getParameter("userId");
-		  listDown=downloadinfo.queryDown(userId);
+		 pageNo=0;
+		int pagesize=15;			
+		if (request.getParameter("pageNo")==null || ""==request.getParameter("pageNo")){
+			pageNo=1;
+		}else{
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		}
+		
+		listDown=downloadinfo.queryDown(userId,pageNo,pagesize);
+		pageCounts=downloadinfo.getPageInfo().getTotalPages();		
+		totalRecords=downloadinfo.getPageInfo().getTotalRows();
 		 return SUCCESS;
 		
 	}
 	
 	public String requestDownReason(){
 		this.initTag();
-		 HttpServletResponse response = ServletActionContext.getResponse();
 		  response.setCharacterEncoding("gbk");
 		  response.setContentType("text/html;charset=gbk");
 		  response.addHeader("Content-Type", "text/html;charset=gbk");	
-		  HttpServletRequest request = ServletActionContext.getRequest();
+		 
 		
 		String userId=request.getParameter("userId");		
 	    createTime=request.getParameter("createTime");
@@ -147,11 +170,9 @@ public class DownLoadAction extends ActionSupport{
 	
 	public String addReason(){	
 		this.initTag();
-	  HttpServletResponse response = ServletActionContext.getResponse();
 	  response.setCharacterEncoding("gbk");
 	  response.setContentType("text/html;charset=gbk");
 	  response.addHeader("Content-Type", "text/html;charset=gbk");	
-	  HttpServletRequest request = ServletActionContext.getRequest();
 	  String reasonForm=request.getParameter("reasonForm");
 	  String createTimeForm=request.getParameter("createTimeForm");
 	  boolean  flag=downloadinfo.updateReason(createTimeForm, reasonForm);	  
@@ -162,6 +183,45 @@ public class DownLoadAction extends ActionSupport{
 	  }	  
 	}
 
+	public String delShow(){
+		this.initTag();
+		HttpServletResponse response=ServletActionContext.getResponse();
+		response.setCharacterEncoding("gbk");
+		response.setContentType("text/html;charset=gbk");
+		response.addHeader("Content-Type", "text/html;charset=gbk");
+		HttpServletRequest request=ServletActionContext.getRequest();
+		String createTime=request.getParameter("createTime");
+		boolean flag=downloadinfo.delShow(createTime);
+		if (flag){
+			return SUCCESS;
+		}else{
+			return "false";
+		}
+		
+	}
+	
+	//下载帮助文件
+	public void   downHelpFile() throws FileNotFoundException{
+		   // 下载本地文件
+        String fileName = "onlineHelp.txt".toString(); // 文件的默认保存名
+        // 读到流中
+        InputStream inStream = new FileInputStream("D://customHelper//onlineHelp.txt");// 文件的存放路径
+        // 设置输出的格式
+        response.reset();
+        response.setContentType("bin");
+        response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        // 循环取出流中的数据
+        byte[] b = new byte[100];
+        int len;
+        try {
+            while ((len = inStream.read(b)) > 0)
+                response.getOutputStream().write(b, 0, len);
+            inStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+	
 	public List<DownloadInfo> getListDown() {
 		return listDown;
 	}
@@ -190,7 +250,30 @@ public class DownLoadAction extends ActionSupport{
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
-	}	
-	
+	}
 
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+
+	public int getPageCounts() {
+		return pageCounts;
+	}
+
+	public void setPageCounts(int pageCounts) {
+		this.pageCounts = pageCounts;
+	}
+
+	public int getTotalRecords() {
+		return totalRecords;
+	}
+
+	public void setTotalRecords(int totalRecords) {
+		this.totalRecords = totalRecords;
+	}
+	
 }

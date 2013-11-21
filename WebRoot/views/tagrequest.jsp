@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%> 
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -26,6 +26,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="js/ajaxfileupload.js"></script>
 </head>
 <style>
+*{
+font-family:"微软雅黑";
+}
 html{
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -80,7 +83,7 @@ a:active {
 .title_td {
 	color: #000;
 	height: 20px;
-	font-size:20pt;
+	font-size:14pt;
 }
 #attr_div1 {
 	background: #FFF;
@@ -232,6 +235,9 @@ padding:5px 5px 0px 5px;
 　width:120px;
 　height:25px;
 　line-height:20px}
+.border {
+   border:1px solid #D3D3D3;
+}
 </style>
 
 <body>
@@ -257,12 +263,12 @@ padding:5px 5px 0px 5px;
           
           <td width="1166"   valign="top" ><table width="100%"  border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td colspan="4"  id="tag_name" class="title_td" align="center">标签申请单</td>               
+                <td colspan="4"  id="tag_name" class="title_td" align="center">标签/属性申请单</td>               
               </tr>
               <tr>
-                <td width="12%" valign="top" style="padding-top:10px;" class="class_td">标签名称：</td>
+                <td width="12%" valign="top" style="padding-top:10px;" class="class_td">标签/属性名称：</td>
 				<td colspan="3" valign="middle" >					
-				<input type="text" name="activename" id="activename" class="messager-input" size="35" />
+				<input type="text" name="activename" id="activename" class="border "  size="35" />
 				<input type="hidden" name="req_reson" value="<s:property value='#session.userName'/>"/>
 				<span style="color:#FF0000; margin-left:10px">*</span>
 				</td>
@@ -270,11 +276,11 @@ padding:5px 5px 0px 5px;
               <tr>
                 <td  height="20px" class="class_td" >申请理由：</td>
 				<td colspan="3">				
-				<textarea id="requestreson" name="requestreson" cols="60" rows="4"></textarea>
+				<textarea id="requestreson" name="requestreson"  class="border "  cols="60" rows="4"></textarea>
 				<span style="color:#FF0000; margin-left:10px">*</span></td>
               </tr>
               <tr>
-                <td class="class_td">标签范围：</td>
+                <td class="class_td">标签/属性范围：</td>
                 <td colspan="3" class="class_td">
                
 				<input name="activescope" type="checkbox"   value="河北省"> 河北省 
@@ -293,7 +299,7 @@ padding:5px 5px 0px 5px;
 				</td>
               </tr>
               <tr>
-                <td  height="40px" class="class_td">标签期限：</td>
+                <td  height="40px" class="class_td">标签/属性期限：</td>
 				<td width="43%" class="class_td">				
 				<input id="starttime" name="starttime" type="text" value=""  class="easyui-datebox" size="20" >				
 				 至
@@ -319,10 +325,10 @@ padding:5px 5px 0px 5px;
               	<tr>
                 <td  height="40px" class="class_td">客户品牌：</td>
                 <td width="43%" class="class_td">
-                <input name="brank" type="checkbox"    value="全品牌"> 全品牌
-				<input name="brank" type="checkbox"   value="神州行"> 神州行
-				<input name="brank" type="checkbox"    value="动感地带"> 动感地带
-				<input name="brank" type="checkbox"   value="全球通"> 全球通
+                                                    <input id="all_brank" name="all_brank" type="checkbox"     value="全品牌"> 全品牌
+				<input name="brank" type="checkbox"  class="brankclass"   value="神州行"> 神州行
+				<input name="brank" type="checkbox"  class="brankclass"   value="动感地带"> 动感地带
+				<input name="brank" type="checkbox"  class="brankclass"  value="全球通"> 全球通
 				</td>
 				<td width="7%" style=" height:40px;"></td>
 				<td width="38%">
@@ -331,7 +337,7 @@ padding:5px 5px 0px 5px;
 			  <tr>
                 <td class="class_td" >筛选条件：</td>
 				<td colspan="3">			
-				<textarea name="contion" id="contion1" cols="60" rows="4"></textarea><span style="color:#FF0000; margin-left:10px">*</span>	</td>
+				<textarea name="contion" id="contion1" class="border "  cols="60" rows="4"></textarea><span style="color:#FF0000; margin-left:10px">*</span>	</td>
               </tr> 
 			  <tr>
                 <td class="class_td" >审批人：</td>
@@ -342,12 +348,13 @@ padding:5px 5px 0px 5px;
               <tr>
                 <td class="class_td" >备注：</td>
 				<td colspan="3">							
-				<textarea id="remark" name="remark" cols="40" rows="4"></textarea>		
+				<textarea id="remark" name="remark" class="border "  cols="40" rows="4"></textarea>		
 				</td>
               </tr>  
               <tr>
-                <td colspan="4" style=" height:40px; text-align:center" >
-                <input type="submit" class="class_td" style="height:25px;font-family:'微软雅黑';" value="提交申请"/>
+                <td colspan="4" style="height:40px; text-align:center" >
+                <input type="submit" class="class_td" style=" width:80px;height:28px;font-family:'微软雅黑';background: #094AB2;  color:#FFF; line-height:28px;overflow:hidden; border:0px; font-size:16px;" value="提交申请"/>             
+                
 				</td>
               </tr>             
             </table></td>          
@@ -399,15 +406,58 @@ function checkTrim(){
    }
    return true;
 }
-$(function(){
-		
-	
+$(function(){	
+	String.prototype.replaceAll = function(reallyDo, replaceWith, ignoreCase) {
+		if (!RegExp.prototype.isPrototypeOf(reallyDo)) {
+			return this.replace(new RegExp(reallyDo, (ignoreCase ? "gi" : "g")), replaceWith);
+		} else {
+			return this.replace(reallyDo, replaceWith);
+		}
+	}
+             
+             $(".brankclass").click(function(){
+             	if ($("#all_brank").attr("checked")) {
+			alert("全品牌不能与其他品牌同时选中！");
+			 $(".brankclass").removeAttr("checked");
+
+	             }
+             });
+
+             $("#all_brank").click(function(){
+             	if ($(".brankclass").attr("checked")) {
+             		alert("全品牌不能与其他品牌同时选中！");
+			 $(".brankclass").removeAttr("checked");
+             	};
+             });
+
+             $("#starttime").datebox({
+             	onSelect:function(date){
+             		var dates=date.getTime();             		
+             		var yesday=new Date().getTime()-1000*60*60*24;             		
+             		if (date<yesday) {
+             			alert("开始日期不能小于今天！");
+             			$("#starttime").datebox("setValue","");
+             		};
+             	}
+             });
+
+             $("#endtime").datebox({
+             	onSelect:function(date){
+             		var s=parseInt($("#starttime").datebox("getValue").replace(new RegExp("-","gm"),""));
+             		var e=parseInt($("#endtime").datebox("getValue").replace(new RegExp("-","gm"),""));
+             		if (e<s) {
+             			alert("开始日期不能大于结束日期");
+             			$("#endtime").datebox("setValue","");
+             		};
+             	}
+             });
+
 	//获取城市名称
 	var verifier=$("#verifier").combobox("getValue");
 	if (verifier==""){
 		$("#verifier").combobox("setValue","-请选择-");	
 	}
-	 $("#verifier").combobox({
+	/* $("#verifier").combobox({
 				  url:'getAppro.action',
 				  editable:true,
 				  valueField:'id',
@@ -416,6 +466,21 @@ $(function(){
 				  panelWidth:100,
 				  editable:true 
 		   });
+	*/
+	 $("#verifier").combobox({
+		  url:'getAppro.action',
+		  editable:true,
+		  valueField:'id',
+		  textField:'text',
+		  panelHight:'auto',
+		  panelWidth:100,
+		  editable:true,
+		  onSelect:function(){	  
+
+		  } 
+		 });
+	 
+	 
 });
 </script>
 
